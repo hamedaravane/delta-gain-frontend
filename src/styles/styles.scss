@@ -1,0 +1,11 @@
+@use './font-faces';
+
+/* Font Awesome */
+@import '../assets/fontawesome/css/fontawesome.css';
+@import '../assets/fontawesome/css/solid.css';
+@import '../assets/fontawesome/css/brands.css';
+
+/* Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
