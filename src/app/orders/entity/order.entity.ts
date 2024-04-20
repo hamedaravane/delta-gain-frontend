@@ -1,6 +1,6 @@
 export type ActionSide = 'sell' | 'buy';
 export type ActionStatus = 'PENDING' | 'CANCELED' | 'PENDING_PLACEMENT' | 'FILLED';
-interface SpotActionDTO {
+export interface SpotActionDTO {
   spot_action: ActionSide;
   currency: string;
   amount: number;
@@ -18,7 +18,7 @@ interface SpotActionDTO {
   maximum_profit_per_unit: number;
 }
 
-interface SpotAction {
+export interface SpotAction {
   spotAction: ActionSide;
   currency: string;
   amount: number;
@@ -36,22 +36,24 @@ interface SpotAction {
   maximumProfitPerUnit: number;
 }
 
-export function convertSpotActionDtoToDomain(dto: SpotActionDTO): SpotAction {
-  return {
-    spotAction: dto.spot_action,
-    currency: dto.currency,
-    amount: dto.amount,
-    fee: dto.fee,
-    quoteAmountUsed: dto.quote_amount_used,
-    spotTarget: dto.spot_target,
-    createdAt: new Date(dto.created_at),
-    filledAt: new Date(dto.filled_at),
-    canceledAt: new Date(dto.canceled_at),
-    status: dto.status,
-    placedAt: new Date(dto.placed_at),
-    binancePrice: dto.binance_price,
-    ompBestBid: dto.omp_best_bid,
-    ompBestAsk: dto.omp_best_ask,
-    maximumProfitPerUnit: dto.maximum_profit_per_unit,
-  }
+export function convertSpotActionDtoToDomain(dto: SpotActionDTO[]): SpotAction[] {
+  return dto.map((action) => {
+    return {
+      spotAction: action.spot_action,
+      currency: action.currency,
+      amount: action.amount,
+      fee: action.fee,
+      quoteAmountUsed: action.quote_amount_used,
+      spotTarget: action.spot_target,
+      createdAt: new Date(action.created_at),
+      filledAt: new Date(action.filled_at),
+      canceledAt: new Date(action.canceled_at),
+      status: action.status,
+      placedAt: new Date(action.placed_at),
+      binancePrice: action.binance_price,
+      ompBestBid: action.omp_best_bid,
+      ompBestAsk: action.omp_best_ask,
+      maximumProfitPerUnit: action.maximum_profit_per_unit,
+    } as SpotAction;
+  })
 }
