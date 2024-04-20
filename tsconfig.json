@@ -18,6 +18,16 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
+    "baseUrl": "./",
+    "paths": {
+      "@shared/*": ["src/app/shared/*"],
+      "@orders/*": ["src/app/orders/*"],
+      "@preferences/*": ["src/app/preferences/*"],
+      "@auth/*": ["src/app/auth/*"],
+      "@notifications/*": ["src/app/notifications/*"],
+      "@layout/*": ["src/app/layout/*"],
+      "@environment": ["src/environments/environment.ts"]
+    },
     "lib": [
       "ES2022",
       "dom"

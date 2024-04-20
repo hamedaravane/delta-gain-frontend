@@ -1,12 +1,16 @@
-<nz-table>
+<nz-table nzBordered nzOuterBordered nzSize="small">
   <thead>
   <tr>
-    <th></th>
+    @for (header of headers; track header.fieldId) {
+      @if (header.isActive) {
+        <th class="text-center">{{ header.fieldName }}</th>
+      }
+    }
   </tr>
   </thead>
   <tbody>
   <tr>
-    <th></th>
+    <td></td>
   </tr>
   </tbody>
 </nz-table>
