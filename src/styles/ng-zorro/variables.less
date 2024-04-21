@@ -2,7 +2,9 @@
 
 // -------- Colors -----------
 // >>> Primary
-@primary-color: @purple-base;
+@primary-color: @indigo-5;
+@item-active-bg: @indigo-4;
+@item-hover-bg: @indigo-3;
 @processing-color: @primary-color;
 // >>> Info
 @info-color: @primary-color;
@@ -14,12 +16,10 @@
 @error-color: @red-5;
 @highlight-color: @red-5;
 // Background color for `<body>`
-@body-background: @neutral-1;
+@body-background: @gray-1;
 // Base background color for most components
-@component-background: @neutral-2;
-@font-family: 'Vazirmatn', 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-'Noto Color Emoji';
+@component-background: @gray-2;
+@font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 @text-color: @zinc-1;
 @text-color-secondary: @zinc-3;
 @text-color-inverse: @zinc-10;
@@ -59,32 +59,31 @@
 @layout-zero-trigger-width: 36px;
 @layout-zero-trigger-height: 42px;
 // Layout light theme
-@layout-sider-background-light: @neutral-1;
-@layout-trigger-background-light: @neutral-1;
+@layout-sider-background-light: @gray-1;
+@layout-trigger-background-light: @gray-1;
 
 
 // Table
-@table-bg: @neutral-8;
-@table-header-bg: @neutral-7;
-@table-header-color: @neutral-1;
-@table-header-sort-bg: @background-color-base;
-@table-body-sort-bg: @neutral-5;
-@table-row-hover-bg: @background-color-light;
+@table-bg: @gray-8;
+@table-header-bg: @gray-7;
+@table-header-color: @gray-2;
+@table-body-sort-bg: @gray-8;
+@table-row-hover-bg: @gray-6;
 @table-selected-row-bg: @yellow-6;
-@table-body-selected-sort-bg: @table-selected-row-bg;
-@table-expanded-row-bg: @neutral-7;
-@table-border-color: @neutral-3;
+@table-expanded-row-bg: @gray-7;
+@table-border-color: @gray-3;
 @table-footer-bg: @background-color-light;
 @table-footer-color: @heading-color;
-@table-header-bg-sm: @table-header-bg;
 @table-header-cell-split-color: rgba(0, 0, 0, 0.06);
-// Sorter
-// Legacy: `table-header-sort-active-bg` is used for hover not real active
-@table-header-sort-active-bg: rgba(0, 0, 0, 0.04);
-@table-fixed-header-sort-active-bg: hsv(0, 0, 96%);
 // Filter
-@table-header-filter-active-bg: rgba(0, 0, 0, 0.04);
-@table-filter-dropdown-bg: @component-background;
-@table-expand-icon-bg: @component-background;
-// Sticky
-@table-sticky-scroll-bar-bg: fade(#000, 35%);
+@table-header-filter-active-bg: transparent;
+@table-filter-dropdown-bg: @gray-7;
+@table-selection-column-width: @height-sm;
+
+// Dropdown
+@dropdown-selected-color: @primary-color;
+@dropdown-menu-submenu-disabled-bg: @gray-6;
+@dropdown-selected-bg: @item-active-bg;
+@dropdown-selected-color: @neutral-0;
+@dropdown-selected-bg: @indigo-4;
+@dropdown-menu-bg: @gray-7;

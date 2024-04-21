@@ -1,16 +1,65 @@
-<nz-table nzBordered nzOuterBordered nzSize="small">
-  <thead>
-  <tr>
-    @for (header of headers; track header.fieldId) {
-      @if (header.isActive) {
-        <th class="text-center">{{ header.fieldName }}</th>
+@if (orders$ | async; as actions) {
+  <nz-table nzBordered
+            [nzData]="actions"
+            [nzTotal]="actions.length"
+            [nzPageSize]="actions.length"
+            nzNoResult="There was no result"
+            nzPaginationType="small"
+            nzHideOnSinglePage>
+    <thead>
+    <tr>
+      @for (header of headers; track header.fieldId) {
+        @if (header.isActive) {
+          <th [nzSortOrder]="header.sortOrder"
+              [nzSortFn]="header.sortFn"
+              [nzSortDirections]="header.sortDirections"
+              [nzFilterMultiple]="header.filterMultiple"
+              [nzFilters]="header.listOfFilter"
+              [nzFilterFn]="header.filterFn"
+              class="px-2 capitalize border-b border-neutral-100 border-solid">
+            {{header.fieldName}}
+          </th>
+        }
       }
-    }
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td></td>
-  </tr>
-  </tbody>
-</nz-table>
+    </tr>
+    </thead>
+    <tbody>
+      @for (action of actions; track $index) {
+        <tr>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums uppercase">{{action.spotAction}}</td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums uppercase">{{action.currency}}</td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.amount | number: '1.0-15'}}</td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.fee | number: '1.0-15'}}</td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">₮{{
+              action.quoteAmountUsed | number: '1.2-15'}}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.spotTarget | number: '1.0-15'}}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
+              action.createdAt | date: 'yyyy/MM/dd HH:mm:ss'}}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
+              action.filledAt | date: 'yyyy/MM/dd HH:mm:ss'}}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
+              action.canceledAt | date: 'yyyy/MM/dd HH:mm:ss'}}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums uppercase">{{action.status}}</td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
+              action.placedAt | date: 'yyyy/MM/dd HH:mm:ss'}}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
+              action.binancePrice | number: '1.0-15'}}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.ompBestBid | number: '1.0-15'}}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.ompBestAsk | number: '1.0-15'}}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
+              action.maximumProfitPerUnit | number: '1.0-15'}}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </nz-table>
+}
