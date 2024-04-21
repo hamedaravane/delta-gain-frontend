@@ -17,7 +17,7 @@
               [nzFilters]="header.listOfFilter"
               [nzFilterFn]="header.filterFn"
               class="px-2 capitalize border-b border-neutral-100 border-solid">
-            {{header.fieldName}}
+            {{ header.fieldName }}
           </th>
         }
       }
@@ -25,38 +25,54 @@
     </thead>
     <tbody>
       @for (action of actions; track $index) {
-        <tr>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums uppercase">{{action.spotAction}}</td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums uppercase">{{action.currency}}</td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.amount | number: '1.0-15'}}</td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.fee | number: '1.0-15'}}</td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">₮{{
-              action.quoteAmountUsed | number: '1.2-15'}}
+        <tr [ngClass]="{
+        'text-teal-500': action.spotAction === 'buy',
+        'text-rose-500': action.spotAction === 'sell'
+        }">
+          <td class="border-b border-solid border-gray-600 px-2 uppercase">{{ action.spotAction }}</td>
+          <td class="border-b border-solid border-gray-600 px-2 uppercase">{{ action.currency }}</td>
+          <td class="border-b border-solid border-gray-600 px-2">{{ action.amount | number: '1.0-15' }}</td>
+          <td class="border-b border-solid border-gray-600 px-2">{{ action.fee | number: '1.0-15' }}</td>
+          <td class="border-b border-solid border-gray-600 px-2">₮{{
+              action.quoteAmountUsed | number: '1.2-15'
+            }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.spotTarget | number: '1.0-15'}}
+          <td class="border-b border-solid border-gray-600 px-2">{{ action.spotTarget | number: '1.0-15' }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
-              action.createdAt | date: 'yyyy/MM/dd HH:mm:ss'}}
+          <td class="border-b border-solid border-gray-600 px-2">{{
+              action.createdAt | date: 'yyyy/MM/dd HH:mm:ss'
+            }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
-              action.filledAt | date: 'yyyy/MM/dd HH:mm:ss'}}
+          <td class="border-b border-solid border-gray-600 px-2">{{
+              action.filledAt | date: 'yyyy/MM/dd HH:mm:ss'
+            }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
-              action.canceledAt | date: 'yyyy/MM/dd HH:mm:ss'}}
+          <td class="border-b border-solid border-gray-600 px-2">{{
+              action.canceledAt | date: 'yyyy/MM/dd HH:mm:ss'
+            }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums uppercase">{{action.status}}</td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
-              action.placedAt | date: 'yyyy/MM/dd HH:mm:ss'}}
+          <td [ngClass]="{
+            'text-teal-500': action.status === 'FILLED',
+            'text-yellow-500': action.status === 'PENDING',
+            'text-orange-500': action.status === 'PENDING_PLACEMENT',
+            'text-rose-500': action.status === 'CANCELED',
+          }" class="border-b border-solid border-gray-600 px-2 uppercase">{{ action.status }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
-              action.binancePrice | number: '1.0-15'}}
+          <td class="border-b border-solid border-gray-600 px-2">{{
+              action.placedAt | date: 'yyyy/MM/dd HH:mm:ss'
+            }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.ompBestBid | number: '1.0-15'}}
+          <td class="border-b border-solid border-gray-600 px-2">{{
+              action.binancePrice | number: '1.0-15'
+            }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{action.ompBestAsk | number: '1.0-15'}}
+          <td class="border-b border-solid border-gray-600 px-2">{{ action.ompBestBid | number: '1.0-15' }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2 tabular-nums">{{
-              action.maximumProfitPerUnit | number: '1.0-15'}}
+          <td class="border-b border-solid border-gray-600 px-2">{{ action.ompBestAsk | number: '1.0-15' }}
+          </td>
+          <td class="border-b border-solid border-gray-600 px-2">{{
+              action.maximumProfitPerUnit | number: '1.0-15'
+            }}
           </td>
         </tr>
       }

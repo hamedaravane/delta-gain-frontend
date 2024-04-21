@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { NzTableComponent, NzThAddOnComponent } from 'ng-zorro-antd/table';
 import { OrdersFacade } from '@orders/data-access/orders.facade';
-import { AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe, KeyValuePipe } from '@angular/common';
+import {AsyncPipe, CurrencyPipe, DatePipe, DecimalPipe, KeyValuePipe, NgClass} from '@angular/common';
 import { headers } from '@orders/constant/orders-table-header';
 
 @Component({
@@ -14,7 +14,8 @@ import { headers } from '@orders/constant/orders-table-header';
     DatePipe,
     NzThAddOnComponent,
     CurrencyPipe,
-    DecimalPipe
+    DecimalPipe,
+    NgClass
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss'
