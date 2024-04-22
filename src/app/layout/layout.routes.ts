@@ -10,6 +10,10 @@ export const routes: Routes = [
         pathMatch: 'full',
         loadComponent: () => import('../orders/orders.component').then(c => c.OrdersComponent)
       },
+      {
+        path: 'market',
+        loadComponent: () => import('../market/market.component').then(c => c.MarketComponent)
+      }
     ]
   }
 ];

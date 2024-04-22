@@ -1,5 +1,6 @@
 export type ActionSide = 'sell' | 'buy';
-export type ActionStatus = 'PENDING' | 'CANCELED' | 'PENDING_PLACEMENT' | 'FILLED';
+export type ActionStatusDto = 'PENDING' | 'CANCELED' | 'PENDING_PLACEMENT' | 'FILLED';
+export type ActionStatus = 'PENDING' | 'CANCELED' | 'PLACING' | 'FILLED';
 export interface SpotActionDTO {
   spot_action: ActionSide;
   currency: string;
@@ -10,7 +11,7 @@ export interface SpotActionDTO {
   created_at: string;
   filled_at: string;
   canceled_at: string;
-  status: ActionStatus;
+  status: ActionStatusDto;
   placed_at: string;
   binance_price: number;
   omp_best_bid: number;
@@ -48,7 +49,7 @@ export function convertSpotActionDtoToDomain(dto: SpotActionDTO[]): SpotAction[]
       createdAt: new Date(action.created_at),
       filledAt: new Date(action.filled_at),
       canceledAt: new Date(action.canceled_at),
-      status: action.status,
+      status: action.status === 'PENDING_PLACEMENT' ? 'PLACING' : action.status,
       placedAt: new Date(action.placed_at),
       binancePrice: action.binance_price,
       ompBestBid: action.omp_best_bid,

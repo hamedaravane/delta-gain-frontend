@@ -39,26 +39,33 @@
           </td>
           <td class="border-b border-solid border-gray-600 px-2">{{ action.spotTarget | number: '1.0-15' }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2">{{
+          <td class="text-neutral-300 border-b border-solid border-gray-600 px-2">{{
               action.createdAt | date: 'yyyy/MM/dd HH:mm:ss'
             }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2">{{
+          <td class="text-neutral-300 border-b border-solid border-gray-600 px-2">{{
               action.filledAt | date: 'yyyy/MM/dd HH:mm:ss'
             }}
           </td>
-          <td class="border-b border-solid border-gray-600 px-2">{{
+          <td class="text-neutral-300 border-b border-solid border-gray-600 px-2">{{
               action.canceledAt | date: 'yyyy/MM/dd HH:mm:ss'
             }}
           </td>
           <td [ngClass]="{
             'text-teal-500': action.status === 'FILLED',
             'text-yellow-500': action.status === 'PENDING',
-            'text-orange-500': action.status === 'PENDING_PLACEMENT',
+            'text-orange-500': action.status === 'PLACING',
             'text-rose-500': action.status === 'CANCELED',
-          }" class="border-b border-solid border-gray-600 px-2 uppercase">{{ action.status }}
+          }" class="border-b border-solid border-gray-600 px-2 uppercase whitespace-nowrap">
+            <i class="fa-solid me-2" [class.animate-spin]="action.status === 'PENDING' || action.status === 'PLACING'" [ngClass]="{
+              'fa-check': action.status === 'FILLED',
+              'fa-spinner-third': action.status === 'PENDING',
+              'fa-spinner': action.status === 'PLACING',
+              'fa-xmark': action.status === 'CANCELED',
+            }"></i>
+            <span>{{ action.status }}</span>
           </td>
-          <td class="border-b border-solid border-gray-600 px-2">{{
+          <td class="text-neutral-300 border-b border-solid border-gray-600 px-2">{{
               action.placedAt | date: 'yyyy/MM/dd HH:mm:ss'
             }}
           </td>

@@ -8,7 +8,7 @@ export class OrdersInfra {
   protected readonly httpClient = inject(HttpClient);
 
   public getOrders(): Observable<SpotAction[]> {
-    return this.httpClient.get<SpotActionDTO[]>('https://6624acac04457d4aaf9cb4e7.mockapi.io/api/v1/orders').pipe(
+    return this.httpClient.get<SpotActionDTO[]>('http://localhost:3000/api/orders').pipe(
       map((response) => {
         return convertSpotActionDtoToDomain(response);
       })
