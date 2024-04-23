@@ -1,14 +1,5 @@
-import {
-  CandleType,
-  LineType,
-  PolygonType,
-  Styles,
-  TooltipShowRule,
-  TooltipShowType,
-  YAxisPosition,
-  YAxisType
-} from 'klinecharts';
-import {COLORS, transparent} from "@shared/constant/tailwind-colors";
+import { CandleType, LineType, PolygonType, Styles, TooltipShowRule, TooltipShowType, YAxisPosition, YAxisType } from 'klinecharts';
+import { COLORS, transparent } from "@shared/constant/tailwind-colors";
 
 enum CandleTooltipRectPosition {
   Fixed = "fixed",
