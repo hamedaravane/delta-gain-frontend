@@ -12,3 +12,9 @@ export function getErrorMessage(err: any) {
   const error = getErrorApi(err);
   return error.message;
 }
+
+export class InternalError extends Error {
+  constructor(code: number, message: string) {
+    super(message);
+  }
+}

@@ -26,6 +26,7 @@ export class OrdersComponent implements OnInit {
   headers = headers;
 
   ngOnInit() {
-    this.ordersFacade.getOrders().then();
+    this.ordersFacade.getAllOrders().then();
+    this.ordersFacade.autoRefreshOrders();
   }
 }
