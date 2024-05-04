@@ -1,10 +1,10 @@
-export type OrderType = 'sell' | 'buy';
+export type OrderSide = 'sell' | 'buy';
 export type ActionStatusDto = 'PENDING' | 'CANCELED' | 'PENDING_PLACEMENT' | 'FILLED';
 export type ActionStatus = 'PENDING' | 'CANCELED' | 'PLACING' | 'FILLED';
 export type OrderStatus = 'COMPLETED' | 'PENDING' | 'CANCELING';
 export type OrderExecution = 'MARKET' | 'LIMIT';
 export interface SpotActionDTO {
-  spot_action: OrderType;
+  spot_action: OrderSide;
   currency: string;
   amount: number;
   fee: number;
@@ -22,7 +22,7 @@ export interface SpotActionDTO {
 }
 
 export interface SpotAction {
-  spotAction: OrderType;
+  spotAction: OrderSide;
   currency: string;
   amount: number;
   fee: number;
@@ -61,6 +61,7 @@ export function convertSpotActionDtoToDomain(dto: SpotActionDTO[]): SpotAction[]
   })
 }
 
+/** ********************************************************************************** */
 
 export interface CurrencyDto {
   id: string;
@@ -95,7 +96,7 @@ export interface Market {
 
 export interface OrderDto {
   id: number;
-  type: string;
+  type: OrderSide;
   market: MarketDto;
   amount: string;
   completed_amount: string;
@@ -108,7 +109,7 @@ export interface OrderDto {
 
 export interface Order {
   id: number;
-  type: string;
+  type: OrderSide;
   market: Market;
   amount: string;
   completedAmount: string;
@@ -159,10 +160,59 @@ export function convertOmpfinexOrderDtoToDomain(dto: OrderDto): Order {
   }
 }
 
-/*export function extractTradeFromOrder(data: Order) {
-  return {
-    id: crypto.randomUUID(),
-    market: data.market,
+export interface Trade {
+  uuid: string;
+  buy: {
+    volume: number;
+    price: number;
+    placedAt: Date;
+    createdAt: Date;
+  };
+  sell: {
+    volume: number;
+    price: number;
+    placedAt: Date;
+    createdAt: Date;
+  };
+  symbol: string;
+  baseCurrency: {
+    id: string;
+    name: string;
+    decimalPrecision: number;
+  };
+  quoteCurrency: {
+    id: string;
+    name: string;
+    decimalPrecision: number;
+  };
+  profit: number;
+  remained: {
+    volume: number;
+    price: number;
+  }
+}
 
+/*export function reduceOrdersToTrades(orders: Order[]): Trade[] {
+  const tradeMap = new Map<string, Trade>();
+  const orderMap = new Map<string, Order>();
+  for (const order of orders) {
+    if (order.type === 'buy') {
+      const savedOrder = orderMap.get(order.market.symbol);
+      if (savedOrder) {
+        orderToTrade(savedOrder);
+      }
+      const savedTrade = tradeMap.get(order.market.symbol);
+    }
+    if (order.type === 'sell') {
+      const savedOrder = orderMap.get(order.market.symbol);
+      const savedTrade = tradeMap.get(order.market.symbol);
+    }
+  }
+  return {} as Trade[];
+}
+
+export function orderToTrade(order: Order): Trade {
+  return {
+    uuid: crypto.randomUUID(),
   }
 }*/

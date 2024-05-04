@@ -1,5 +1,5 @@
-import { OrderType, SpotAction } from '@orders/entity/order.entity';
-import { NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder } from 'ng-zorro-antd/table';
+import {OrderSide, SpotAction} from '@orders/entity/order.entity';
+import {NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder} from 'ng-zorro-antd/table';
 
 interface ColumnItem {
   fieldId: number;
@@ -23,7 +23,7 @@ export const headers: ColumnItem[] = [
     sortDirections: ['ascend', 'descend', null],
     filterMultiple: true,
     listOfFilter: [{text: 'buy', value: 'buy'}, {text: 'sell', value: 'sell'}],
-    filterFn: (value: OrderType[], data) => value.includes(data.spotAction)
+    filterFn: (value: OrderSide[], data) => value.includes(data.spotAction)
   },
   {
     fieldId: 2,
