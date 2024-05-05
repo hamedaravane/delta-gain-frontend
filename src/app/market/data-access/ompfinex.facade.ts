@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { OmpfinexInfra } from 'src/app/market/infrastructure/ompfinex.infra';
 import { firstValueFrom, Subject } from 'rxjs';
 import {
-  OmpfinexMarkets,
+  OmpfinexMarket,
 } from 'src/app/market/entity/ompfinex.entity';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { getErrorMessage } from '@shared/entity/error.entity';
@@ -11,15 +11,13 @@ import { getErrorMessage } from '@shared/entity/error.entity';
 export class OmpfinexFacade {
   private readonly infra = inject(OmpfinexInfra);
   private readonly nzMessageService = inject(NzMessageService);
-  ompfinexMarketsSubject = new Subject<OmpfinexMarkets[]>();
-
-  constructor() {
-    this.getUsdtMarkets();
-  }
+  ompfinexMarketsSubject = new Subject<OmpfinexMarket[]>()
 
   getUsdtMarkets() {
     firstValueFrom(this.infra.getUsdtMarkets()).then((response) => {
       this.ompfinexMarketsSubject.next(response);
-    }).catch((e) => console.error(e));
+    }).catch((e) => {
+      this.nzMessageService.error(getErrorMessage(e));
+    });
   }
 }

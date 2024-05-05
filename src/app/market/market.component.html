@@ -1,8 +1,11 @@
 <div>
-  <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Symbol Market" [ngModel]="selectedSymbol" (ngModelChange)="changeSymbol($event)">
-    @for (marketSymbol of symbols(); track $index) {
-      <nz-option [nzValue]="marketSymbol" [nzLabel]="marketSymbol"></nz-option>
-    }
-  </nz-select>
+    <nz-select
+            nzPlaceHolder="Symbol Market"
+            [ngModel]="selectedSymbol"
+            (ngModelChange)="changeSymbol($event)">
+        @for (marketSymbol of ompfinexMarkets$ | async; track $index) {
+            <nz-option [nzValue]="marketSymbol" [nzLabel]="marketSymbol.symbol"></nz-option>
+        }
+    </nz-select>
 </div>
 <div id="chart_container" #chartCanvas></div>

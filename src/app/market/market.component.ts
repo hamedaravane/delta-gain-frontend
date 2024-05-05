@@ -6,6 +6,8 @@ import { from, Subscription } from 'rxjs';
 import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { FormsModule } from '@angular/forms';
 import { OmpfinexFacade } from 'src/app/market/data-access/ompfinex.facade';
+import { OmpfinexMarket } from './entity/ompfinex.entity';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-market',
@@ -13,7 +15,8 @@ import { OmpfinexFacade } from 'src/app/market/data-access/ompfinex.facade';
   imports: [
     NzSelectComponent,
     NzOptionComponent,
-    FormsModule
+    FormsModule,
+    AsyncPipe
   ],
   templateUrl: './market.component.html',
   styleUrl: './market.component.scss'
@@ -24,19 +27,15 @@ export class MarketComponent implements AfterViewInit, OnDestroy, OnInit {
   chart!: Nullable<Chart>;
   private readonly binanceFacade = inject(BinanceFacade);
   private readonly ompfinexFacade = inject(OmpfinexFacade);
-  private ompfinexMarketsSubscription = new Subscription();
   private readonly binanceChartData$ = this.binanceFacade.binanceChartData$;
   private chartDataSubscription = new Subscription();
   private kLineData = new Array<KLineData>();
-  selectedSymbol: string = 'btcusdt';
-  symbols = signal<string[]>([]);
+  ompfinexMarkets$ = this.ompfinexFacade.ompfinexMarketsSubject.asObservable();
+  selectedSymbol = signal<OmpfinexMarket | null>(null);
 
   ngOnInit() {
-    this.ompfinexMarketsSubscription = this.ompfinexFacade.ompfinexMarketsSubject.asObservable().subscribe((value) => {
-      this.symbols.set(value.map(market => market.symbol));
-    });
+    this.ompfinexFacade.getUsdtMarkets();
     this.binanceFacade.createConnection();
-    this.binanceFacade.subscription(this.selectedSymbol);
   }
 
   ngAfterViewInit() {
@@ -52,16 +51,17 @@ export class MarketComponent implements AfterViewInit, OnDestroy, OnInit {
     })
   }
 
-  changeSymbol(event: string) {
-    this.selectedSymbol = event;
+  changeSymbol(event: OmpfinexMarket) {
+    this.selectedSymbol.set(event);
     this.binanceFacade.unsubscribe();
     this.kLineData = [];
-    this.binanceFacade.subscription(event);
+    this.binanceFacade.subscription(event.symbol);
   }
 
   ngOnDestroy() {
+    /** unsubscribe */
     this.chartDataSubscription.unsubscribe();
-    this.ompfinexMarketsSubscription.unsubscribe();
+    this.kLineData = [];
     dispose(this.chartElement);
   }
 }

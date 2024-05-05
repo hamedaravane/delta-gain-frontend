@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {
   convertOmpfinexMarketsDtoToDomain,
   OmpfinexApiResponse,
-  OmpfinexMarketsDto
+  OmpfinexMarketDto
 } from 'src/app/market/entity/ompfinex.entity';
 import {map, Observable} from 'rxjs';
 
@@ -13,7 +13,7 @@ export class OmpfinexInfra {
   private readonly baseUrl = 'https://api.ompfinex.com';
 
   getUsdtMarkets() {
-    return this.httpClient.get<OmpfinexApiResponse<OmpfinexMarketsDto[]>>(this.baseUrl + '/v1/market').pipe(
+    return this.httpClient.get<OmpfinexApiResponse<OmpfinexMarketDto[]>>(this.baseUrl + '/v1/market').pipe(
       map((data) => {
         return data.data.map((market) => {
           return convertOmpfinexMarketsDtoToDomain(market);

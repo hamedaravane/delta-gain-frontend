@@ -1,6 +1,6 @@
 <nz-layout class="w-full">
     <nz-sider nzBreakpoint="md" [nzTrigger]="null" [nzCollapsed]="isSideMenuCollapsed()" nzCollapsible>
-        <button class="p-4" (click)="toggleCollapsed()">
+        <button class="p-4 w-full transition-all shadow-lg delay-300 bg-gray-800 border-e border-solid border-neutral-500" [ngClass]="{'text-center': isSideMenuCollapsed(), 'text-end': !isSideMenuCollapsed()}" [class.text-center]="isSideMenuCollapsed()" (click)="toggleCollapsed()">
             <i class="fa-solid fa-bars p-2"></i>
         </button>
         <app-slider-menu [isCollapsed]="isSideMenuCollapsed()"></app-slider-menu>

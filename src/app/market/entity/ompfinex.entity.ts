@@ -2,7 +2,7 @@ export interface OmpfinexApiResponse<T> {
   status: 'OK',
   data: T;
 }
-export interface OmpfinexMarketsDto {
+export interface OmpfinexMarketDto {
   id: number,
   base_currency: {
     id: string;
@@ -23,7 +23,7 @@ export interface OmpfinexMarketsDto {
   liked_by_user: boolean;
 }
 
-export interface OmpfinexMarkets {
+export interface OmpfinexMarket {
   id: number,
   baseCurrency: {
     id: string;
@@ -44,7 +44,7 @@ export interface OmpfinexMarkets {
   likedByUser: boolean;
 }
 
-export function convertOmpfinexMarketsDtoToDomain(dto: OmpfinexMarketsDto): OmpfinexMarkets {
+export function convertOmpfinexMarketsDtoToDomain(dto: OmpfinexMarketDto): OmpfinexMarket {
   return {
     id: dto.id,
     baseCurrency: {

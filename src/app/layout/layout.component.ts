@@ -15,7 +15,7 @@ import {
   NzSiderComponent
 } from "ng-zorro-antd/layout";
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import {AsyncPipe} from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NzInputDirective} from "ng-zorro-antd/input";
@@ -52,7 +52,8 @@ import { AuthFacade } from '../authentication/auth.facade';
     NzPageHeaderTitleDirective,
     NzDividerComponent,
     SliderMenuComponent,
-    NzSpaceComponent
+    NzSpaceComponent,
+    NgClass
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
