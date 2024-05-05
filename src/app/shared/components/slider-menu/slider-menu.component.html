@@ -1,4 +1,4 @@
-<ul nz-menu nzMode="inline" class="h-full" [nzInlineCollapsed]="isCollapsed">
+<ul nz-menu [nzInlineCollapsed]="isCollapsed" nzSelectable class="h-full">
     @for (menuItem of menu; track $index) {
         <li nz-menu-item [routerLink]="menuItem.path">
             <i class="fa-solid me-4" [class]="menuItem.icon"></i>

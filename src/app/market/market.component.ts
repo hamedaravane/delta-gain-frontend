@@ -2,12 +2,12 @@ import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal
 import { init, dispose, KLineData, Nullable, Chart } from 'klinecharts';
 import { customStyle } from './constant/chart-style';
 import { BinanceFacade } from "./data-access/binance.facade";
-import { from, Subscription } from 'rxjs';
+import {from, Subscription, tap} from 'rxjs';
 import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { FormsModule } from '@angular/forms';
 import { OmpfinexFacade } from 'src/app/market/data-access/ompfinex.facade';
 import { OmpfinexMarket } from './entity/ompfinex.entity';
-import { AsyncPipe } from '@angular/common';
+import {AsyncPipe, NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-market',
@@ -16,7 +16,8 @@ import { AsyncPipe } from '@angular/common';
     NzSelectComponent,
     NzOptionComponent,
     FormsModule,
-    AsyncPipe
+    AsyncPipe,
+    NgOptimizedImage
   ],
   templateUrl: './market.component.html',
   styleUrl: './market.component.scss'
@@ -31,6 +32,7 @@ export class MarketComponent implements AfterViewInit, OnDestroy, OnInit {
   private chartDataSubscription = new Subscription();
   private kLineData = new Array<KLineData>();
   ompfinexMarkets$ = this.ompfinexFacade.ompfinexMarketsSubject.asObservable();
+  ompfinexMarketsLoading$ = this.ompfinexFacade.ompfinexMarketsLoading$;
   selectedSymbol = signal<OmpfinexMarket | null>(null);
 
   ngOnInit() {
@@ -59,9 +61,9 @@ export class MarketComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngOnDestroy() {
-    /** unsubscribe */
     this.chartDataSubscription.unsubscribe();
     this.kLineData = [];
     dispose(this.chartElement);
+    this.binanceFacade.unsubscribe();
   }
 }

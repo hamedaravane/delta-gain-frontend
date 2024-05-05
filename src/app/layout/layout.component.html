@@ -1,51 +1,54 @@
-<nz-layout class="w-full">
-    <nz-sider nzBreakpoint="md" [nzTrigger]="null" [nzCollapsed]="isSideMenuCollapsed()" nzCollapsible>
-        <button class="p-4 w-full transition-all shadow-lg delay-300 bg-gray-800 border-e border-solid border-neutral-500" [ngClass]="{'text-center': isSideMenuCollapsed(), 'text-end': !isSideMenuCollapsed()}" [class.text-center]="isSideMenuCollapsed()" (click)="toggleCollapsed()">
-            <i class="fa-solid fa-bars p-2"></i>
-        </button>
-        <app-slider-menu [isCollapsed]="isSideMenuCollapsed()"></app-slider-menu>
-    </nz-sider>
-    <nz-layout class="h-screen">
-        <nz-header>
-            <nz-page-header [nzTitle]="pageTitle()" [nzGhost]="true" [nzBackIcon]="backIcon">
-            </nz-page-header>
-        </nz-header>
-        <nz-divider></nz-divider>
-        <nz-content class="h-full overflow-y-scroll p-2">
-            <router-outlet></router-outlet>
-        </nz-content>
-        <nz-footer>
-            <div class="text-center">by Hamed Arghavan | April 2024</div>
-        </nz-footer>
-    </nz-layout>
+<nz-layout class="max-h-full">
+  <nz-sider [nzTrigger]="null" [nzCollapsed]="isSideMenuCollapsed()" nzCollapsible>
+    <button class="p-4 w-full transition-all shadow-lg delay-300 bg-gray-800 border-e border-solid border-neutral-500"
+            [ngClass]="{'text-center': isSideMenuCollapsed(), 'text-end': !isSideMenuCollapsed()}"
+            [class.text-center]="isSideMenuCollapsed()" (click)="toggleCollapsed()">
+      <i class="fa-solid fa-bars p-2"></i>
+    </button>
+    <app-slider-menu [isCollapsed]="isSideMenuCollapsed()"></app-slider-menu>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <nz-page-header [nzTitle]="pageTitle()" [nzGhost]="true" [nzBackIcon]="backIcon">
+      </nz-page-header>
+    </nz-header>
+    <nz-divider></nz-divider>
+    <nz-content class="p-2">
+      <router-outlet></router-outlet>
+    </nz-content>
+    <nz-divider></nz-divider>
+    <nz-footer>
+      <div class="text-center">by Hamed Arghavan | April 2024</div>
+    </nz-footer>
+  </nz-layout>
 </nz-layout>
 
 <ng-template #backIcon>
-    <i class="fa-solid fa-chevron-left text-gray-100"></i>
+  <i class="fa-solid fa-chevron-left text-gray-100"></i>
 </ng-template>
 
 <nz-modal [nzVisible]="isAuthTokenAvailable$ | async" nzCentered [nzClosable]="false" [nzMaskClosable]="false">
-    <ng-container *nzModalTitle>
-        <span>Authentication Token</span>
-    </ng-container>
-    <ng-container *nzModalContent>
-        <form nz-form (ngSubmit)="submitToken()">
-            <nz-form-item>
-                <nz-form-label nzRequired>Enter OMP authentication token</nz-form-label>
-                <nz-form-control nzHasFeedback [nzErrorTip]="errorTip">
-                    <input nz-input type="text" id="token" name="token" [formControl]="ompfinexToken">
-                </nz-form-control>
-                <ng-template #errorTip>
-                    @if (ompfinexToken.errors?.['required']) {
-                        For most functionalities you need to provide a token.
-                    }
-                </ng-template>
-            </nz-form-item>
-        </form>
-    </ng-container>
-    <ng-container *nzModalFooter>
-        <button nz-button nzType="primary" [disabled]="ompfinexToken.invalid"
-                [nzLoading]="ompfinexAuthTokenSubmitLoading$ | async" (click)="submitToken()">Submit
-        </button>
-    </ng-container>
+  <ng-container *nzModalTitle>
+    <span>Authentication Token</span>
+  </ng-container>
+  <ng-container *nzModalContent>
+    <form nz-form (ngSubmit)="submitToken()">
+      <nz-form-item>
+        <nz-form-label nzRequired>Enter OMP authentication token</nz-form-label>
+        <nz-form-control nzHasFeedback [nzErrorTip]="errorTip">
+          <input nz-input type="text" id="token" name="token" [formControl]="ompfinexToken">
+        </nz-form-control>
+        <ng-template #errorTip>
+          @if (ompfinexToken.errors?.['required']) {
+            For most functionalities you need to provide a token.
+          }
+        </ng-template>
+      </nz-form-item>
+    </form>
+  </ng-container>
+  <ng-container *nzModalFooter>
+    <button nz-button nzType="primary" [disabled]="ompfinexToken.invalid"
+            [nzLoading]="ompfinexAuthTokenSubmitLoading$ | async" (click)="submitToken()">Submit
+    </button>
+  </ng-container>
 </nz-modal>

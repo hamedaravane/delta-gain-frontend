@@ -11,13 +11,18 @@ import { getErrorMessage } from '@shared/entity/error.entity';
 export class OmpfinexFacade {
   private readonly infra = inject(OmpfinexInfra);
   private readonly nzMessageService = inject(NzMessageService);
-  ompfinexMarketsSubject = new Subject<OmpfinexMarket[]>()
+  ompfinexMarketsSubject = new Subject<OmpfinexMarket[]>();
+  private ompfinexMarketsLoadingSubject = new Subject<boolean>();
+  ompfinexMarketsLoading$ = this.ompfinexMarketsLoadingSubject.asObservable();
 
   getUsdtMarkets() {
+    this.ompfinexMarketsLoadingSubject.next(true);
     firstValueFrom(this.infra.getUsdtMarkets()).then((response) => {
       this.ompfinexMarketsSubject.next(response);
     }).catch((e) => {
       this.nzMessageService.error(getErrorMessage(e));
+    }).finally(() => {
+      this.ompfinexMarketsLoadingSubject.next(false);
     });
   }
 }

@@ -1,14 +1,4 @@
 :host {
-  overflow-block: scroll;
-  overflow-inline: scroll;
-  overflow-x: clip;
-  overflow-y: clip;
-  overflow-clip-margin: 1rem;
-  scrollbar-gutter: stable both-edges;
-  scroll-behavior: smooth;
-  scroll-snap-align: start;
-  scroll-snap-stop: normal;
-  scroll-snap-type: y;
-  scrollbar-color: rgba(115, 115, 115, .3) rgba(115, 115, 115, .5);
-  scrollbar-width: thin;
+  display: flex;
+  height: 100%;
 }
