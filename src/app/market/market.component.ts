@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { OmpfinexFacade } from 'src/app/market/data-access/ompfinex.facade';
 import { OmpfinexMarket } from './entity/ompfinex.entity';
 import {AsyncPipe, NgOptimizedImage} from '@angular/common';
+import {NzSkeletonElementDirective, NzSkeletonElementInputComponent} from "ng-zorro-antd/skeleton";
 
 @Component({
   selector: 'app-market',
@@ -17,7 +18,9 @@ import {AsyncPipe, NgOptimizedImage} from '@angular/common';
     NzOptionComponent,
     FormsModule,
     AsyncPipe,
-    NgOptimizedImage
+    NgOptimizedImage,
+    NzSkeletonElementDirective,
+    NzSkeletonElementInputComponent
   ],
   templateUrl: './market.component.html',
   styleUrl: './market.component.scss'
