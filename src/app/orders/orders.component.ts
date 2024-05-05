@@ -22,11 +22,11 @@ import { headers } from '@orders/constant/orders-table-header';
 })
 export class OrdersComponent implements OnInit {
   private readonly ordersFacade = inject(OrdersFacade);
-  orders$ = this.ordersFacade.orders$;
+  spotOrders$ = this.ordersFacade.spotOrders$;
   headers = headers;
 
   ngOnInit() {
-    this.ordersFacade.getAllOrders().then();
-    this.ordersFacade.autoRefreshOrders();
+    // this.ordersFacade.getAllOrders('COMPLETED').then();
+    // this.ordersFacade.autoRefreshOrders();
   }
 }

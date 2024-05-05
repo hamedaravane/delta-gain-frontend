@@ -4,7 +4,7 @@ import { firstValueFrom, map, Subject } from 'rxjs';
 import {
   convertOmpfinexOrderDtoToDomain,
   Order,
-  OrderDto,
+  OrderDto, OrderStatus,
   SpotAction
 } from '@orders/entity/order.entity';
 import { getErrorMessage } from '@shared/entity/error.entity';
@@ -44,15 +44,15 @@ export class OrdersFacade {
     this.spotOrdersSubject.next(response);
   }
 
-  async getAllOrders(marketId?: string, status?: string) {
+  async getAllOrders(status: OrderStatus, marketId?: string) {
     const allOrders = new Array<OrderDto>();
     try {
-      const lastOrders = await firstValueFrom(this.ordersInfra.getRawOrders(1, marketId, status));
+      const lastOrders = await firstValueFrom(this.ordersInfra.getRawOrders(1, status, marketId));
       allOrders.push(...lastOrders.data);
       const totalPages = lastOrders.total_pages;
       let pageIndex = lastOrders.page;
       while (totalPages > pageIndex) {
-        const nextOrders = await firstValueFrom(this.ordersInfra.getRawOrders(pageIndex + 1, marketId, status));
+        const nextOrders = await firstValueFrom(this.ordersInfra.getRawOrders(pageIndex + 1, status, marketId));
         allOrders.unshift(...nextOrders.data);
         pageIndex++;
       }

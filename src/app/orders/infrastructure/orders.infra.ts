@@ -6,14 +6,14 @@ import {
   OrderDto,
   Order,
   SpotActionDTO,
-  SpotAction, convertSpotActionDtoToDomain
+  SpotAction, convertSpotActionDtoToDomain, OrderStatus
 } from '@orders/entity/order.entity';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({providedIn: 'root'})
 export class OrdersInfra {
   protected readonly httpClient = inject(HttpClient);
-  private readonly baseUrl = 'https://api.ompfinex.com/'
+  private readonly baseUrl = 'https://api.ompfinex.com'
 
   /**
    * Retrieves a paginated list of raw orders with optional filters for market ID and order status.
@@ -23,10 +23,9 @@ export class OrdersInfra {
    * @param {string} [status] - Optional. The status of the orders to retrieve (e.g., 'open', 'closed').
    * @returns {Observable<OmpfinexOrdersApiResponse<OrderDto[]>>} A promise that resolves to an API response object containing an array of order data.
    */
-  getRawOrders(pageIndex: number, marketId?: string, status?: string): Observable<OmpfinexOrdersApiResponse<OrderDto[]>> {
+  getRawOrders(pageIndex: number, status: OrderStatus, marketId?: string): Observable<OmpfinexOrdersApiResponse<OrderDto[]>> {
     const marketIdQueryParam = marketId ? `&market_id=${marketId}` : '';
-    const statusQueryParam = status ? `&status=${status}` : '';
-    return this.httpClient.get<OmpfinexOrdersApiResponse<OrderDto[]>>(this.baseUrl + '/v2/user/order?limit=100&page=' + pageIndex + marketIdQueryParam + statusQueryParam);
+    return this.httpClient.get<OmpfinexOrdersApiResponse<OrderDto[]>>(this.baseUrl + `/v2/user/order?limit=100&status=${status}&page=` + pageIndex + marketIdQueryParam);
   }
 
   /**

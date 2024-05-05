@@ -10,3 +10,29 @@
     </nz-footer>
   </nz-layout>
 </nz-layout>
+
+<nz-modal [(nzVisible)]="isModalVisible" nzCentered [nzClosable]="false" [nzMaskClosable]="false">
+  <ng-container *nzModalTitle>
+    <span>Authentication Token</span>
+  </ng-container>
+  <ng-container *nzModalContent>
+    <form nz-form (ngSubmit)="submitToken()">
+      <nz-form-item>
+        <nz-form-label nzRequired>Enter OMP authentication token</nz-form-label>
+        <nz-form-control nzHasFeedback [nzErrorTip]="errorTip">
+          <input nz-input type="text" id="token" name="token" [formControl]="ompfinexToken">
+        </nz-form-control>
+        <ng-template #errorTip>
+          @if (ompfinexToken.errors?.['required']) {
+            For most functionalities you need to provide a token.
+          }
+        </ng-template>
+      </nz-form-item>
+    </form>
+  </ng-container>
+  <ng-container *nzModalFooter>
+    <button nz-button nzType="primary" [disabled]="ompfinexToken.invalid"
+            [nzLoading]="ompfinexAuthTokenSubmitLoading$ | async" (click)="submitToken()">Submit
+    </button>
+  </ng-container>
+</nz-modal>

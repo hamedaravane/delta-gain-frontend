@@ -1,4 +1,4 @@
-@if (orders$ | async; as actions) {
+@if (spotOrders$ | async; as actions) {
   <nz-table nzBordered
             [nzData]="actions"
             [nzTotal]="actions.length"
