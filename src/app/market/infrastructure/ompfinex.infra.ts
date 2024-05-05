@@ -10,10 +10,10 @@ import {map, Observable} from 'rxjs';
 @Injectable({providedIn: 'root'})
 export class OmpfinexInfra {
   private readonly httpClient = inject(HttpClient);
-  private readonly baseUrl = 'https://api.ompfinex.com/';
+  private readonly baseUrl = 'https://api.ompfinex.com';
 
   getUsdtMarkets() {
-    return this.httpClient.get<OmpfinexApiResponse<OmpfinexMarketsDto[]>>(this.baseUrl + 'v1/market').pipe(
+    return this.httpClient.get<OmpfinexApiResponse<OmpfinexMarketsDto[]>>(this.baseUrl + '/v1/market').pipe(
       map((data) => {
         return data.data.map((market) => {
           return convertOmpfinexMarketsDtoToDomain(market);

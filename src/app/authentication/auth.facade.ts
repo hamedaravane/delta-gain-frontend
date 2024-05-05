@@ -1,26 +1,25 @@
-import {Injectable} from "@angular/core";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class LayoutFacade {
-  ompfinexAuthTokenLocalStorage: string | null = null;
-  private readonly ompfinexAuthTokenSubject = new Subject<string | null>();
-  ompfinexAuthToken$ = this.ompfinexAuthTokenSubject.asObservable();
+@Injectable({providedIn: 'root'})
+export class AuthFacade {
   private readonly ompfinexAuthTokenSubmitLoadingSubject = new Subject<boolean>();
+  private readonly isAuthTokenAvailableSubject = new Subject<boolean>();
+  isAuthTokenAvailable$ = this.isAuthTokenAvailableSubject.asObservable();
   ompfinexAuthTokenSubmitLoading$ = this.ompfinexAuthTokenSubmitLoadingSubject.asObservable();
 
   setOmpfinexAuthToken(token: string) {
     this.ompfinexAuthTokenSubmitLoadingSubject.next(true);
-    this.ompfinexAuthTokenSubject.next(token);
     this.saveOmpfinexAuthTokenToLocalStorage(token);
     this.ompfinexAuthTokenSubmitLoadingSubject.next(false);
+    this.isAuthTokenAvailableSubject.next(false);
   }
 
   readTokenFromLocalStorage() {
-    this.ompfinexAuthTokenLocalStorage = localStorage.getItem('ompfinexAuthToken');
-    this.ompfinexAuthTokenSubject.next(this.ompfinexAuthTokenLocalStorage);
+    const token = localStorage.getItem('ompfinexAuthToken');
+    if (!token) {
+      this.isAuthTokenAvailableSubject.next(true);
+    }
   }
 
   private saveOmpfinexAuthTokenToLocalStorage(token: string) {

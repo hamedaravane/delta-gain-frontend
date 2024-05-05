@@ -1,4 +1,12 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal
+} from '@angular/core';
 import {
   NzContentComponent,
   NzFooterComponent,
@@ -6,15 +14,19 @@ import {
   NzLayoutComponent,
   NzSiderComponent
 } from "ng-zorro-antd/layout";
-import {RouterOutlet} from "@angular/router";
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import {AsyncPipe} from '@angular/common';
 import {NzModalModule} from "ng-zorro-antd/modal";
 import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NzInputDirective} from "ng-zorro-antd/input";
 import {NzFormControlComponent, NzFormDirective, NzFormItemComponent, NzFormLabelComponent} from "ng-zorro-antd/form";
 import {NzButtonComponent} from "ng-zorro-antd/button";
-import {Subscription} from "rxjs";
-import {LayoutFacade} from "@layout/layout.facade";
+import { map, Subscription } from 'rxjs';
+import { NzPageHeaderComponent, NzPageHeaderTitleDirective } from 'ng-zorro-antd/page-header';
+import { NzDividerComponent } from 'ng-zorro-antd/divider';
+import { SliderMenuComponent } from '@shared/components/slider-menu/slider-menu.component';
+import { NzSpaceComponent } from 'ng-zorro-antd/space';
+import { AuthFacade } from '../authentication/auth.facade';
 
 @Component({
   selector: 'app-layout',
@@ -35,32 +47,41 @@ import {LayoutFacade} from "@layout/layout.facade";
     NzFormControlComponent,
     NzFormLabelComponent,
     ReactiveFormsModule,
-    NzButtonComponent
+    NzButtonComponent,
+    NzPageHeaderComponent,
+    NzPageHeaderTitleDirective,
+    NzDividerComponent,
+    SliderMenuComponent,
+    NzSpaceComponent
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
-export class LayoutComponent implements OnInit {
-  private readonly layoutFacade = inject(LayoutFacade);
-  isModalVisible = false;
+export class LayoutComponent implements OnDestroy, AfterViewInit {
+  private readonly authFacade = inject(AuthFacade);
+  private readonly activeRoute = inject(ActivatedRoute);
   ompfinexToken = new FormControl<string>('', [Validators.required]);
   tokenReaderSubscription = new Subscription();
-  ompfinexAuthTokenSubmitLoading$ = this.layoutFacade.ompfinexAuthTokenSubmitLoading$;
+  ompfinexAuthTokenSubmitLoading$ = this.authFacade.ompfinexAuthTokenSubmitLoading$;
+  isAuthTokenAvailable$ = this.authFacade.isAuthTokenAvailable$;
+  isSideMenuCollapsed = signal(false);
+  pageTitle = signal('Home')
 
-  ngOnInit(): void {
-    this.layoutFacade.readTokenFromLocalStorage();
-    this.tokenReaderSubscription = this.layoutFacade.ompfinexAuthToken$.subscribe(token => {
-      if (token) {
-        this.isModalVisible = false;
-      } else if (!token || token.length < 1) {
-        this.isModalVisible = true;
-      }
-    })
+  ngAfterViewInit(): void {
+    this.authFacade.readTokenFromLocalStorage();
+  }
+
+  toggleCollapsed() {
+    this.isSideMenuCollapsed.update(collapsed => !collapsed);
   }
 
   submitToken() {
     if (this.ompfinexToken.value) {
-      this.layoutFacade.setOmpfinexAuthToken(this.ompfinexToken.value);
+      this.authFacade.setOmpfinexAuthToken(this.ompfinexToken.value);
     }
+  }
+
+  ngOnDestroy() {
+    this.tokenReaderSubscription.unsubscribe();
   }
 }
