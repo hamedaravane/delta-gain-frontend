@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, signal
 import { init, dispose, KLineData, Nullable, Chart } from 'klinecharts';
 import { customStyle } from './constant/chart-style';
 import { BinanceFacade } from "./data-access/binance.facade";
-import {from, Subscription, tap} from 'rxjs';
+import { Subscription } from 'rxjs';
 import { NzOptionComponent, NzSelectComponent } from 'ng-zorro-antd/select';
 import { FormsModule } from '@angular/forms';
 import { OmpfinexFacade } from 'src/app/market/data-access/ompfinex.facade';
@@ -29,11 +29,16 @@ export class MarketComponent implements AfterViewInit, OnDestroy, OnInit {
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
   chartElement!: HTMLCanvasElement;
   chart!: Nullable<Chart>;
+  @ViewChild('ompChartCanvas') ompChartCanvas!: ElementRef<HTMLCanvasElement>;
+  ompChartElement!: HTMLCanvasElement;
+  ompChart!: Nullable<Chart>;
   private readonly binanceFacade = inject(BinanceFacade);
   private readonly ompfinexFacade = inject(OmpfinexFacade);
   private readonly binanceChartData$ = this.binanceFacade.binanceChartData$;
-  private chartDataSubscription = new Subscription();
-  private kLineData = new Array<KLineData>();
+  private binanceChartDataSubscription = new Subscription();
+  private ompChartDataSubscription = new Subscription();
+  private binanceKLineData = new Array<KLineData>();
+  private ompKLineData = new Array<KLineData>();
   ompfinexMarkets$ = this.ompfinexFacade.ompfinexMarketsSubject.asObservable();
   ompfinexMarketsLoading$ = this.ompfinexFacade.ompfinexMarketsLoading$;
   selectedSymbol = signal<OmpfinexMarket | null>(null);
@@ -41,6 +46,7 @@ export class MarketComponent implements AfterViewInit, OnDestroy, OnInit {
   ngOnInit() {
     this.ompfinexFacade.getUsdtMarkets();
     this.binanceFacade.createConnection();
+    this.ompfinexFacade.createWebsocketConnection();
   }
 
   ngAfterViewInit() {
@@ -50,22 +56,33 @@ export class MarketComponent implements AfterViewInit, OnDestroy, OnInit {
       timezone: 'Asia/Tehran',
       locale: 'en-US'
     });
-    this.chartDataSubscription = this.binanceChartData$.subscribe((data) => {
-      this.kLineData.push(data);
-      this.chart?.applyNewData(this.kLineData);
+    this.ompChartElement = this.ompChartCanvas.nativeElement;
+    this.ompChart = init(this.ompChartElement, {
+      styles: customStyle,
+      timezone: 'Asia/Tehran',
+      locale: 'en-US'
+    });
+    this.binanceChartDataSubscription = this.binanceChartData$.subscribe((data) => {
+      this.binanceKLineData.push(data);
+      this.chart?.applyNewData(this.binanceKLineData);
+    })
+    this.ompChartDataSubscription = this.ompfinexFacade.ompfinexKLineData$.subscribe((data) => {
+      this.ompKLineData.push(data);
+      this.ompChart?.applyNewData(this.ompKLineData);
     })
   }
 
   changeSymbol(event: OmpfinexMarket) {
     this.selectedSymbol.set(event);
     this.binanceFacade.unsubscribe();
-    this.kLineData = [];
+    this.binanceKLineData = [];
     this.binanceFacade.subscription(event.symbol);
+    this.ompfinexFacade.createOrderBookSubscription(event);
   }
 
   ngOnDestroy() {
-    this.chartDataSubscription.unsubscribe();
-    this.kLineData = [];
+    this.binanceChartDataSubscription.unsubscribe();
+    this.binanceKLineData = [];
     dispose(this.chartElement);
     this.binanceFacade.unsubscribe();
   }
