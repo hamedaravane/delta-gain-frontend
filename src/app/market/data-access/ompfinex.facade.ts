@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { OmpfinexInfra } from 'src/app/market/infrastructure/ompfinex.infra';
-import { bufferWhen, firstValueFrom, map, Subject } from 'rxjs';
+import { bufferWhen, firstValueFrom, interval, map, Subject, switchMap, timer } from 'rxjs';
 import {
   convertOmpfinexOrderBookWSDtoToDomain,
   getBestAsk,
@@ -20,14 +20,20 @@ export class OmpfinexFacade {
   private readonly centrifugeClient = new Centrifuge('wss://stream.ompfinex.com/stream');
   private readonly infra = inject(OmpfinexInfra);
   private readonly nzMessageService = inject(NzMessageService);
-  private ompfinexBestBuyAndAskSubject = new Subject<OmpfinexOrderBookWS>();
-  private ompfinexMarketsLoadingSubject = new Subject<boolean>();
+  private readonly ompfinexMarketsLoadingSubject = new Subject<boolean>();
+  private readonly ompfinexMarketsSubject = new Subject<OmpfinexMarket[]>();
+  private readonly ompfinexOrderBookWSSubject = new Subject<OmpfinexOrderBookWS>();
+  now = new Date();
+  initialDelay = timer(1000 - (this.now.getMilliseconds())).pipe(
+    switchMap(() => interval(1000)),
+    map(() => new Date())
+  );
+  ompfinexMarkets$ = this.ompfinexMarketsSubject.asObservable();
   ompfinexMarketsLoading$ = this.ompfinexMarketsLoadingSubject.asObservable();
-  ompfinexMarketsSubject = new Subject<OmpfinexMarket[]>();
 
   get ompfinexKLineData$() {
-    return this.ompfinexBestBuyAndAskSubject.asObservable().pipe(
-      bufferWhen(() => this.bufferTimeout),
+    return this.ompfinexOrderBookWSSubject.asObservable().pipe(
+      bufferWhen(() => this.initialDelay),
       map((orderBookWS) => reduceOrdersToKLineData(orderBookWS))
     );
   }
@@ -45,16 +51,12 @@ export class OmpfinexFacade {
       this.nzMessageService.error(ctx.error.message);
     });
     orderBookSub.on('publication', (ctx) => {
-      let publicationTime = new Date().getTime();
       const rawData: OmpfinexOrderBookWSDto[] = ctx.data;
       const formattedData = rawData.map((raw) => convertOmpfinexOrderBookWSDtoToDomain(raw));
       const bestAsk = getBestAsk(formattedData);
       const bestBid = getBestBid(formattedData);
-      if (new Date().getTime() - publicationTime > 1000) {
-        this.bufferTimeout.next(publicationTime);
-      }
-      this.ompfinexBestBuyAndAskSubject.next(bestAsk);
-      this.ompfinexBestBuyAndAskSubject.next(bestBid);
+      this.ompfinexOrderBookWSSubject.next(bestAsk);
+      this.ompfinexOrderBookWSSubject.next(bestBid);
     });
     orderBookSub.subscribe();
   }
@@ -66,8 +68,8 @@ export class OmpfinexFacade {
     this.centrifugeClient.on('connected', () => {
       this.nzMessageService.success('connected to ompfinex websocket');
     });
-    this.centrifugeClient.on('error', () => {
-      this.nzMessageService.error('error connecting to ompfinex websocket');
+    this.centrifugeClient.on('error', (err) => {
+      this.nzMessageService.error(err.error.message);
     });
     this.centrifugeClient.connect();
   }

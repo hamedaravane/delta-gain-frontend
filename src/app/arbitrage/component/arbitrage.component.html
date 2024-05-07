@@ -1,0 +1,56 @@
+@if ({arbitrages: arbitrages$ | async, isLoading: isArbitragesLoading$ | async, pages: arbitragesPages$ | async}; as data) {
+    <nz-table [nzLoading]="data.isLoading"
+              nzBordered
+              nzOuterBordered>
+        <thead>
+        <tr>
+            <th>buy Order Id</th>
+            <th>sell Order Id</th>
+            <th>profit</th>
+            <th>profit Usdt</th>
+            <th>left Over Base</th>
+            <th>created At Cycle</th>
+            <th>status</th>
+            <th>created At</th>
+            <th>buy PlacedAt</th>
+            <th>sell PlacedAt</th>
+            <th>buy FilledAt</th>
+            <th>buy Canceled At</th>
+            <th>sell Filled At</th>
+            <th>sell Canceled At</th>
+            <th>currency Base</th>
+            <th>buy Target</th>
+            <th>buy Volume</th>
+            <th>buy Total Usdt</th>
+            <th>sell Target</th>
+            <th>sell Volume</th>
+        </tr>
+        </thead>
+        <tbody>
+            @for (arbitrage of data.arbitrages; track $index) {
+                <tr>
+                    <td>{{ arbitrage.buyOrderId }}</td>
+                    <td>{{ arbitrage.sellOrderId }}</td>
+                    <td>{{ arbitrage.profit }}</td>
+                    <td>{{ arbitrage.profitUsdt }}</td>
+                    <td>{{ arbitrage.leftOverBase }}</td>
+                    <td>{{ arbitrage.createdAtCycle }}</td>
+                    <td>{{ arbitrage.status }}</td>
+                    <td>{{ arbitrage.createdAt }}</td>
+                    <td>{{ arbitrage.buyPlacedAt }}</td>
+                    <td>{{ arbitrage.sellPlacedAt }}</td>
+                    <td>{{ arbitrage.buyFilledAt }}</td>
+                    <td>{{ arbitrage.buyCanceledAt }}</td>
+                    <td>{{ arbitrage.sellFilledAt }}</td>
+                    <td>{{ arbitrage.sellCanceledAt }}</td>
+                    <td>{{ arbitrage.currencyBase }}</td>
+                    <td>{{ arbitrage.buyTarget }}</td>
+                    <td>{{ arbitrage.buyVolume }}</td>
+                    <td>{{ arbitrage.buyTotalUsdt }}</td>
+                    <td>{{ arbitrage.sellTarget }}</td>
+                    <td>{{ arbitrage.sellVolume }}</td>
+                </tr>
+            }
+        </tbody>
+    </nz-table>
+}

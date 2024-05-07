@@ -105,7 +105,7 @@ export function convertOmpfinexOrderBookWSDtoToDomain(dto: OmpfinexOrderBookWSDt
     price: Big(dto.p).toNumber(),
     volume: Big(dto.a).toNumber(),
     side: dto.t,
-    timestamp: new Date().getTime()
+    timestamp: new Date().getMilliseconds()
   }
 }
 
@@ -113,16 +113,13 @@ export function getBestBid(orders: OmpfinexOrderBookWS[]) {
   if (!Array.isArray(orders)) {
     throw new Error('order book is empty');
   }
-  let bestBid = { price: -1 } as OmpfinexOrderBookWS;
+  let bestBid = orders.find(side => side.side === 'buy')!;
   for (const order of orders) {
     if (order.side === 'buy') {
       if (Big(order.price).gt(bestBid.price)) {
         bestBid = {...order};
       }
     }
-  }
-  if (bestBid.price === -1) {
-    throw new Error('best bid or ask is not found');
   }
   return bestBid;
 }
@@ -131,16 +128,13 @@ export function getBestAsk(orders: OmpfinexOrderBookWS[]) {
   if (!Array.isArray(orders)) {
     throw new Error('order book is empty');
   }
-  let bestAsk = { price: Infinity } as OmpfinexOrderBookWS;
+  let bestAsk = orders.find(side => side.side === 'sell')!;
   for (const order of orders) {
     if (order.side === 'sell') {
       if (Big(order.price).lt(bestAsk.price)) {
         bestAsk = {...order};
       }
     }
-  }
-  if (bestAsk.price === Infinity) {
-    throw new Error('best bid or ask is not found');
   }
   return bestAsk;
 }

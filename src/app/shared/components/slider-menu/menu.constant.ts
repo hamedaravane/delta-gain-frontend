@@ -10,6 +10,11 @@ const menu = [
     icon: 'fa-money-bill'
   },
   {
+    title: 'Arbitrage',
+    path: 'arbitrage',
+    icon: 'fa-arrow-right-arrow-left'
+  },
+  {
     title: 'Chart',
     path: 'chart',
     icon: 'fa-chart-line'

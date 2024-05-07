@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 4100",
+    "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -20,7 +20,7 @@
     "@angular/router": "^17.3.0",
     "big.js": "^6.2.1",
     "binance": "^2.10.4",
-    "centrifuge": "^5.1.1",
+    "centrifuge": "^3.0.1",
     "klinecharts": "^9.8.5",
     "ng-zorro-antd": "^17.2.0",
     "rxjs": "~7.8.0",

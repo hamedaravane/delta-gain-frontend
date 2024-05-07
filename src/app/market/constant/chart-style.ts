@@ -25,7 +25,7 @@ export const customStyle: Styles = {
     }
   },
   candle: {
-    type: CandleType.Area,
+    type: CandleType.CandleSolid,
     bar: {
       upColor: COLORS.teal_5,
       downColor: COLORS.rose_5,

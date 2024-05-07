@@ -20,7 +20,14 @@ export const routes: Routes = [
         data: {
           title: 'Market'
         }
-      }
+      },
+      {
+        path: 'arbitrage',
+        loadComponent: () => import('../arbitrage/component/arbitrage.component').then(c => c.ArbitrageComponent),
+        data: {
+          title: 'Arbitrage'
+        }
+      },
     ]
   }
 ];
