@@ -9,7 +9,7 @@ import { map } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageInfra {
-  private readonly baseUrl = 'http://152.228.152.64:8081';
+  private readonly baseUrl = 'http://152.228.152.64:1899';
   private readonly httpClient = inject(HttpClient);
 
   getArbitrages(page: number = 0, size: number = 20) {

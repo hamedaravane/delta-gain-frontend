@@ -77,9 +77,9 @@ export interface Arbitrage {
   leftOverBase: number;
   createdAtCycle: string;
   status: string;
-  createdAt: Date;
-  buyPlacedAt: Date;
-  sellPlacedAt: Date;
+  createdAt?: Date;
+  buyPlacedAt?: Date;
+  sellPlacedAt?: Date;
   buyFilledAt?: Date;
   buyCanceledAt?: Date;
   sellFilledAt?: Date;
@@ -91,6 +91,7 @@ export interface Arbitrage {
   sellTarget: number;
   sellVolume: number;
   links: Links;
+  [key: string]: any;
 }
 
 export interface EmbeddedArbitrages {
@@ -140,9 +141,9 @@ export function convertArbitrage(dto: ArbitrageDto): Arbitrage {
     leftOverBase: dto.leftOverBase,
     createdAtCycle: dto.createdAtCycle,
     status: dto.status,
-    createdAt: new Date(dto.createdAt),
-    buyPlacedAt: new Date(dto.buyPlacedAt),
-    sellPlacedAt: new Date(dto.sellPlacedAt),
+    createdAt: dto.createdAt ? new Date(dto.createdAt) : undefined,
+    buyPlacedAt: dto.buyPlacedAt ? new Date(dto.buyPlacedAt) : undefined,
+    sellPlacedAt: dto.sellPlacedAt ? new Date(dto.sellPlacedAt) : undefined,
     buyFilledAt: dto.buyFilledAt ? new Date(dto.buyFilledAt) : undefined,
     buyCanceledAt: dto.buyCanceledAt ? new Date(dto.buyCanceledAt) : undefined,
     sellFilledAt: dto.sellFilledAt ? new Date(dto.sellFilledAt) : undefined,

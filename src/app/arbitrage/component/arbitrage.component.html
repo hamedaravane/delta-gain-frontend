@@ -1,56 +1,40 @@
-@if ({arbitrages: arbitrages$ | async, isLoading: isArbitragesLoading$ | async, pages: arbitragesPages$ | async}; as data) {
-    <nz-table [nzLoading]="data.isLoading"
-              nzBordered
-              nzOuterBordered>
+<div class="my-4">
+    <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomLeft">Selected Columns</button>
+</div>
+@if ({arbitrages: arbitrages$ | async, isLoading: isArbitragesLoading$ | async, pages: arbitragesPages$ | async, table: arbitragesTableConstant}; as data) {
+    <nz-table [nzLoadingDelay]="200" nzOuterBordered nzBordered nzShowSizeChanger>
         <thead>
-        <tr>
-            <th>buy Order Id</th>
-            <th>sell Order Id</th>
-            <th>profit</th>
-            <th>profit Usdt</th>
-            <th>left Over Base</th>
-            <th>created At Cycle</th>
-            <th>status</th>
-            <th>created At</th>
-            <th>buy PlacedAt</th>
-            <th>sell PlacedAt</th>
-            <th>buy FilledAt</th>
-            <th>buy Canceled At</th>
-            <th>sell Filled At</th>
-            <th>sell Canceled At</th>
-            <th>currency Base</th>
-            <th>buy Target</th>
-            <th>buy Volume</th>
-            <th>buy Total Usdt</th>
-            <th>sell Target</th>
-            <th>sell Volume</th>
-        </tr>
+            <tr>
+                @for (header of data.table; track header.columnKey) {
+                    <th [class.hidden]="!header.isVisible" nzAlign="center">{{ header.title }}</th>
+                }
+            </tr>
         </thead>
         <tbody>
             @for (arbitrage of data.arbitrages; track $index) {
                 <tr>
-                    <td>{{ arbitrage.buyOrderId }}</td>
-                    <td>{{ arbitrage.sellOrderId }}</td>
-                    <td>{{ arbitrage.profit }}</td>
-                    <td>{{ arbitrage.profitUsdt }}</td>
-                    <td>{{ arbitrage.leftOverBase }}</td>
-                    <td>{{ arbitrage.createdAtCycle }}</td>
-                    <td>{{ arbitrage.status }}</td>
-                    <td>{{ arbitrage.createdAt }}</td>
-                    <td>{{ arbitrage.buyPlacedAt }}</td>
-                    <td>{{ arbitrage.sellPlacedAt }}</td>
-                    <td>{{ arbitrage.buyFilledAt }}</td>
-                    <td>{{ arbitrage.buyCanceledAt }}</td>
-                    <td>{{ arbitrage.sellFilledAt }}</td>
-                    <td>{{ arbitrage.sellCanceledAt }}</td>
-                    <td>{{ arbitrage.currencyBase }}</td>
-                    <td>{{ arbitrage.buyTarget }}</td>
-                    <td>{{ arbitrage.buyVolume }}</td>
-                    <td>{{ arbitrage.buyTotalUsdt }}</td>
-                    <td>{{ arbitrage.sellTarget }}</td>
-                    <td>{{ arbitrage.sellVolume }}</td>
+                    @for (cell of data.table; track cell.columnKey) {
+                        @switch (cell.valueType) {
+                            @case ('number') {
+                                <td [class.hidden]="!cell.isVisible" class="px-2" nzAlign="center">{{ arbitrage[cell.columnKey] | number: cell.digitsInfo ?? '1.2-2' }}</td>
+                            }
+                            @case ('date') {
+                                <td [class.hidden]="!cell.isVisible" class="px-2" nzAlign="center">{{ arbitrage[cell.columnKey] | date: cell.dateFormat ?? 'short' }}</td>
+                            }
+                            @default {
+                                <td [class.hidden]="!cell.isVisible" class="px-2" nzAlign="center">{{ arbitrage[cell.columnKey] }}</td>
+                            }
+                        }
+                    }
                 </tr>
             }
         </tbody>
     </nz-table>
 }
+<nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+        <li nz-menu-item>1st menu item length</li>
+        <li nz-menu-item>2nd menu item length</li>
+        <li nz-menu-item>3rd menu item length</li>
+    </ul>
+</nz-dropdown-menu>
