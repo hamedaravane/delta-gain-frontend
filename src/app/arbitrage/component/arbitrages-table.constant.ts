@@ -1,3 +1,6 @@
+import {Arbitrage} from "../entity/arbitrage.entity";
+import {Big} from "big.js";
+
 export interface Table {
   title: string;
   isVisible: boolean;
@@ -5,7 +8,7 @@ export interface Table {
   digitsInfo?: string;
   dateFormat?: string;
   showSort: boolean;
-  sortFn: (a: number, b: number) => number;
+  sortFn: ((a: Arbitrage, b: Arbitrage) => number) | null;
   sortOrder: string;
   sortDirections: ('ascend' | 'descend' | null)[];
   showFilter: boolean;
@@ -17,13 +20,14 @@ export interface Table {
   cellAlign: string;
   cellEllipsis: boolean;
 }
+
 export const arbitragesTableConstant: Table[] = [
   {
     title: 'Buy order Id',
     isVisible: false,
     valueType: 'string',
     showSort: false,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: null,
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -34,13 +38,12 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'buyOrderId',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Sell order Id',
     isVisible: false,
     valueType: 'string',
     showSort: false,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: null,
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -51,14 +54,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'sellOrderId',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Profit',
     isVisible: true,
     valueType: 'number',
-    digitsInfo: '1.2-8',
+    digitsInfo: '1.2-5',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.profit).cmp(b.profit),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -69,14 +71,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'profit',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Profit (USDT)',
     isVisible: true,
     valueType: 'number',
-    digitsInfo: '1.2-8',
+    digitsInfo: '1.2-3',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.profitUsdt).cmp(b.profitUsdt),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -87,13 +88,12 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'profitUsdt',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Left Over Base',
-    isVisible: true,
+    isVisible: false,
     valueType: 'string',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.leftOverBase ?? 0).cmp(b.leftOverBase ?? 0),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -104,13 +104,12 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'leftOverBase',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Created At Cycle',
     isVisible: false,
     valueType: 'string',
-    showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    showSort: false,
+    sortFn: null,
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -121,13 +120,12 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'createdAtCycle',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Status',
     isVisible: true,
     valueType: 'string',
     showSort: false,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: null,
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -138,14 +136,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'status',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Created At',
     isVisible: true,
     valueType: 'date',
     dateFormat: 'yy/M/d H:mm:s',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.createdAt?.getMilliseconds() ?? 0).cmp(b.createdAt?.getMilliseconds() ?? 0),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -156,14 +153,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'createdAt',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Buy Placed At',
     isVisible: true,
     valueType: 'date',
     dateFormat: 'yy/M/d H:mm:s',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.buyPlacedAt?.getMilliseconds() ?? 0).cmp(b.buyPlacedAt?.getMilliseconds() ?? 0),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -174,14 +170,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'buyPlacedAt',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Sell Placed At',
     isVisible: true,
     valueType: 'date',
     dateFormat: 'yy/M/d H:mm:s',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.sellPlacedAt?.getMilliseconds() ?? 0).cmp(b.sellPlacedAt?.getMilliseconds() ?? 0),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -192,14 +187,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'sellPlacedAt',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Buy Filled At',
     isVisible: true,
     valueType: 'date',
     dateFormat: 'yy/M/d H:mm:s',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.buyFilledAt?.getMilliseconds() ?? 0).cmp(b.buyFilledAt?.getMilliseconds() ?? 0),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -210,14 +204,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'buyFilledAt',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Buy Canceled At',
     isVisible: true,
     valueType: 'date',
     dateFormat: 'yy/M/d H:mm:s',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.buyCanceledAt?.getMilliseconds() ?? 0).cmp(b.buyCanceledAt?.getMilliseconds() ?? 0),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -228,14 +221,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'buyCanceledAt',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Sell Filled At',
     isVisible: true,
     valueType: 'date',
     dateFormat: 'yy/M/d H:mm:s',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.sellFilledAt?.getMilliseconds() ?? 0).cmp(b.sellFilledAt?.getMilliseconds() ?? 0),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -246,14 +238,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'sellFilledAt',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Sell Canceled At',
     isVisible: true,
     valueType: 'date',
     dateFormat: 'yy/M/d H:mm:s',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.sellCanceledAt?.getMilliseconds() ?? 0).cmp(b.sellCanceledAt?.getMilliseconds() ?? 0),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -264,13 +255,12 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'sellCanceledAt',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Currency Base',
     isVisible: true,
     valueType: 'string',
-    showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    showSort: false,
+    sortFn: null,
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -281,14 +271,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'currencyBase',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Buy Target',
     isVisible: true,
     valueType: 'number',
     digitsInfo: '1.2-8',
-    showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    showSort: false,
+    sortFn: null,
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -299,14 +288,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'buyTarget',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Buy Volume',
     isVisible: true,
     valueType: 'number',
-    digitsInfo: '1.2-8',
+    digitsInfo: '1.0-3',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.buyVolume).cmp(b.buyVolume),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -317,14 +305,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'buyVolume',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Buy Total (USDT)',
     isVisible: true,
     valueType: 'number',
-    digitsInfo: '1.2-8',
+    digitsInfo: '1.2-3',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.buyTotalUsdt).cmp(b.buyTotalUsdt),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -335,14 +322,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'buyTotalUsdt',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Sell Target',
     isVisible: true,
     valueType: 'number',
     digitsInfo: '1.2-8',
-    showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    showSort: false,
+    sortFn: null,
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -353,14 +339,13 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'sellTarget',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
+  }, {
     title: 'Sell Volume',
     isVisible: true,
     valueType: 'number',
     digitsInfo: '1.2-8',
     showSort: true,
-    sortFn: (a: number, b: number) => a - b,
+    sortFn: (a: Arbitrage, b: Arbitrage) => Big(a.sellVolume ?? 0).cmp(b.sellVolume ?? 0),
     sortOrder: 'descend',
     sortDirections: ['ascend', 'descend', null],
     showFilter: false,
@@ -371,23 +356,21 @@ export const arbitragesTableConstant: Table[] = [
     columnKey: 'sellVolume',
     cellAlign: 'center',
     cellEllipsis: true
-  },
-  {
-    title: 'Sell Total (USDT)',
-    isVisible: true,
-    valueType: 'number',
-    digitsInfo: '1.2-8',
-    showSort: true,
-    sortFn: (a: number, b: number) => a - b,
-    sortOrder: 'descend',
-    sortDirections: ['ascend', 'descend', null],
-    showFilter: false,
-    headerEllipsis: false,
-    breakWord: true,
-    headerAlign: 'center',
-    width: '48',
-    columnKey: 'sellTotalUsdt',
-    cellAlign: 'center',
-    cellEllipsis: true
   }
+];
+
+export const dateFormats: { label: string, value: string }[] = [
+  {label: 'default', value: 'yy/M/d H:mm:s'},
+  {label: 'short', value: 'short'},
+  {label: 'medium', value: 'medium'},
+  {label: 'long', value: 'long'},
+  {label: 'full', value: 'full'},
+  {label: 'shortDate', value: 'shortDate'},
+  {label: 'mediumDate', value: 'mediumDate'},
+  {label: 'longDate', value: 'longDate'},
+  {label: 'fullDate', value: 'fullDate'},
+  {label: 'shortTime', value: 'shortTime'},
+  {label: 'mediumTime', value: 'mediumTime'},
+  {label: 'longTime', value: 'longTime'},
+  {label: 'fullTime', value: 'fullTime'},
 ];

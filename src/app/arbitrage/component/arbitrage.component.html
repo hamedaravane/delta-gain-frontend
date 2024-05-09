@@ -1,40 +1,88 @@
-<div class="my-4">
-    <button nz-button nz-dropdown [nzDropdownMenu]="menu" nzPlacement="bottomLeft">Selected Columns</button>
-</div>
-@if ({arbitrages: arbitrages$ | async, isLoading: isArbitragesLoading$ | async, pages: arbitragesPages$ | async, table: arbitragesTableConstant}; as data) {
-    <nz-table [nzLoadingDelay]="200" nzOuterBordered nzBordered nzShowSizeChanger>
-        <thead>
-            <tr>
-                @for (header of data.table; track header.columnKey) {
-                    <th [class.hidden]="!header.isVisible" nzAlign="center">{{ header.title }}</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @for (arbitrage of data.arbitrages; track $index) {
-                <tr>
-                    @for (cell of data.table; track cell.columnKey) {
-                        @switch (cell.valueType) {
-                            @case ('number') {
-                                <td [class.hidden]="!cell.isVisible" class="px-2" nzAlign="center">{{ arbitrage[cell.columnKey] | number: cell.digitsInfo ?? '1.2-2' }}</td>
-                            }
-                            @case ('date') {
-                                <td [class.hidden]="!cell.isVisible" class="px-2" nzAlign="center">{{ arbitrage[cell.columnKey] | date: cell.dateFormat ?? 'short' }}</td>
-                            }
-                            @default {
-                                <td [class.hidden]="!cell.isVisible" class="px-2" nzAlign="center">{{ arbitrage[cell.columnKey] }}</td>
-                            }
-                        }
-                    }
-                </tr>
-            }
-        </tbody>
-    </nz-table>
-}
+<nz-space nzDirection="vertical">
+  <div *nzSpaceItem>
+    <nz-space>
+      <button *nzSpaceItem [nzDropdownMenu]="menu" nz-button nz-dropdown nzPlacement="bottomLeft">Selected Columns
+      </button>
+      <nz-space *nzSpaceItem nzAlign="center">
+        <label *nzSpaceItem>Date Format:</label>
+        <nz-select (ngModelChange)="selectedDateFormat.set($event)" *nzSpaceItem [ngModel]="selectedDateFormat()"
+                   nzPlaceHolder="Date Format">
+          @for (dateFormat of dateFormats; track $index) {
+            <nz-option [nzLabel]="dateFormat.label" [nzValue]="dateFormat.value" [nzKey]="dateFormat.value"></nz-option>
+          }
+        </nz-select>
+      </nz-space>
+      <nz-space *nzSpaceItem nzAlign="center">
+        <label *nzSpaceItem>Page Size:</label>
+        <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="selectedPageSize()"
+                   nzPlaceHolder="Page Size">
+          @for (pageSize of pageSizes; track $index) {
+            <nz-option [nzLabel]="pageSize" [nzValue]="pageSize" [nzKey]="pageSize"></nz-option>
+          }
+        </nz-select>
+      </nz-space>
+    </nz-space>
+  </div>
+  <nz-table #arbitragesTable
+            (nzPageIndexChange)="changePageIndex($event)"
+            *nzSpaceItem
+            [nzData]="arbitragesData"
+            [nzLoadingDelay]="1000"
+            [nzLoading]="isArbitragesLoading$ | async"
+            [nzPageIndex]="pageIndex()"
+            [nzPageSizeOptions]="pageSizes"
+            [nzPageSize]="selectedPageSize()"
+            nzBordered
+            nzOuterBordered
+            nzShowPagination
+            nzShowSizeChanger>
+    <thead>
+    <tr>
+      @for (header of arbitragesTableConstant(); track header.columnKey) {
+        <th [nzSortFn]="header.sortFn"
+            [nzShowSort]="header.showSort"
+            [nzSortOrder]="header.sortOrder"
+            [nzSortDirections]="header.sortDirections"
+            [nzShowFilter]="header.showFilter"
+            [class.hidden]="!header.isVisible"
+            nzAlign="center">{{ header.title }}
+        </th>
+      }
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let arbitrage of arbitragesData">
+      @for (cell of arbitragesTableConstant(); track cell.columnKey) {
+        @switch (cell.valueType) {
+          @case ('number') {
+            <td [class.hidden]="!cell.isVisible"
+                nzAlign="center">{{ arbitrage[cell.columnKey] | number: cell.digitsInfo ?? '1.2-2' }}
+            </td>
+          }
+          @case ('date') {
+            <td [class.hidden]="!cell.isVisible"
+                nzAlign="center">{{ arbitrage[cell.columnKey] | date: selectedDateFormat() }}
+            </td>
+          }
+          @default {
+            <td [class.hidden]="!cell.isVisible" nzAlign="center">{{ arbitrage[cell.columnKey] }}
+            </td>
+          }
+        }
+      }
+    </tr>
+    </tbody>
+  </nz-table>
+</nz-space>
 <nz-dropdown-menu #menu="nzDropdownMenu">
-    <ul nz-menu>
-        <li nz-menu-item>1st menu item length</li>
-        <li nz-menu-item>2nd menu item length</li>
-        <li nz-menu-item>3rd menu item length</li>
-    </ul>
+  <ul nz-menu>
+    <nz-space nzDirection="vertical">
+      @for (column of arbitragesTableConstant(); track $index) {
+        <li *nzSpaceItem>
+          <label nz-checkbox [ngModel]="column.isVisible"
+                 (ngModelChange)="changeColumnVisibility($event, column.columnKey)">{{ column.title }}</label>
+        </li>
+      }
+    </nz-space>
+  </ul>
 </nz-dropdown-menu>

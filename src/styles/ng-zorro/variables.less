@@ -56,21 +56,31 @@
 
 
 // Table
-@table-bg: @gray-8;
-@table-header-bg: @gray-7;
-@table-header-color: @gray-2;
-@table-body-sort-bg: @gray-8;
-@table-row-hover-bg: @gray-6;
-@table-selected-row-bg: @yellow-6;
-@table-expanded-row-bg: @gray-7;
-@table-border-color: @gray-3;
-@table-footer-bg: @background-color-light;
-@table-footer-color: @heading-color;
+@table-bg: @component-background;
+@table-header-bg: darken(@table-bg, 5%);
+@table-header-color: @heading-color;
+@table-header-sort-bg: darken(@table-bg, 5%);
+@table-body-sort-bg: darken(@table-bg, 5%);
+@table-row-hover-bg: darken(@table-bg, 5%);
+@table-selected-row-bg: @indigo-7;
+@table-body-selected-sort-bg: @table-selected-row-bg;
+@table-selected-row-hover-bg: darken(@table-selected-row-bg, 2%);
+@table-expanded-row-bg: @table-header-bg;
+@table-footer-bg: @table-header-bg;
 @table-header-cell-split-color: rgba(0, 0, 0, 0.06);
+// Sorter
+@table-header-sort-active-bg: @gray-6;
+@table-fixed-header-sort-active-bg: @gray-6;
+
 // Filter
-@table-header-filter-active-bg: transparent;
-@table-filter-dropdown-bg: @gray-7;
-@table-selection-column-width: @height-sm;
+@table-header-filter-active-bg: rgba(0, 0, 0, 0.04);
+@table-filter-btns-bg: inherit;
+@table-filter-dropdown-bg: @component-background;
+@table-expand-icon-bg: @component-background;
+@table-selection-column-width: 32px;
+// Sticky
+@table-sticky-scroll-bar-bg: fade(#000, 35%);
+@table-sticky-scroll-bar-radius: 4px;
 
 // Modal
 @modal-header-bg: @gray-8;

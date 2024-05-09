@@ -18,22 +18,22 @@ export interface ArbitrageDto {
   sellOrderId: string;
   profit: number;
   profitUsdt: number;
-  leftOverBase: number;
+  leftOverBase: number | null;
   createdAtCycle: string;
   status: string;
   createdAt: string;
   buyPlacedAt: string;
-  sellPlacedAt: string;
-  buyFilledAt?: string;
-  buyCanceledAt?: string;
-  sellFilledAt?: string;
-  sellCanceledAt?: string;
+  sellPlacedAt: string | null;
+  buyFilledAt: string | null;
+  buyCanceledAt: string | null;
+  sellFilledAt: string | null;
+  sellCanceledAt: string | null;
   currencyBase: string;
   buyTarget: number;
   buyVolume: number;
   buyTotalUsdt: number;
   sellTarget: number;
-  sellVolume: number;
+  sellVolume: number | null;
   _links: LinksDto;
 }
 
@@ -74,22 +74,22 @@ export interface Arbitrage {
   sellOrderId: string;
   profit: number;
   profitUsdt: number;
-  leftOverBase: number;
+  leftOverBase: number | null;
   createdAtCycle: string;
   status: string;
-  createdAt?: Date;
-  buyPlacedAt?: Date;
-  sellPlacedAt?: Date;
-  buyFilledAt?: Date;
-  buyCanceledAt?: Date;
-  sellFilledAt?: Date;
-  sellCanceledAt?: Date;
+  createdAt: Date;
+  buyPlacedAt: Date | null;
+  sellPlacedAt: Date | null;
+  buyFilledAt: Date | null;
+  buyCanceledAt: Date | null;
+  sellFilledAt: Date | null;
+  sellCanceledAt: Date | null;
   currencyBase: string;
   buyTarget: number;
   buyVolume: number;
   buyTotalUsdt: number;
   sellTarget: number;
-  sellVolume: number;
+  sellVolume: number | null;
   links: Links;
   [key: string]: any;
 }
@@ -141,13 +141,13 @@ export function convertArbitrage(dto: ArbitrageDto): Arbitrage {
     leftOverBase: dto.leftOverBase,
     createdAtCycle: dto.createdAtCycle,
     status: dto.status,
-    createdAt: dto.createdAt ? new Date(dto.createdAt) : undefined,
-    buyPlacedAt: dto.buyPlacedAt ? new Date(dto.buyPlacedAt) : undefined,
-    sellPlacedAt: dto.sellPlacedAt ? new Date(dto.sellPlacedAt) : undefined,
-    buyFilledAt: dto.buyFilledAt ? new Date(dto.buyFilledAt) : undefined,
-    buyCanceledAt: dto.buyCanceledAt ? new Date(dto.buyCanceledAt) : undefined,
-    sellFilledAt: dto.sellFilledAt ? new Date(dto.sellFilledAt) : undefined,
-    sellCanceledAt: dto.sellCanceledAt ? new Date(dto.sellCanceledAt) : undefined,
+    createdAt: new Date(dto.createdAt),
+    buyPlacedAt: dto.buyPlacedAt ? new Date(dto.buyPlacedAt) : null,
+    sellPlacedAt: dto.sellPlacedAt ? new Date(dto.sellPlacedAt) : null,
+    buyFilledAt: dto.buyFilledAt ? new Date(dto.buyFilledAt) : null,
+    buyCanceledAt: dto.buyCanceledAt ? new Date(dto.buyCanceledAt) : null,
+    sellFilledAt: dto.sellFilledAt ? new Date(dto.sellFilledAt) : null,
+    sellCanceledAt: dto.sellCanceledAt ? new Date(dto.sellCanceledAt) : null,
     currencyBase: dto.currencyBase,
     buyTarget: dto.buyTarget,
     buyVolume: dto.buyVolume,
