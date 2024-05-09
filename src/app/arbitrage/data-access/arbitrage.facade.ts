@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
-import { ArbitrageInfra } from '../infrastructure/arbitrage.infra';
-import { firstValueFrom, map, Subject } from 'rxjs';
-import { Arbitrage, ArbitrageResponse } from '../entity/arbitrage.entity';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import {inject, Injectable} from '@angular/core';
+import {ArbitrageInfra} from '../infrastructure/arbitrage.infra';
+import {firstValueFrom, map, Subject} from 'rxjs';
+import {ArbitrageResponse} from '../entity/arbitrage.entity';
+import {NzMessageService} from 'ng-zorro-antd/message';
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageFacade {
@@ -24,5 +24,11 @@ export class ArbitrageFacade {
     } finally {
       this.isArbitragesLoadingSubject.next(false);
     }
+  }
+
+  async reloadArbitrages(page: number = 0, size: number = 20, interval: number) {
+    setInterval(() => {
+      this.loadArbitrages(page, size);
+    }, interval);
   }
 }

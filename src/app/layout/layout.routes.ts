@@ -1,5 +1,4 @@
 import {Routes} from "@angular/router";
-import { resolve } from '@angular/compiler-cli';
 
 export const routes: Routes = [
   {

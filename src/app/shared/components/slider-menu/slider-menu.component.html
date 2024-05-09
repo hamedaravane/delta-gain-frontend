@@ -1,10 +1,8 @@
-<ul nz-menu [nzInlineCollapsed]="isCollapsed" nzSelectable class="h-full">
-    @for (menuItem of menu; track $index) {
-        <li nz-menu-item [routerLink]="menuItem.path">
-            <i class="fa-solid me-4" [class]="menuItem.icon"></i>
-            @if (!isCollapsed) {
-                <span>{{ menuItem.title }}</span>
-            }
-        </li>
-    }
+<ul class="h-full" nz-menu nzMode="inline" nzSelectable>
+  @for (menuItem of menu; track $index) {
+    <li nz-menu-item [routerLink]="menuItem.path">
+      <i class="fa-solid fa-lg me-4" [class]="menuItem.icon"></i>
+      <span>{{ menuItem.title }}</span>
+    </li>
+  }
 </ul>

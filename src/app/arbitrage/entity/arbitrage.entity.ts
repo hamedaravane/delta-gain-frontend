@@ -20,7 +20,7 @@ export interface ArbitrageDto {
   profitUsdt: number;
   leftOverBase: number | null;
   createdAtCycle: string;
-  status: string;
+  status: 'BUY_CANCELED' | 'SELL_CANCELED' | 'BUY_FILLED' | 'SELL_FILLED';
   createdAt: string;
   buyPlacedAt: string;
   sellPlacedAt: string | null;
@@ -76,7 +76,7 @@ export interface Arbitrage {
   profitUsdt: number;
   leftOverBase: number | null;
   createdAtCycle: string;
-  status: string;
+  status: Status;
   createdAt: Date;
   buyPlacedAt: Date | null;
   sellPlacedAt: Date | null;
@@ -140,7 +140,7 @@ export function convertArbitrage(dto: ArbitrageDto): Arbitrage {
     profitUsdt: dto.profitUsdt,
     leftOverBase: dto.leftOverBase,
     createdAtCycle: dto.createdAtCycle,
-    status: dto.status,
+    status: convertStatus(dto.status),
     createdAt: new Date(dto.createdAt),
     buyPlacedAt: dto.buyPlacedAt ? new Date(dto.buyPlacedAt) : null,
     sellPlacedAt: dto.sellPlacedAt ? new Date(dto.sellPlacedAt) : null,
@@ -156,6 +156,41 @@ export function convertArbitrage(dto: ArbitrageDto): Arbitrage {
     sellVolume: dto.sellVolume,
     links: convertLinks(dto._links),
   };
+}
+
+export interface Status {
+  side: 'BUY' | 'SELL';
+  status: 'FILLED' | 'CANCELED',
+  rowColor: string;
+}
+
+export function convertStatus(status: 'BUY_CANCELED' | 'SELL_CANCELED' | 'BUY_FILLED' | 'SELL_FILLED'): Status {
+  switch (status) {
+    case 'BUY_CANCELED':
+      return {
+        side: 'BUY',
+        status: 'CANCELED',
+        rowColor: 'rose-700',
+      }
+    case 'SELL_CANCELED':
+      return {
+        side: 'SELL',
+        status: 'CANCELED',
+        rowColor: 'rose-700',
+      }
+    case 'BUY_FILLED':
+      return {
+        side: 'BUY',
+        status: 'FILLED',
+        rowColor: 'teal-700',
+      }
+    case 'SELL_FILLED':
+      return {
+        side: 'SELL',
+        status: 'FILLED',
+        rowColor: 'teal-700',
+      }
+  }
 }
 
 export function convertEmbeddedArbitrages(dto: EmbeddedArbitragesDto): EmbeddedArbitrages {

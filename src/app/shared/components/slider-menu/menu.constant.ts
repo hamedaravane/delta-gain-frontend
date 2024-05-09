@@ -5,14 +5,19 @@ const menu = [
     icon: 'fa-house'
   },
   {
-    title: 'Market',
-    path: 'market',
-    icon: 'fa-money-bill'
-  },
-  {
     title: 'Arbitrage',
     path: 'arbitrage',
     icon: 'fa-arrow-right-arrow-left'
+  },
+  {
+    title: 'Orders',
+    path: 'orders',
+    icon: 'fa-list-check'
+  },/*
+  {
+    title: 'Market',
+    path: 'market',
+    icon: 'fa-money-bill'
   },
   {
     title: 'Chart',
@@ -23,7 +28,7 @@ const menu = [
     title: 'About',
     path: 'about',
     icon: 'fa-address-card'
-  }
+  }*/
 ]
 
 export default menu;

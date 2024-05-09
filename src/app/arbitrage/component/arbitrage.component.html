@@ -21,6 +21,16 @@
           }
         </nz-select>
       </nz-space>
+      <nz-space *nzSpaceItem nzAlign="center">
+        <label *nzSpaceItem>Auto Reload Interval:</label>
+        <nz-select (ngModelChange)="changeAutoReloadInterval($event)" *nzSpaceItem
+                   [ngModel]="selectedAutoReloadInterval()"
+                   nzPlaceHolder="Auto Reload Interval">
+          @for (interval of [1000, 2000, 3000, 5000, 10000]; track $index) {
+            <nz-option [nzLabel]="interval" [nzValue]="interval" [nzKey]="interval"></nz-option>
+          }
+        </nz-select>
+      </nz-space>
     </nz-space>
   </div>
   <nz-table #arbitragesTable
@@ -32,16 +42,17 @@
             [nzPageIndex]="pageIndex()"
             [nzPageSizeOptions]="pageSizes"
             [nzPageSize]="selectedPageSize()"
+            [nzNoResult]="noResult"
             nzBordered
             nzOuterBordered
-            nzShowPagination
+            [nzShowPagination]="true"
+            [nzShowQuickJumper]="true"
             nzShowSizeChanger>
     <thead>
     <tr>
       @for (header of arbitragesTableConstant(); track header.columnKey) {
         <th [nzSortFn]="header.sortFn"
             [nzShowSort]="header.showSort"
-            [nzSortOrder]="header.sortOrder"
             [nzSortDirections]="header.sortDirections"
             [nzShowFilter]="header.showFilter"
             [class.hidden]="!header.isVisible"
@@ -62,6 +73,16 @@
           @case ('date') {
             <td [class.hidden]="!cell.isVisible"
                 nzAlign="center">{{ arbitrage[cell.columnKey] | date: selectedDateFormat() }}
+            </td>
+          }
+          @case ('enum') {
+            <td [class.hidden]="!cell.isVisible" nzAlign="center">
+              <nz-space nzSize="large">
+                <span [class]="'bg-' + arbitrage[cell.columnKey].rowColor"
+                      class="p-2 text-white rounded-md">{{ arbitrage[cell.columnKey].side }}</span>
+                <span [class]="'bg-' + arbitrage[cell.columnKey].rowColor"
+                      class="p-2 text-white rounded-md">{{ arbitrage[cell.columnKey].status }}</span>
+              </nz-space>
             </td>
           }
           @default {
@@ -86,3 +107,8 @@
     </nz-space>
   </ul>
 </nz-dropdown-menu>
+<ng-template #noResult>
+  <div class="flex w-full justify-center">
+    <ng-lottie [options]="{path: 'assets/lottie-animations/loading.json'}" height="150px" width="150px"></ng-lottie>
+  </div>
+</ng-template>

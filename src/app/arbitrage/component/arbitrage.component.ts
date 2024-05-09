@@ -1,7 +1,7 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {ArbitrageFacade} from '../data-access/arbitrage.facade';
 import {NzTableModule} from 'ng-zorro-antd/table';
-import {AsyncPipe, DatePipe, DecimalPipe, NgForOf} from '@angular/common';
+import {AsyncPipe, DatePipe, DecimalPipe, NgClass, NgForOf} from '@angular/common';
 import {NzSkeletonModule} from 'ng-zorro-antd/skeleton';
 import {arbitragesTableConstant, dateFormats} from './arbitrages-table.constant';
 import {NzButtonModule} from 'ng-zorro-antd/button';
@@ -12,6 +12,7 @@ import {FormsModule} from "@angular/forms";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {Arbitrage} from "../entity/arbitrage.entity";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {LottieComponent} from "ngx-lottie";
 
 @Component({
   selector: 'app-arbitrage',
@@ -19,7 +20,7 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
   imports: [NzTableModule, AsyncPipe, NzSkeletonModule, DatePipe, DecimalPipe,
     NzButtonModule, NzDropDownModule,
     NzSpaceModule, NzCheckboxModule, FormsModule,
-    NzSelectModule, NgForOf
+    NzSelectModule, NgForOf, LottieComponent, NgClass
   ],
   templateUrl: './arbitrage.component.html',
   styleUrl: './arbitrage.component.scss'
@@ -32,11 +33,12 @@ export class ArbitrageComponent implements OnInit {
   selectedPageSize = signal(20);
   pageIndex = signal(0);
   arbitragesData = new Array<Arbitrage>();
+  selectedAutoReloadInterval = signal(3000);
   private readonly arbitrageFacade = inject(ArbitrageFacade);
   arbitrages$ = this.arbitrageFacade.arbitrages$;
-  private readonly destroyRef = inject(DestroyRef);
   arbitragesPages$ = this.arbitrageFacade.arbitragesPages$;
   isArbitragesLoading$ = this.arbitrageFacade.isArbitragesLoading$;
+  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.arbitrageFacade.loadArbitrages().then();
@@ -47,12 +49,19 @@ export class ArbitrageComponent implements OnInit {
 
   changePageIndex(pageIndex: number) {
     this.pageIndex.set(pageIndex);
-    this.arbitrageFacade.loadArbitrages(pageIndex, this.selectedPageSize()).then();
+    this.arbitrageFacade.loadArbitrages(pageIndex, this.selectedPageSize()).then(() => {
+      this.changeAutoReloadInterval(this.selectedAutoReloadInterval());
+    });
   }
 
   changePageSize(value: number) {
     this.selectedPageSize.set(value);
     this.arbitrageFacade.loadArbitrages(this.pageIndex(), value).then();
+  }
+
+  changeAutoReloadInterval(value: number) {
+    this.selectedAutoReloadInterval.set(value);
+    this.arbitrageFacade.reloadArbitrages(this.pageIndex(), this.selectedPageSize(), value).then();
   }
 
   changeColumnVisibility(value: boolean, key: string) {
