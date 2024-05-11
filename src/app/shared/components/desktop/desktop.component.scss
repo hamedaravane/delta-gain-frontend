@@ -1,0 +1,9 @@
+:host {
+  display: none;
+}
+
+@media screen and (min-width: 641px) {
+  :host {
+    display: block;
+  }
+}

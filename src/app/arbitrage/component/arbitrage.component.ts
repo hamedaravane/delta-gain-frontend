@@ -3,7 +3,7 @@ import {ArbitrageFacade} from '../data-access/arbitrage.facade';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {AsyncPipe, DatePipe, DecimalPipe, NgClass, NgForOf} from '@angular/common';
 import {NzSkeletonModule} from 'ng-zorro-antd/skeleton';
-import {arbitragesTableConstant, dateFormats} from './arbitrages-table.constant';
+import {arbitragesTableConstant, dateFormats} from '../constant/arbitrages-table.constant';
 import {NzButtonModule} from 'ng-zorro-antd/button';
 import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {NzSpaceModule} from 'ng-zorro-antd/space';
