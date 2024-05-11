@@ -1,6 +1,6 @@
-<div nz-row nzAlign="middle" nzJustify="space-between">
+<div nz-row nzAlign="middle" nzJustify="space-evenly">
   @for (item of menu; track $index) {
-    <button nzBlock nz-button nz-col [nzSpan]="24 / menu.length" [routerLink]="item.path">
+    <button nzBlock nz-button nzSize="large" nzType="text" nz-col [nzSpan]="24 / menu.length" [routerLink]="item.path">
       <i class="fa-solid" [class]="item.icon"></i>
       <div class="text-center">{{ item.title }}</div>
     </button>
