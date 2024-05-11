@@ -1,25 +1,42 @@
-<nz-layout class="max-h-full">
-  <nz-sider (nzCollapsedChange)="isSideMenuCollapsed.set($event)"
-            [nzCollapsedWidth]="62"
-            [nzCollapsed]="isSideMenuCollapsed()"
-            nzCollapsible>
-    <app-slider-menu></app-slider-menu>
-  </nz-sider>
+<desktop>
+  <nz-layout class="max-h-full">
+    <nz-sider (nzCollapsedChange)="isSideMenuCollapsed.set($event)"
+              [nzCollapsedWidth]="62"
+              [nzCollapsed]="isSideMenuCollapsed()"
+              nzCollapsible>
+      <app-slider-menu></app-slider-menu>
+    </nz-sider>
+    <nz-layout>
+      <nz-header>
+        <nz-page-header [nzBackIcon]="backIcon" [nzGhost]="true" [nzTitle]="pageTitle()">
+        </nz-page-header>
+      </nz-header>
+      <nz-divider></nz-divider>
+      <nz-content class="p-2 overflow-scroll custom-scroll-bar">
+        <router-outlet></router-outlet>
+      </nz-content>
+      <nz-divider></nz-divider>
+      <nz-footer>
+        <div class="text-center">by Hamed Arghavan | April 2024</div>
+      </nz-footer>
+    </nz-layout>
+  </nz-layout>
+</desktop>
+<mobile>
   <nz-layout>
     <nz-header>
       <nz-page-header [nzBackIcon]="backIcon" [nzGhost]="true" [nzTitle]="pageTitle()">
       </nz-page-header>
     </nz-header>
-    <nz-divider></nz-divider>
     <nz-content class="p-2 overflow-scroll custom-scroll-bar">
       <router-outlet></router-outlet>
     </nz-content>
     <nz-divider></nz-divider>
     <nz-footer>
-      <div class="text-center">by Hamed Arghavan | April 2024</div>
+      <app-bottom-navigation></app-bottom-navigation>
     </nz-footer>
   </nz-layout>
-</nz-layout>
+</mobile>
 
 <ng-template #backIcon>
   <i class="fa-solid fa-chevron-left text-gray-100"></i>

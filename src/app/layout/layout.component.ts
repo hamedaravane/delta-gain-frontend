@@ -13,6 +13,10 @@ import {NzSpaceModule} from 'ng-zorro-antd/space';
 import {AuthFacade} from '../authentication/auth.facade';
 import {NzPageHeaderModule} from "ng-zorro-antd/page-header";
 import {SliderMenuComponent} from "@shared/components/slider-menu/slider-menu.component";
+import {DesktopComponent} from "@shared/components/desktop/desktop.component";
+import {MobileComponent} from "@shared/components/mobile/mobile.component";
+import {NzGridModule} from "ng-zorro-antd/grid";
+import {BottomNavigationComponent} from "@shared/components/bottom-navigation/bottom-navigation.component";
 
 @Component({
   selector: 'app-layout',
@@ -31,7 +35,11 @@ import {SliderMenuComponent} from "@shared/components/slider-menu/slider-menu.co
     NzInputModule,
     NzDividerModule,
     NzPageHeaderModule,
+    NzGridModule,
     SliderMenuComponent,
+    DesktopComponent,
+    MobileComponent,
+    BottomNavigationComponent,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'

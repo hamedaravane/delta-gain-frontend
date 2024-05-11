@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import menu from '@shared/components/slider-menu/menu.constant';
+import menu from '@shared/constant/menu.constant';
 import {NzMenuDirective, NzMenuItemComponent} from 'ng-zorro-antd/menu';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
