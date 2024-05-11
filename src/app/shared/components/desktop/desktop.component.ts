@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 
 @Component({
-  selector: 'app-desktop',
+  selector: 'desktop',
   standalone: true,
   imports: [],
   template: `<ng-content></ng-content>`,
