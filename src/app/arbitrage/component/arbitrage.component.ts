@@ -13,6 +13,10 @@ import {NzSelectModule} from "ng-zorro-antd/select";
 import {Arbitrage} from "../entity/arbitrage.entity";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {LottieComponent} from "ngx-lottie";
+import { DesktopComponent } from '@shared/components/desktop/desktop.component';
+import { MobileComponent } from '@shared/components/mobile/mobile.component';
+import { NzCardComponent, NzCardModule } from 'ng-zorro-antd/card';
+import { NzGridModule, NzRowDirective } from 'ng-zorro-antd/grid';
 
 @Component({
   selector: 'app-arbitrage',
@@ -20,7 +24,7 @@ import {LottieComponent} from "ngx-lottie";
   imports: [NzTableModule, AsyncPipe, NzSkeletonModule, DatePipe, DecimalPipe,
     NzButtonModule, NzDropDownModule,
     NzSpaceModule, NzCheckboxModule, FormsModule,
-    NzSelectModule, NgForOf, LottieComponent, NgClass
+    NzSelectModule, NgForOf, LottieComponent, NgClass, DesktopComponent, MobileComponent, NzCardModule, NzGridModule
   ],
   templateUrl: './arbitrage.component.html',
   styleUrl: './arbitrage.component.scss'
@@ -42,6 +46,7 @@ export class ArbitrageComponent implements OnInit {
 
   ngOnInit(): void {
     this.arbitrageFacade.loadArbitrages().then();
+    this.changeAutoReloadInterval(this.selectedAutoReloadInterval());
     this.arbitrages$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((arbitrages) => {
       this.arbitragesData = arbitrages;
     })
@@ -49,9 +54,6 @@ export class ArbitrageComponent implements OnInit {
 
   changePageIndex(pageIndex: number) {
     this.pageIndex.set(pageIndex);
-    this.arbitrageFacade.loadArbitrages(pageIndex, this.selectedPageSize()).then(() => {
-      this.changeAutoReloadInterval(this.selectedAutoReloadInterval());
-    });
   }
 
   changePageSize(value: number) {

@@ -1,100 +1,127 @@
-<nz-space nzDirection="vertical">
-  <div *nzSpaceItem>
-    <nz-space>
-      <button *nzSpaceItem [nzDropdownMenu]="menu" nz-button nz-dropdown nzPlacement="bottomLeft">Selected Columns
-      </button>
-      <nz-space *nzSpaceItem nzAlign="center">
-        <label *nzSpaceItem>Date Format:</label>
-        <nz-select (ngModelChange)="selectedDateFormat.set($event)" *nzSpaceItem [ngModel]="selectedDateFormat()"
-                   nzPlaceHolder="Date Format">
-          @for (dateFormat of dateFormats; track $index) {
-            <nz-option [nzLabel]="dateFormat.label" [nzValue]="dateFormat.value" [nzKey]="dateFormat.value"></nz-option>
-          }
-        </nz-select>
+<desktop>
+  <nz-space nzDirection="vertical">
+    <div *nzSpaceItem>
+      <nz-space>
+        <button *nzSpaceItem [nzDropdownMenu]="menu" nz-button nz-dropdown nzPlacement="bottomLeft">Selected Columns
+        </button>
+        <nz-space *nzSpaceItem nzAlign="center">
+          <label *nzSpaceItem>Date Format:</label>
+          <nz-select (ngModelChange)="selectedDateFormat.set($event)" *nzSpaceItem [ngModel]="selectedDateFormat()"
+                     nzPlaceHolder="Date Format">
+            @for (dateFormat of dateFormats; track $index) {
+              <nz-option [nzLabel]="dateFormat.label" [nzValue]="dateFormat.value"
+                         [nzKey]="dateFormat.value"></nz-option>
+            }
+          </nz-select>
+        </nz-space>
+        <nz-space *nzSpaceItem nzAlign="center">
+          <label *nzSpaceItem>Page Size:</label>
+          <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="selectedPageSize()"
+                     nzPlaceHolder="Page Size">
+            @for (pageSize of pageSizes; track $index) {
+              <nz-option [nzLabel]="pageSize" [nzValue]="pageSize" [nzKey]="pageSize"></nz-option>
+            }
+          </nz-select>
+        </nz-space>
+        <nz-space *nzSpaceItem nzAlign="center">
+          <label *nzSpaceItem>Auto Reload Interval:</label>
+          <nz-select (ngModelChange)="changeAutoReloadInterval($event)" *nzSpaceItem
+                     [ngModel]="selectedAutoReloadInterval()"
+                     nzPlaceHolder="Auto Reload Interval">
+            @for (interval of [1000, 2000, 3000, 5000, 10000]; track $index) {
+              <nz-option [nzLabel]="interval" [nzValue]="interval" [nzKey]="interval"></nz-option>
+            }
+          </nz-select>
+        </nz-space>
       </nz-space>
-      <nz-space *nzSpaceItem nzAlign="center">
-        <label *nzSpaceItem>Page Size:</label>
-        <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="selectedPageSize()"
-                   nzPlaceHolder="Page Size">
-          @for (pageSize of pageSizes; track $index) {
-            <nz-option [nzLabel]="pageSize" [nzValue]="pageSize" [nzKey]="pageSize"></nz-option>
-          }
-        </nz-select>
-      </nz-space>
-      <nz-space *nzSpaceItem nzAlign="center">
-        <label *nzSpaceItem>Auto Reload Interval:</label>
-        <nz-select (ngModelChange)="changeAutoReloadInterval($event)" *nzSpaceItem
-                   [ngModel]="selectedAutoReloadInterval()"
-                   nzPlaceHolder="Auto Reload Interval">
-          @for (interval of [1000, 2000, 3000, 5000, 10000]; track $index) {
-            <nz-option [nzLabel]="interval" [nzValue]="interval" [nzKey]="interval"></nz-option>
-          }
-        </nz-select>
-      </nz-space>
-    </nz-space>
-  </div>
-  <nz-table #arbitragesTable
-            (nzPageIndexChange)="changePageIndex($event)"
-            *nzSpaceItem
-            [nzData]="arbitragesData"
-            [nzLoadingDelay]="1000"
-            [nzLoading]="isArbitragesLoading$ | async"
-            [nzPageIndex]="pageIndex()"
-            [nzPageSizeOptions]="pageSizes"
-            [nzPageSize]="selectedPageSize()"
-            [nzNoResult]="noResult"
-            nzBordered
-            nzOuterBordered
-            [nzShowPagination]="true"
-            [nzShowQuickJumper]="true"
-            nzShowSizeChanger>
-    <thead>
-    <tr>
-      @for (header of arbitragesTableConstant(); track header.columnKey) {
-        <th [nzSortFn]="header.sortFn"
-            [nzShowSort]="header.showSort"
-            [nzSortDirections]="header.sortDirections"
-            [nzShowFilter]="header.showFilter"
-            [class.hidden]="!header.isVisible"
-            nzAlign="center">{{ header.title }}
-        </th>
-      }
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let arbitrage of arbitragesData">
-      @for (cell of arbitragesTableConstant(); track cell.columnKey) {
-        @switch (cell.valueType) {
-          @case ('number') {
-            <td [class.hidden]="!cell.isVisible"
-                nzAlign="center">{{ arbitrage[cell.columnKey] | number: cell.digitsInfo ?? '1.2-2' }}
-            </td>
-          }
-          @case ('date') {
-            <td [class.hidden]="!cell.isVisible"
-                nzAlign="center">{{ arbitrage[cell.columnKey] | date: selectedDateFormat() }}
-            </td>
-          }
-          @case ('enum') {
-            <td [class.hidden]="!cell.isVisible" nzAlign="center">
-              <nz-space nzSize="large">
+    </div>
+    <nz-table (nzPageIndexChange)="changePageIndex($event)"
+              *nzSpaceItem
+              [nzData]="arbitragesData"
+              [nzLoadingDelay]="1000"
+              [nzLoading]="isArbitragesLoading$ | async"
+              [nzPageIndex]="pageIndex()"
+              [nzPageSizeOptions]="pageSizes"
+              [nzPageSize]="selectedPageSize()"
+              [nzNoResult]="noResult"
+              nzBordered
+              nzOuterBordered
+              [nzShowPagination]="true"
+              [nzShowQuickJumper]="true"
+              nzShowSizeChanger>
+      <thead>
+      <tr>
+        @for (header of arbitragesTableConstant(); track header.columnKey) {
+          <th [nzSortFn]="header.sortFn"
+              [nzShowSort]="header.showSort"
+              [nzSortDirections]="header.sortDirections"
+              [nzShowFilter]="header.showFilter"
+              [class.hidden]="!header.isVisible"
+              nzAlign="center">{{ header.title }}
+          </th>
+        }
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let arbitrage of arbitragesData">
+        @for (cell of arbitragesTableConstant(); track cell.columnKey) {
+          @switch (cell.valueType) {
+            @case ('number') {
+              <td [class.hidden]="!cell.isVisible"
+                  nzAlign="center">{{ arbitrage[cell.columnKey] | number: cell.digitsInfo ?? '1.2-2' }}
+              </td>
+            }
+            @case ('date') {
+              <td [class.hidden]="!cell.isVisible"
+                  nzAlign="center">{{ arbitrage[cell.columnKey] | date: selectedDateFormat() }}
+              </td>
+            }
+            @case ('enum') {
+              <td [class.hidden]="!cell.isVisible" nzAlign="center">
+                <nz-space nzSize="large">
                 <span [class]="'bg-' + arbitrage[cell.columnKey].rowColor"
                       class="p-2 text-white rounded-md">{{ arbitrage[cell.columnKey].side }}</span>
-                <span [class]="'bg-' + arbitrage[cell.columnKey].rowColor"
-                      class="p-2 text-white rounded-md">{{ arbitrage[cell.columnKey].status }}</span>
-              </nz-space>
-            </td>
-          }
-          @default {
-            <td [class.hidden]="!cell.isVisible" nzAlign="center">{{ arbitrage[cell.columnKey] }}
-            </td>
+                  <span [class]="'bg-' + arbitrage[cell.columnKey].rowColor"
+                        class="p-2 text-white rounded-md">{{ arbitrage[cell.columnKey].status }}</span>
+                </nz-space>
+              </td>
+            }
+            @default {
+              <td [class.hidden]="!cell.isVisible" nzAlign="center">{{ arbitrage[cell.columnKey] }}
+              </td>
+            }
           }
         }
-      }
-    </tr>
-    </tbody>
-  </nz-table>
-</nz-space>
+      </tr>
+      </tbody>
+    </nz-table>
+  </nz-space>
+</desktop>
+<mobile>
+  <nz-space style="display: block" nzSize="middle" nzDirection="vertical">
+    @for (arbitrage of arbitragesData; track $index) {
+      <nz-card *nzSpaceItem>
+        <nz-card-meta
+            [nzTitle]="arbitrage.currencyBase"
+            [nzDescription]="arbitrage.status.side + ' ' + arbitrage.status.status"
+        ></nz-card-meta>
+        <div class="mt-4" nz-row nzJustify="space-around">
+          <div nz-col nzSpan="12">
+            <div class="mb-1">Buy</div>
+            <div>{{ arbitrage.buyTarget | number: '1.2-8' }}</div>
+            <div>{{ arbitrage.buyVolume | number: '1.2-8' }}</div>
+            <div>{{ arbitrage.buyTotalUsdt | number: '1.2-8' }}</div>
+          </div>
+          <div nz-col nzSpan="12">
+            <div class="mb-1">Sell</div>
+            <div>{{ arbitrage.sellTarget | number: '1.2-8' }}</div>
+            <div>{{ arbitrage.sellVolume | number: '1.2-8' }}</div>
+          </div>
+        </div>
+      </nz-card>
+    }
+  </nz-space>
+</mobile>
 <nz-dropdown-menu #menu="nzDropdownMenu">
   <ul nz-menu>
     <nz-space nzDirection="vertical">
