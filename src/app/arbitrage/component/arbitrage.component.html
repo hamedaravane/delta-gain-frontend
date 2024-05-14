@@ -66,6 +66,13 @@
       <tr *ngFor="let arbitrage of arbitragesData">
         @for (cell of arbitragesTableConstant(); track cell.columnKey) {
           @switch (cell.valueType) {
+            @case ('currency') {
+              <td [class.hidden]="!cell.isVisible" nzAlign="center" class="whitespace-nowrap">
+                <img [src]="arbitrage.currencyBaseLogo" width="24" height="24" alt="currency logo"
+                     class="me-2 align-middle overflow-clip rounded-full object-cover inline-block">
+                <span>{{ arbitrage.currencyBase }}</span>
+              </td>
+            }
             @case ('number') {
               <td [class.hidden]="!cell.isVisible"
                   nzAlign="center">{{ arbitrage[cell.columnKey] | number: cell.digitsInfo ?? '1.2-2' }}
@@ -77,13 +84,17 @@
               </td>
             }
             @case ('enum') {
-              <td [class.hidden]="!cell.isVisible" nzAlign="center">
-                <nz-space nzSize="large">
-                <span [class]="'bg-' + arbitrage[cell.columnKey].rowColor"
-                      class="p-2 text-white rounded-md">{{ arbitrage[cell.columnKey].side }}</span>
-                  <span [class]="'bg-' + arbitrage[cell.columnKey].rowColor"
-                        class="p-2 text-white rounded-md">{{ arbitrage[cell.columnKey].status }}</span>
-                </nz-space>
+              <td [class.hidden]="!cell.isVisible" class="whitespace-nowrap">
+                <i class="fa-solid me-2" [ngClass]="{
+                  'fa-inbox-out text-rose-400': arbitrage.status.side === 'BUY',
+                  'fa-inbox-in text-teal-500': arbitrage.status.side === 'SELL'
+                }"></i>
+                <span class="me-2">{{ arbitrage.status.side }}</span>
+                <i class="fa-solid me-2" [ngClass]="{
+                  'fa-circle-check text-teal-500': arbitrage.status.status === 'FILLED',
+                  'fa-circle-xmark text-rose-400': arbitrage.status.status === 'CANCELED'
+                }"></i>
+                <span>{{ arbitrage.status.status }}</span>
               </td>
             }
             @default {
@@ -105,11 +116,8 @@
             [nzDescription]="cardDescription"
         ></nz-card-meta>
         <ng-template #cardTitle>
-          @if (arbitrage.currencyBaseLogo) {
-            <img [src]="arbitrage.currencyBaseLogo" width="24" height="24" class="inline-block align-middle w-6 h-6 object-cover overflow-clip rounded-full" alt="currency logo">
-          } @else {
-            <span class="inline-block align-middle w-6 h-6 bg-gray-400 animate-pulse overflow-clip rounded-full"></span>
-          }
+          <img [src]="arbitrage.currencyBaseLogo" width="24" height="24"
+               class="inline-block align-middle w-6 h-6 object-cover overflow-clip rounded-full" alt="currency logo">
           <strong class="ms-2">{{arbitrage.currencyBase}}</strong>
         </ng-template>
         <ng-template #cardExtra>

@@ -4,7 +4,7 @@ import {Big} from "big.js";
 export interface Table {
   title: string;
   isVisible: boolean;
-  valueType: 'number' | 'date' | 'string' | 'enum';
+  valueType: 'number' | 'date' | 'string' | 'enum' | 'currency';
   digitsInfo?: string;
   dateFormat?: string;
   showSort: boolean;
@@ -23,6 +23,22 @@ export interface Table {
 
 export const arbitragesTableConstant: Table[] = [
   {
+    title: 'Currency Base',
+    isVisible: true,
+    valueType: 'currency',
+    showSort: false,
+    sortFn: null,
+    sortOrder: 'descend',
+    sortDirections: ['ascend', 'descend', null],
+    showFilter: false,
+    headerEllipsis: false,
+    breakWord: true,
+    headerAlign: 'center',
+    width: '48',
+    columnKey: 'currencyBase',
+    cellAlign: 'center',
+    cellEllipsis: true
+  }, {
     title: 'Buy order Id',
     isVisible: false,
     valueType: 'string',
@@ -253,22 +269,6 @@ export const arbitragesTableConstant: Table[] = [
     headerAlign: 'center',
     width: '48',
     columnKey: 'sellCanceledAt',
-    cellAlign: 'center',
-    cellEllipsis: true
-  }, {
-    title: 'Currency Base',
-    isVisible: true,
-    valueType: 'string',
-    showSort: false,
-    sortFn: null,
-    sortOrder: 'descend',
-    sortDirections: ['ascend', 'descend', null],
-    showFilter: false,
-    headerEllipsis: false,
-    breakWord: true,
-    headerAlign: 'center',
-    width: '48',
-    columnKey: 'currencyBase',
     cellAlign: 'center',
     cellEllipsis: true
   }, {
