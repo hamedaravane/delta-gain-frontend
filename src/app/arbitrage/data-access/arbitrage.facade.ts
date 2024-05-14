@@ -1,9 +1,9 @@
 import {inject, Injectable} from '@angular/core';
 import {ArbitrageInfra} from '../infrastructure/arbitrage.infra';
-import {firstValueFrom, map, Subject} from 'rxjs';
-import { Arbitrage, ArbitrageResponse } from '../entity/arbitrage.entity';
+import {firstValueFrom, interval, map, Subject} from 'rxjs';
+import {Arbitrage, ArbitrageResponse} from '../entity/arbitrage.entity';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import { MarketApi } from '../../market/api/market.api';
+import {MarketApi} from '../../market/api/market.api';
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageFacade {
@@ -38,9 +38,13 @@ export class ArbitrageFacade {
     });
   }
 
-  async reloadArbitrages(page: number = 0, size: number = 20, interval: number) {
-    setInterval(() => {
-      this.loadArbitrages(page, size);
-    }, interval);
+  reloadArbitrages(page: number = 0, size: number = 20, _interval: number = 10000) {
+    return interval(_interval).subscribe(() => {
+      firstValueFrom(this.arbitrageInfra.getArbitrages(page, size)).then(response => {
+        this.arbitragesSubject.next(response);
+      }).catch(() => {
+        this.nzMessageService.error('Error while fetching arbitrages');
+      })
+    });
   }
 }

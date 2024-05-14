@@ -1,14 +1,7 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {ArbitrageFacade} from '../data-access/arbitrage.facade';
 import {NzTableModule} from 'ng-zorro-antd/table';
-import {
-  AsyncPipe,
-  DatePipe,
-  DecimalPipe,
-  NgClass,
-  NgForOf,
-  NgOptimizedImage
-} from '@angular/common';
+import {AsyncPipe, DatePipe, DecimalPipe, NgClass, NgForOf, NgOptimizedImage} from '@angular/common';
 import {NzSkeletonModule} from 'ng-zorro-antd/skeleton';
 import {arbitragesTableConstant, dateFormats} from '../constant/arbitrages-table.constant';
 import {NzButtonModule} from 'ng-zorro-antd/button';
@@ -20,10 +13,10 @@ import {NzSelectModule} from "ng-zorro-antd/select";
 import {Arbitrage} from "../entity/arbitrage.entity";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {LottieComponent} from "ngx-lottie";
-import { DesktopComponent } from '@shared/components/desktop/desktop.component';
-import { MobileComponent } from '@shared/components/mobile/mobile.component';
-import { NzCardComponent, NzCardModule } from 'ng-zorro-antd/card';
-import { NzGridModule, NzRowDirective } from 'ng-zorro-antd/grid';
+import {DesktopComponent} from '@shared/components/desktop/desktop.component';
+import {MobileComponent} from '@shared/components/mobile/mobile.component';
+import {NzCardModule} from 'ng-zorro-antd/card';
+import {NzGridModule} from 'ng-zorro-antd/grid';
 
 @Component({
   selector: 'app-arbitrage',
@@ -65,12 +58,17 @@ export class ArbitrageComponent implements OnInit {
 
   changePageSize(value: number) {
     this.selectedPageSize.set(value);
-    this.arbitrageFacade.loadArbitrages(this.pageIndex(), value).then();
+    this.reload();
   }
 
   changeAutoReloadInterval(value: number) {
     this.selectedAutoReloadInterval.set(value);
-    this.arbitrageFacade.reloadArbitrages(this.pageIndex(), this.selectedPageSize(), value).then();
+    this.reload();
+  }
+
+  reload() {
+    this.arbitrageFacade.reloadArbitrages().unsubscribe();
+    this.arbitrageFacade.reloadArbitrages(this.pageIndex(), this.selectedPageSize(), this.selectedAutoReloadInterval());
   }
 
   changeColumnVisibility(value: boolean, key: string) {
