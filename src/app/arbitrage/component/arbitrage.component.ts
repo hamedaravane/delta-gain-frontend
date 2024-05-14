@@ -67,7 +67,7 @@ export class ArbitrageComponent implements OnInit {
   }
 
   reload() {
-    this.arbitrageFacade.reloadArbitrages().unsubscribe();
+    this.arbitrageFacade.reloadDataSubscription.unsubscribe();
     this.arbitrageFacade.reloadArbitrages(this.pageIndex(), this.selectedPageSize(), this.selectedAutoReloadInterval());
   }
 
