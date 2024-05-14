@@ -85,6 +85,7 @@ export interface Arbitrage {
   sellFilledAt: Date | null;
   sellCanceledAt: Date | null;
   currencyBase: string;
+  currencyBaseLogo?: string;
   buyTarget: number;
   buyVolume: number;
   buyTotalUsdt: number;

@@ -100,22 +100,65 @@
 <mobile>
   <nz-space style="display: block" nzSize="middle" nzDirection="vertical">
     @for (arbitrage of arbitragesData; track $index) {
-      <nz-card *nzSpaceItem>
+      <nz-card *nzSpaceItem [nzTitle]="cardTitle" [nzExtra]="cardExtra">
         <nz-card-meta
-            [nzTitle]="arbitrage.currencyBase"
-            [nzDescription]="arbitrage.status.side + ' ' + arbitrage.status.status"
+            [nzDescription]="cardDescription"
         ></nz-card-meta>
+        <ng-template #cardTitle>
+          @if (arbitrage.currencyBaseLogo) {
+            <img [src]="arbitrage.currencyBaseLogo" width="24" height="24" class="align-middle w-6 h-6 object-cover overflow-clip rounded-full" alt="currency logo">
+          } @else {
+            <span class="inline-block align-middle w-6 h-6 bg-gray-400 animate-pulse overflow-clip rounded-full"></span>
+          }
+          <strong class="ms-2">{{arbitrage.currencyBase}}</strong>
+        </ng-template>
+        <ng-template #cardExtra>
+          <span>{{ arbitrage.createdAt | date: 'YY/M/dd HH:mm:ss' }}</span>
+        </ng-template>
+        <ng-template #cardDescription>
+          <i class="fa-solid me-2" [ngClass]="{
+            'fa-inbox-out text-rose-400': arbitrage.status.side === 'BUY',
+            'fa-inbox-in text-teal-500': arbitrage.status.side === 'SELL'
+          }"></i>
+          <span class="me-2">{{arbitrage.status.side}}</span>
+          <i class="fa-solid me-2" [ngClass]="{
+            'fa-circle-check text-teal-500': arbitrage.status.status === 'FILLED',
+            'fa-circle-xmark text-rose-400': arbitrage.status.status === 'CANCELED'
+          }"></i>
+          <span>{{arbitrage.status.status}}</span>
+        </ng-template>
         <div class="mt-4" nz-row nzJustify="space-around">
           <div nz-col nzSpan="12">
-            <div class="mb-1">Buy</div>
-            <div>{{ arbitrage.buyTarget | number: '1.2-8' }}</div>
-            <div>{{ arbitrage.buyVolume | number: '1.2-8' }}</div>
-            <div>{{ arbitrage.buyTotalUsdt | number: '1.2-8' }}</div>
+            <div class="mb-2">
+              <i class="me-2 fa-solid fa-money-bill-wave text-rose-400"></i>
+              <strong class="text-rose-400">Ask</strong>
+            </div>
+            <div class="mb-1">
+              <i class="me-2 fa-solid fa-bullseye-arrow"></i>
+              <span>{{ arbitrage.buyTarget | number: '1.2-8' }}</span>
+            </div>
+            <div class="mb-1">
+              <i class="me-2 fa-solid fa-basket-shopping"></i>
+              <span>{{ arbitrage.buyVolume | number: '1.2-8' }}</span>
+            </div>
+            <div class="mb-1">
+              <i class="me-2 fa-solid fa-circle-dollar"></i>
+              <span>{{ arbitrage.buyTotalUsdt | number: '1.2-8' }}</span>
+            </div>
           </div>
           <div nz-col nzSpan="12">
-            <div class="mb-1">Sell</div>
-            <div>{{ arbitrage.sellTarget | number: '1.2-8' }}</div>
-            <div>{{ arbitrage.sellVolume | number: '1.2-8' }}</div>
+            <div class="mb-2">
+              <i class="me-2 fa-solid fa-hand-holding-dollar text-teal-500"></i>
+              <strong class="text-teal-500">Bid</strong>
+            </div>
+            <div class="mb-1">
+              <i class="me-2 fa-solid fa-bullseye-arrow"></i>
+              <span>{{ arbitrage.sellTarget | number: '1.2-8' }}</span>
+            </div>
+            <div class="mb-1">
+              <i class="me-2 fa-solid fa-basket-shopping"></i>
+              <span>{{ arbitrage.sellVolume | number: '1.2-8' }}</span>
+            </div>
           </div>
         </div>
       </nz-card>

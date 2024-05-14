@@ -1,7 +1,14 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {ArbitrageFacade} from '../data-access/arbitrage.facade';
 import {NzTableModule} from 'ng-zorro-antd/table';
-import {AsyncPipe, DatePipe, DecimalPipe, NgClass, NgForOf} from '@angular/common';
+import {
+  AsyncPipe,
+  DatePipe,
+  DecimalPipe,
+  NgClass,
+  NgForOf,
+  NgOptimizedImage
+} from '@angular/common';
 import {NzSkeletonModule} from 'ng-zorro-antd/skeleton';
 import {arbitragesTableConstant, dateFormats} from '../constant/arbitrages-table.constant';
 import {NzButtonModule} from 'ng-zorro-antd/button';
@@ -23,8 +30,8 @@ import { NzGridModule, NzRowDirective } from 'ng-zorro-antd/grid';
   standalone: true,
   imports: [NzTableModule, AsyncPipe, NzSkeletonModule, DatePipe, DecimalPipe,
     NzButtonModule, NzDropDownModule,
-    NzSpaceModule, NzCheckboxModule, FormsModule,
-    NzSelectModule, NgForOf, LottieComponent, NgClass, DesktopComponent, MobileComponent, NzCardModule, NzGridModule
+    NzSpaceModule, NzCheckboxModule, FormsModule, NzSkeletonModule,
+    NzSelectModule, NgForOf, LottieComponent, NgClass, DesktopComponent, MobileComponent, NzCardModule, NzGridModule, NgOptimizedImage
   ],
   templateUrl: './arbitrage.component.html',
   styleUrl: './arbitrage.component.scss'
@@ -37,7 +44,7 @@ export class ArbitrageComponent implements OnInit {
   selectedPageSize = signal(20);
   pageIndex = signal(0);
   arbitragesData = new Array<Arbitrage>();
-  selectedAutoReloadInterval = signal(3000);
+  selectedAutoReloadInterval = signal(10000);
   private readonly arbitrageFacade = inject(ArbitrageFacade);
   arbitrages$ = this.arbitrageFacade.arbitrages$;
   arbitragesPages$ = this.arbitrageFacade.arbitragesPages$;

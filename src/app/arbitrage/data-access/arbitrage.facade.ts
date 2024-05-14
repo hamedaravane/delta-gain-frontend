@@ -1,8 +1,9 @@
 import {inject, Injectable} from '@angular/core';
 import {ArbitrageInfra} from '../infrastructure/arbitrage.infra';
 import {firstValueFrom, map, Subject} from 'rxjs';
-import {ArbitrageResponse} from '../entity/arbitrage.entity';
+import { Arbitrage, ArbitrageResponse } from '../entity/arbitrage.entity';
 import {NzMessageService} from 'ng-zorro-antd/message';
+import { MarketApi } from '../../market/api/market.api';
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageFacade {
@@ -10,8 +11,9 @@ export class ArbitrageFacade {
   private readonly arbitrageInfra = inject(ArbitrageInfra);
   private readonly arbitragesSubject = new Subject<ArbitrageResponse>();
   private readonly isArbitragesLoadingSubject = new Subject<boolean>();
+  private readonly marketApi = inject(MarketApi);
   isArbitragesLoading$ = this.isArbitragesLoadingSubject.asObservable();
-  arbitrages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.embedded.arbitrages));
+  arbitrages$ = this.arbitragesSubject.asObservable().pipe(map(value => this.addCurrencyLogos(value.embedded.arbitrages)));
   arbitragesPages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.page));
 
   async loadArbitrages(page: number = 0, size: number = 20) {
@@ -24,6 +26,16 @@ export class ArbitrageFacade {
     } finally {
       this.isArbitragesLoadingSubject.next(false);
     }
+  }
+
+  addCurrencyLogos(arbitrages: Arbitrage[]) {
+    const logos = this.marketApi.cryptocurrencyLogos;
+    return arbitrages.map(arbitrage => {
+      return {
+        ...arbitrage,
+        currencyBaseLogo: logos.find(currency => currency.symbol === arbitrage.currencyBase)?.logo,
+      } as Arbitrage;
+    });
   }
 
   async reloadArbitrages(page: number = 0, size: number = 20, interval: number) {
