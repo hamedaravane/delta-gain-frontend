@@ -48,13 +48,13 @@
   <ng-container *nzModalContent>
     <form (ngSubmit)="submitToken()" nz-form>
       <nz-form-item>
-        <nz-form-label nzRequired>Enter OMP authentication token</nz-form-label>
+        <nz-form-label nzRequired>Enter authentication token</nz-form-label>
         <nz-form-control [nzErrorTip]="errorTip" nzHasFeedback>
           <input [formControl]="token" id="token" name="token" nz-input type="text">
         </nz-form-control>
         <ng-template #errorTip>
           @if (token.errors?.['required']) {
-            For most functionalities you need to provide a token.
+            Token is required
           }
         </ng-template>
       </nz-form-item>
