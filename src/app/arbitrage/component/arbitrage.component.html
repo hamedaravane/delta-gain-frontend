@@ -16,7 +16,7 @@
         </nz-space>
         <nz-space *nzSpaceItem nzAlign="center">
           <label *nzSpaceItem>Page Size:</label>
-          <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="selectedPageSize()"
+          <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="currentPageSize()"
                      nzPlaceHolder="Page Size">
             @for (pageSize of pageSizes; track $index) {
               <nz-option [nzLabel]="pageSize" [nzValue]="pageSize" [nzKey]="pageSize"></nz-option>
@@ -40,9 +40,9 @@
               [nzData]="arbitragesData"
               [nzLoadingDelay]="1000"
               [nzLoading]="isArbitragesLoading$ | async"
-              [nzPageIndex]="pageIndex()"
+              [nzPageIndex]="currentPage()"
               [nzPageSizeOptions]="pageSizes"
-              [nzPageSize]="selectedPageSize()"
+              [nzPageSize]="currentPageSize()"
               [nzNoResult]="noResult"
               nzBordered
               nzOuterBordered

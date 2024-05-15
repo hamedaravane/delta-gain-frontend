@@ -34,8 +34,8 @@ export class ArbitrageComponent implements OnInit {
   dateFormats = dateFormats;
   selectedDateFormat = signal('yy/M/d H:mm:s');
   pageSizes = [20, 50, 100];
-  selectedPageSize = signal(20);
-  pageIndex = signal(0);
+  currentPageSize = signal(20);
+  currentPage = signal(0);
   arbitragesData = new Array<Arbitrage>();
   selectedAutoReloadInterval = signal(10000);
   private readonly arbitrageFacade = inject(ArbitrageFacade);
@@ -46,18 +46,17 @@ export class ArbitrageComponent implements OnInit {
 
   ngOnInit(): void {
     this.arbitrageFacade.loadArbitrages().then();
-    this.changeAutoReloadInterval(this.selectedAutoReloadInterval());
     this.arbitrages$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((arbitrages) => {
       this.arbitragesData = arbitrages;
     })
   }
 
   changePageIndex(pageIndex: number) {
-    this.pageIndex.set(pageIndex);
+    this.currentPage.set(pageIndex);
   }
 
   changePageSize(value: number) {
-    this.selectedPageSize.set(value);
+    this.currentPageSize.set(value);
     this.reload();
   }
 
@@ -68,7 +67,7 @@ export class ArbitrageComponent implements OnInit {
 
   reload() {
     this.arbitrageFacade.reloadDataSubscription.unsubscribe();
-    this.arbitrageFacade.reloadArbitrages(this.pageIndex(), this.selectedPageSize(), this.selectedAutoReloadInterval());
+    this.arbitrageFacade.reloadArbitrages(this.currentPage(), this.currentPageSize(), this.selectedAutoReloadInterval());
   }
 
   changeColumnVisibility(value: boolean, key: string) {
