@@ -16,9 +16,9 @@ import {NzTooltipDirective} from 'ng-zorro-antd/tooltip';
     NzButtonComponent,
     NzTooltipDirective
   ],
-  templateUrl: './slider-menu.component.html',
-  styleUrl: './slider-menu.component.scss'
+  templateUrl: './side-menu.component.html',
+  styleUrl: './side-menu.component.scss'
 })
-export class SliderMenuComponent {
+export class SideMenuComponent {
   menu = menu;
 }

@@ -3,15 +3,15 @@ import { Subject } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class AuthFacade {
-  private readonly ompfinexAuthTokenSubmitLoadingSubject = new Subject<boolean>();
+  private readonly authTokenSubmitLoadingSubject = new Subject<boolean>();
   private readonly isAuthTokenAvailableSubject = new Subject<boolean>();
   isAuthTokenAvailable$ = this.isAuthTokenAvailableSubject.asObservable();
-  ompfinexAuthTokenSubmitLoading$ = this.ompfinexAuthTokenSubmitLoadingSubject.asObservable();
+  authTokenSubmitLoading$ = this.authTokenSubmitLoadingSubject.asObservable();
 
-  setOmpfinexAuthToken(token: string) {
-    this.ompfinexAuthTokenSubmitLoadingSubject.next(true);
-    this.saveOmpfinexAuthTokenToLocalStorage(token);
-    this.ompfinexAuthTokenSubmitLoadingSubject.next(false);
+  setToken(token: string) {
+    this.authTokenSubmitLoadingSubject.next(true);
+    this.saveAuthTokenToLocalStorage(token);
+    this.authTokenSubmitLoadingSubject.next(false);
     this.isAuthTokenAvailableSubject.next(false);
   }
 
@@ -22,11 +22,11 @@ export class AuthFacade {
     }
   }
 
-  private saveOmpfinexAuthTokenToLocalStorage(token: string) {
+  private saveAuthTokenToLocalStorage(token: string) {
     localStorage.setItem('ompfinexAuthToken', token);
   }
 
-  removeOmpfinexAuthTokenFromLocalStorage() {
+  removeAuthTokenFromLocalStorage() {
     localStorage.removeItem('ompfinexAuthToken');
   }
 }

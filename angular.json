@@ -72,11 +72,6 @@
               "buildTarget": "delta-gain-frontend:build:development"
             }
           },
-          "options": {
-            "host": "0.0.0.0",
-            "ssl": false,
-            "port": 4100
-          },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
