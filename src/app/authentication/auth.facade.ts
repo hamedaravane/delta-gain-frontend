@@ -16,17 +16,17 @@ export class AuthFacade {
   }
 
   readTokenFromLocalStorage() {
-    const token = localStorage.getItem('ompfinexAuthToken');
+    const token = localStorage.getItem('token');
     if (!token) {
       this.isAuthTokenAvailableSubject.next(true);
     }
   }
 
   private saveAuthTokenToLocalStorage(token: string) {
-    localStorage.setItem('ompfinexAuthToken', token);
+    localStorage.setItem('token', token);
   }
 
   removeAuthTokenFromLocalStorage() {
-    localStorage.removeItem('ompfinexAuthToken');
+    localStorage.removeItem('token');
   }
 }
