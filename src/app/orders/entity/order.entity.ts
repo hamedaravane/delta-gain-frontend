@@ -61,9 +61,10 @@ interface Links {
   [key: string]: LinkProperty;
 }
 
-interface Order {
+export interface Order {
   spotAction: string;
   currency: string;
+  currencyLogo?: string;
   amount: number;
   fee: number;
   quoteAmountUsed: number;
