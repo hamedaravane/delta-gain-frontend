@@ -50,7 +50,8 @@
       <nz-form-item>
         <nz-form-label nzRequired>Enter authentication token</nz-form-label>
         <nz-form-control [nzErrorTip]="errorTip" nzHasFeedback>
-          <input [formControl]="token" id="token" name="token" nz-input type="text">
+          <input [nzAutocomplete]="auto" [formControl]="token" id="token" name="token" nz-input type="text">
+          <nz-autocomplete #auto></nz-autocomplete>
         </nz-form-control>
         <ng-template #errorTip>
           @if (token.errors?.['required']) {

@@ -17,6 +17,7 @@ import {MobileComponent} from "@shared/components/mobile/mobile.component";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {BottomNavigationComponent} from "@shared/components/bottom-navigation/bottom-navigation.component";
 import { AuthFacade } from '../authentication/auth.facade';
+import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 
 @Component({
   selector: 'app-layout',
@@ -36,6 +37,7 @@ import { AuthFacade } from '../authentication/auth.facade';
     NzDividerModule,
     NzPageHeaderModule,
     NzGridModule,
+    NzAutocompleteModule,
     SideMenuComponent,
     DesktopComponent,
     MobileComponent,
