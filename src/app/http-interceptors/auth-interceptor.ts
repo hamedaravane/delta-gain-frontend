@@ -8,19 +8,19 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const token = localStorage.getItem('token');
-    const ompAuthToken = localStorage.getItem('ompfinexAuthToken');
+    // const ompAuthToken = localStorage.getItem('ompfinexAuthToken');
     if (!token) {
       this.nzMessage.error('You are not authenticated');
     }
     const authReq = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${token}`).append('Content-Type', 'application/json'),
+      headers: req.headers.set('Authorization', `Bearer ${token}`),
     });
-    const ompAuthReq = req.clone({
+    /*const ompAuthReq = req.clone({
       headers: req.headers.set('Authorization', `Bearer ${ompAuthToken}`).append('Content-Type', 'application/json'),
     });
     if (req.url.includes('api.ompfinex.com')) {
       return next.handle(ompAuthReq);
-    }
+    }*/
     if (req.url.includes('152.228.152.64')) {
       return next.handle(authReq);
     }
