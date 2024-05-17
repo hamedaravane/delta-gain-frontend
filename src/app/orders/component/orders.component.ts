@@ -1,7 +1,7 @@
-import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {Component, DestroyRef, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {NzTableModule} from 'ng-zorro-antd/table';
 import {OrdersFacade} from '@orders/data-access/orders.facade';
-import {AsyncPipe, DatePipe, DecimalPipe, NgClass} from '@angular/common';
+import {AsyncPipe, DatePipe, DecimalPipe, NgClass, NgOptimizedImage} from '@angular/common';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Order} from '@orders/entity/order.entity';
 import {DesktopComponent} from "@shared/components/desktop/desktop.component";
@@ -24,12 +24,13 @@ import {ordersTableHeader} from "@orders/constant/orders-table-header";
     NzGridModule,
     NzSpaceModule,
     DesktopComponent,
-    MobileComponent
+    MobileComponent,
+    NgOptimizedImage
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss'
 })
-export class OrdersComponent implements OnInit {
+export class OrdersComponent implements OnInit, OnDestroy {
   orderTableHeader = ordersTableHeader;
   ordersData = new Array<Order>();
   currentPage = signal(0);
@@ -38,9 +39,10 @@ export class OrdersComponent implements OnInit {
   private readonly ordersFacade = inject(OrdersFacade);
   orders$ = this.ordersFacade.orders$;
   private readonly destroyRef = inject(DestroyRef);
+  isOrdersLoading$ = this.ordersFacade.isOrdersLoading$;
 
   ngOnInit(): void {
-    this.ordersFacade.loadOrders(this.currentPage(), this.currentPageSize()).then();
+    this.ordersFacade.loadOrders(this.currentPage(), this.currentPageSize()).then(() => this.reload());
     this.orders$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((orders) => {
       this.ordersData = orders;
     })
@@ -63,5 +65,9 @@ export class OrdersComponent implements OnInit {
   reload() {
     this.ordersFacade.reloadDataSubscription.unsubscribe();
     this.ordersFacade.reloadOrders(this.currentPage(), this.currentPageSize(), this.selectedAutoReloadInterval());
+  }
+
+  ngOnDestroy() {
+    this.ordersFacade.reloadDataSubscription.unsubscribe();
   }
 }

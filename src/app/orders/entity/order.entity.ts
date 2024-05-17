@@ -21,7 +21,7 @@ interface OrderDto {
   quoteAmountUsed: number;
   spotTarget: number;
   providerOrderId: string;
-  status: 'CANCELED' | 'FILLED';
+  status: 'CANCELED' | 'FILLED' | 'PENDING_PLACEMENT' | 'PLACED';
   createdAt: string;
   canceledAt?: string;
   filledAt?: string;
@@ -70,7 +70,7 @@ export interface Order {
   quoteAmountUsed: number;
   spotTarget: number;
   providerOrderId: string;
-  status: 'CANCELED' | 'FILLED';
+  status: 'CANCELED' | 'FILLED' | 'PENDING_PLACEMENT' | 'PLACED';
   createdAt: Date;
   canceledAt?: Date;
   filledAt?: Date;

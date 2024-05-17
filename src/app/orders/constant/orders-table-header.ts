@@ -5,7 +5,7 @@ export const ordersTableHeader = new Map<string, boolean>([
   ['fee', true],
   ['quoteAmountUsed', true],
   ['spotTarget', true],
-  ['providerOrderId', true],
+  ['providerOrderId', false],
   ['status', true],
   ['createdAt', true],
   ['canceledAt', true],

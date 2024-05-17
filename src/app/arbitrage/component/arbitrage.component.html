@@ -68,7 +68,7 @@
           @switch (cell.valueType) {
             @case ('currency') {
               <td [class.hidden]="!cell.isVisible" nzAlign="center" class="whitespace-nowrap">
-                <img [src]="arbitrage.currencyBaseLogo" width="24" height="24" alt="currency logo"
+                <img [ngSrc]="arbitrage.currencyBaseLogo ?? 'not found'" width="24" height="24" alt="currency logo"
                      class="me-2 align-middle overflow-clip rounded-full object-cover inline-block">
                 <span>{{ arbitrage.currencyBase }}</span>
               </td>

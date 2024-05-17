@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
-import { OrdersInfra } from '@orders/infrastructure/orders.infra';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { firstValueFrom, interval, map, Subject, Subscription } from 'rxjs';
-import { Order, OrderResponse } from '@orders/entity/order.entity';
-import { MarketApi } from '../../market/api/market.api';
+import {inject, Injectable} from '@angular/core';
+import {OrdersInfra} from '@orders/infrastructure/orders.infra';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {firstValueFrom, interval, map, Subject, Subscription} from 'rxjs';
+import {Order, OrderResponse} from '@orders/entity/order.entity';
+import {MarketApi} from '../../market/api/market.api';
 
 @Injectable({providedIn: 'root'})
 export class OrdersFacade {
@@ -34,16 +34,14 @@ export class OrdersFacade {
       this.ordersSubject.next(response);
     } catch {
       this.nzMessageService.error('Error loading orders');
+    } finally {
+      this.isOrdersLoadingSubject.next(false);
     }
   }
 
   reloadOrders(page: number, size: number, _interval: number) {
     this.reloadDataSubscription = interval(_interval).subscribe(() => {
-      firstValueFrom(this.ordersInfra.getOrders(page, size)).then(response => {
-        this.ordersSubject.next(response);
-      }).catch(() => {
-        this.nzMessageService.error('Error while fetching orders');
-      });
+      this.loadOrders(page, size).then();
     });
   }
 }
