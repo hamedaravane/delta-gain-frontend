@@ -10,22 +10,11 @@ export class ArbitrageFacade {
   private readonly arbitrageInfra = inject(ArbitrageInfra);
   private readonly arbitragesSubject = new Subject<ArbitrageResponse>();
   private readonly isArbitragesLoadingSubject = new Subject<boolean>();
-  private readonly marketApi = inject(MarketApi);
   private readonly nzMessageService = inject(NzMessageService);
-  arbitrages$ = this.arbitragesSubject.asObservable().pipe(map(value => this.addCurrencyLogos(value.embedded.arbitrages)));
+  arbitrages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.embedded.arbitrages));
   arbitragesPages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.page));
   isArbitragesLoading$ = this.isArbitragesLoadingSubject.asObservable();
   reloadDataSubscription = new Subscription();
-
-  addCurrencyLogos(arbitrages: Arbitrage[]) {
-    const logos = this.marketApi.cryptocurrencyLogos;
-    return arbitrages.map(arbitrage => {
-      return {
-        ...arbitrage,
-        currencyBaseLogo: logos.find(currency => currency.symbol === arbitrage.currencyBase)?.logo
-      } as Arbitrage;
-    });
-  }
 
   async loadArbitrages(page: number = 0, size: number = 20) {
     this.isArbitragesLoadingSubject.next(true);

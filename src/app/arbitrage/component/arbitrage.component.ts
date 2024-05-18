@@ -22,7 +22,7 @@ import {FixedDatePipe} from "@shared/pipe/fixed-date.pipe";
 @Component({
   selector: 'app-arbitrage',
   standalone: true,
-  imports: [NzTableModule, AsyncPipe, NzSkeletonModule, DatePipe, DecimalPipe,
+  imports: [NzTableModule, AsyncPipe, NzSkeletonModule, FixedDatePipe, DecimalPipe,
     NzButtonModule, NzDropDownModule,
     NzSpaceModule, NzCheckboxModule, FormsModule, NzSkeletonModule,
     NzSelectModule, NgForOf, LottieComponent, NgClass, DesktopComponent, MobileComponent, NzCardModule, NzGridModule, NgOptimizedImage, FixedDatePipe
@@ -32,10 +32,8 @@ import {FixedDatePipe} from "@shared/pipe/fixed-date.pipe";
 })
 export class ArbitrageComponent implements OnInit {
   arbitragesTableConstant = signal(arbitragesTableConstant);
-  dateFormats = dateFormats;
-  selectedDateFormat = signal('yy/M/d H:mm:s');
   pageSizes = [20, 50, 100];
-  currentPageSize = signal(20);
+  currentPageSize = signal(100);
   currentPage = signal(0);
   arbitragesData = new Array<Arbitrage>();
   selectedAutoReloadInterval = signal(10000);

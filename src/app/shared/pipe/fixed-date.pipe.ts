@@ -6,16 +6,17 @@ import {Pipe, PipeTransform} from '@angular/core';
 })
 export class FixedDatePipe implements PipeTransform {
   transform(value?: Date): string {
+    if (!value) return '';
     const options: Intl.DateTimeFormatOptions = {
       timeZone: 'Asia/Tehran',
       calendar: 'persian',
       numberingSystem: 'latn',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
+      year: '2-digit',
+      month: 'numeric',
+      day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
+      minute: 'numeric',
+      second: 'numeric',
       hour12: false,
     };
     const formatter = new Intl.DateTimeFormat('fa-IR', options);

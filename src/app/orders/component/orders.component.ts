@@ -24,20 +24,19 @@ import {FixedDatePipe} from "@shared/pipe/fixed-date.pipe";
     AsyncPipe,
     NgClass,
     DecimalPipe,
-    DatePipe,
+    FixedDatePipe,
+    NgOptimizedImage,
     NzTableModule,
     NzCardModule,
     NzGridModule,
     NzSpaceModule,
-    DesktopComponent,
-    MobileComponent,
     NzButtonModule,
     NzSelectModule,
     FormsModule,
     NzCheckboxModule,
     NzDropDownModule,
-    NgOptimizedImage,
-    FixedDatePipe
+    DesktopComponent,
+    MobileComponent,
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss'
@@ -47,7 +46,7 @@ export class OrdersComponent implements OnInit, OnDestroy {
   orderTableHeader = ordersTableHeader;
   ordersData = new Array<Order>();
   currentPage = signal(0);
-  currentPageSize = signal(20);
+  currentPageSize = signal(100);
   selectedAutoReloadInterval = signal(10000);
   private readonly ordersFacade = inject(OrdersFacade);
   orders$ = this.ordersFacade.orders$;

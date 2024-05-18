@@ -6,7 +6,7 @@ import {map} from 'rxjs';
 @Injectable({providedIn: 'root'})
 export class OrdersInfra {
   protected readonly httpClient = inject(HttpClient);
-  private readonly baseUrl = 'http://152.228.152.64:1899';
+  private readonly baseUrl = '/api';
 
   getOrders(page: number, size: number) {
     return this.httpClient.get<OrderResponseDto>(`${this.baseUrl}/orders?page=${page}&size=${size}&sort=createdAt,desc`)

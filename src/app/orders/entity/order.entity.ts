@@ -1,3 +1,5 @@
+import { addCurrencyLogoUtil } from '../../market/util/add-currency-logo.util';
+
 interface LinkPropertyDto {
   href: string;
   hreflang?: string;
@@ -113,6 +115,7 @@ function convertOrderDtoToDomain(orderDto: OrderDto): Order {
   return {
     spotAction: orderDto.spotAction,
     currency: orderDto.currency,
+    currencyLogo: addCurrencyLogoUtil(orderDto.currency),
     amount: orderDto.amount,
     fee: orderDto.fee,
     quoteAmountUsed: orderDto.quoteAmountUsed,

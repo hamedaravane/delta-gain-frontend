@@ -1,12 +1,6 @@
 <desktop>
   <div class="mb-4">
-    <nz-space>
-      <button *nzSpaceItem
-              [nzDropdownMenu]="menu"
-              nz-button
-              nz-dropdown
-              nzPlacement="bottomLeft">Selected Columns
-      </button>
+    <nz-space nzSize="large">
       <nz-space *nzSpaceItem nzAlign="center">
         <label *nzSpaceItem>Page Size:</label>
         <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="currentPageSize()"
@@ -29,7 +23,6 @@
     </nz-space>
   </div>
   <nz-table (nzPageIndexChange)="changePageIndex($event)"
-            [nzData]="ordersData"
             [nzLoadingDelay]="1000"
             [nzLoading]="isOrdersLoading$ | async"
             [nzPageIndex]="currentPage()"
@@ -42,36 +35,36 @@
             nzShowSizeChanger>
     <thead>
     <tr>
-      <th [class.hidden]="!orderTableHeader.get('currency')">Currency</th>
-      <th [class.hidden]="!orderTableHeader.get('spotAction')">Action</th>
-      <th [class.hidden]="!orderTableHeader.get('amount')">Volume</th>
-      <th [class.hidden]="!orderTableHeader.get('fee')">Fee</th>
-      <th [class.hidden]="!orderTableHeader.get('quoteAmountUsed')">Quote Amount Used</th>
-      <th [class.hidden]="!orderTableHeader.get('spotTarget')">Target</th>
-      <th [class.hidden]="!orderTableHeader.get('providerOrderId')">Order Id</th>
-      <th [class.hidden]="!orderTableHeader.get('status')">Status</th>
-      <th [class.hidden]="!orderTableHeader.get('createdAt')">Created At</th>
-      <th [class.hidden]="!orderTableHeader.get('canceledAt')">Canceled At</th>
-      <th [class.hidden]="!orderTableHeader.get('filledAt')">Filled At</th>
-      <th [class.hidden]="!orderTableHeader.get('placedAt')">Placed At</th>
+      <th>Currency</th>
+      <th>Action</th>
+      <th>Volume</th>
+      <th>Fee</th>
+      <th>Value</th>
+      <th>Target</th>
+      <!-- <th>Order Id</th> -->
+      <th>Status</th>
+      <th>Created At</th>
+      <th>Placed At</th>
+      <th>Canceled At</th>
+      <th>Filled At</th>
     </tr>
     </thead>
     <tbody>
       @for (order of ordersData; track $index) {
         <tr>
-          <td [class.hidden]="!orderTableHeader.get('currency')">
+          <td>
             <img [ngSrc]="order.currencyLogo ?? 'not found'" width="24" height="24" alt="currency logo"
                  class="me-2 align-middle overflow-clip rounded-full object-cover inline-block">
             <span>{{ order.currency }}</span>
           </td>
-          <td [class.hidden]="!orderTableHeader.get('spotAction')">{{ order.spotAction }}</td>
-          <td [class.hidden]="!orderTableHeader.get('amount')">{{ order.amount | number: '1.2-8' }}</td>
-          <td [class.hidden]="!orderTableHeader.get('fee')">{{ order.fee | number: '1.2-8' }}</td>
-          <td [class.hidden]="!orderTableHeader.get('quoteAmountUsed')">{{ order.quoteAmountUsed | number: '1.2-10' }}
+          <td>{{ order.spotAction }}</td>
+          <td>{{ order.amount | number: '1.2-8' }}</td>
+          <td>{{ order.fee | number: '1.2-8' }}</td>
+          <td>{{ order.quoteAmountUsed | number: '1.2-3' }}
           </td>
-          <td [class.hidden]="!orderTableHeader.get('spotTarget')">{{ order.spotTarget | number: '1.2-8' }}</td>
-          <td [class.hidden]="!orderTableHeader.get('providerOrderId')">{{ order.providerOrderId }}</td>
-          <td [class.hidden]="!orderTableHeader.get('status')" [ngClass]="{
+          <td>{{ order.spotTarget | number: '1.2-8' }}</td>
+          <!-- <td>{{ order.providerOrderId }}</td> -->
+          <td [ngClass]="{
               'text-teal-500': order.status === 'FILLED',
               'text-rose-400': order.status === 'CANCELED',
               'text-amber-500': order.status === 'PLACED',
@@ -85,11 +78,10 @@
             }"></i>
             <span>{{ order.status }}</span>
           </td>
-          <td [class.hidden]="!orderTableHeader.get('createdAt')">{{ order.createdAt | fixedDate }}</td>
-          <td [class.hidden]="!orderTableHeader.get('canceledAt')">{{ order.canceledAt | fixedDate }}
-          </td>
-          <td [class.hidden]="!orderTableHeader.get('filledAt')">{{ order.filledAt | fixedDate }}</td>
-          <td [class.hidden]="!orderTableHeader.get('placedAt')">{{ order.placedAt | fixedDate }}</td>
+          <td [style]="{'font-size': '.8em'}">{{ order.createdAt | fixedDate }}</td>
+          <td [style]="{'font-size': '.8em'}">{{ order.placedAt | fixedDate }}</td>
+          <td [style]="{'font-size': '.8em'}">{{ order.canceledAt | fixedDate }}</td>
+          <td [style]="{'font-size': '.8em'}">{{ order.filledAt | fixedDate }}</td>
         </tr>
       }
     </tbody>
@@ -157,15 +149,3 @@
     }
   </nz-space>
 </mobile>
-<nz-dropdown-menu #menu="nzDropdownMenu">
-  <ul nz-menu>
-    <nz-space nzDirection="vertical">
-      @for (column of orderTableHeader.entries(); track $index) {
-        <li *nzSpaceItem>
-          <label nz-checkbox [ngModel]="column[1]"
-                 (ngModelChange)="changeColumnVisibility($event, column[0])">{{ column[0] }}</label>
-        </li>
-      }
-    </nz-space>
-  </ul>
-</nz-dropdown-menu>

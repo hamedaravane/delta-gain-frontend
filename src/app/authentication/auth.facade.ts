@@ -8,6 +8,10 @@ export class AuthFacade {
   isAuthTokenAvailable$ = this.isAuthTokenAvailableSubject.asObservable();
   authTokenSubmitLoading$ = this.authTokenSubmitLoadingSubject.asObservable();
 
+  constructor() {
+    this.readTokenFromLocalStorage();
+  }
+
   setToken(token: string) {
     this.authTokenSubmitLoadingSubject.next(true);
     this.saveAuthTokenToLocalStorage(token);

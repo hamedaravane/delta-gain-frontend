@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, OnDestroy, signal } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import {NzLayoutModule} from "ng-zorro-antd/layout";
 import {RouterOutlet} from '@angular/router';
 import {AsyncPipe, NgClass} from '@angular/common';
@@ -46,7 +46,7 @@ import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
-export class LayoutComponent implements OnDestroy, AfterViewInit {
+export class LayoutComponent implements OnDestroy {
   token = new FormControl<string>('', [Validators.required]);
   tokenReaderSubscription = new Subscription();
   isSideMenuCollapsed = signal(true);
@@ -54,10 +54,6 @@ export class LayoutComponent implements OnDestroy, AfterViewInit {
   private readonly authFacade = inject(AuthFacade);
   ompfinexAuthTokenSubmitLoading$ = this.authFacade.authTokenSubmitLoading$;
   isAuthTokenAvailable$ = this.authFacade.isAuthTokenAvailable$;
-
-  ngAfterViewInit(): void {
-    this.authFacade.readTokenFromLocalStorage();
-  }
 
   submitToken() {
     if (this.token.value) {

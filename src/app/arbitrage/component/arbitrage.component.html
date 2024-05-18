@@ -1,19 +1,7 @@
 <desktop>
-  <nz-space nzDirection="vertical">
+  <nz-space nzSize="large" nzDirection="vertical">
     <div *nzSpaceItem>
-      <nz-space>
-        <button *nzSpaceItem [nzDropdownMenu]="menu" nz-button nz-dropdown nzPlacement="bottomLeft">Selected Columns
-        </button>
-        <nz-space *nzSpaceItem nzAlign="center">
-          <label *nzSpaceItem>Date Format:</label>
-          <nz-select (ngModelChange)="selectedDateFormat.set($event)" *nzSpaceItem [ngModel]="selectedDateFormat()"
-                     nzPlaceHolder="Date Format">
-            @for (dateFormat of dateFormats; track $index) {
-              <nz-option [nzLabel]="dateFormat.label" [nzValue]="dateFormat.value"
-                         [nzKey]="dateFormat.value"></nz-option>
-            }
-          </nz-select>
-        </nz-space>
+      <nz-space nzSize="large">
         <nz-space *nzSpaceItem nzAlign="center">
           <label *nzSpaceItem>Page Size:</label>
           <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="currentPageSize()"
@@ -43,7 +31,6 @@
               [nzPageIndex]="currentPage()"
               [nzPageSizeOptions]="pageSizes"
               [nzPageSize]="currentPageSize()"
-              [nzNoResult]="noResult"
               nzBordered
               nzOuterBordered
               [nzShowPagination]="true"
@@ -51,59 +38,64 @@
               nzShowSizeChanger>
       <thead>
       <tr>
-        @for (header of arbitragesTableConstant(); track header.columnKey) {
-          <th [nzSortFn]="header.sortFn"
-              [nzShowSort]="header.showSort"
-              [nzSortDirections]="header.sortDirections"
-              [nzShowFilter]="header.showFilter"
-              [class.hidden]="!header.isVisible"
-              nzAlign="center">{{ header.title }}
-          </th>
-        }
+        <th>Currency</th>
+        <th>Profit</th>
+        <th>Profit (USDT)</th>
+        <th>Side</th>
+        <th>Status</th>
+        <th>Create</th>
+        <th>Placed (BUY)</th>
+        <th>Placed (SELL)</th>
+        <th>Canceled (BUY)</th>
+        <th>Canceled (SELL)</th>
+        <th>Filled (BUY)</th>
+        <th>Filled (SELL)</th>
+        <th>Buy Target</th>
+        <th>Buy Volume</th>
+        <th>Sell Target</th>
+        <th>Sell Volume</th>
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let arbitrage of arbitragesData">
-        @for (cell of arbitragesTableConstant(); track cell.columnKey) {
-          @switch (cell.valueType) {
-            @case ('currency') {
-              <td [class.hidden]="!cell.isVisible" nzAlign="center" class="whitespace-nowrap">
-                <img [ngSrc]="arbitrage.currencyBaseLogo ?? 'not found'" width="24" height="24" alt="currency logo"
-                     class="me-2 align-middle overflow-clip rounded-full object-cover inline-block">
-                <span>{{ arbitrage.currencyBase }}</span>
-              </td>
-            }
-            @case ('number') {
-              <td [class.hidden]="!cell.isVisible"
-                  nzAlign="center">{{ arbitrage[cell.columnKey] | number: cell.digitsInfo ?? '1.2-2' }}
-              </td>
-            }
-            @case ('date') {
-              <td [class.hidden]="!cell.isVisible"
-                  nzAlign="center">{{ arbitrage[cell.columnKey] | fixedDate }}
-              </td>
-            }
-            @case ('enum') {
-              <td [class.hidden]="!cell.isVisible" class="whitespace-nowrap">
-                <i class="fa-solid me-2" [ngClass]="{
-                  'fa-inbox-out text-rose-400': arbitrage.status.side === 'BUY',
-                  'fa-inbox-in text-teal-500': arbitrage.status.side === 'SELL'
+        @for (arbitrage of arbitragesData; track arbitrage.sellOrderId) {
+          <tr>
+            <td class="whitespace-nowrap">
+              <img [ngSrc]="arbitrage.currencyBaseLogo ?? 'not found'" width="24" height="24" alt="currency logo"
+                   class="me-2 align-middle overflow-clip rounded-full object-cover inline-block">
+              <span>{{ arbitrage.currencyBase }}</span>
+            </td>
+            <td>{{arbitrage.profit | number: '1.2-5'}}</td>
+            <td>{{arbitrage.profitUsdt | number: '1.2-3'}}</td>
+            <td class="whitespace-nowrap" [ngClass]="{
+                  'text-rose-400': arbitrage.status.side === 'BUY',
+                  'text-teal-500': arbitrage.status.side === 'SELL'
+                }">
+              <i class="fa-solid me-2" [ngClass]="{
+                  'fa-inbox-out': arbitrage.status.side === 'BUY',
+                  'fa-inbox-in': arbitrage.status.side === 'SELL'
                 }"></i>
-                <span class="me-2">{{ arbitrage.status.side }}</span>
-                <i class="fa-solid me-2" [ngClass]="{
+              <span class="me-2">{{ arbitrage.status.side }}</span>
+            </td>
+            <td nzAlign="center">
+              <i class="fa-solid me-2" [ngClass]="{
                   'fa-circle-check text-teal-500': arbitrage.status.status === 'FILLED',
+                  'fa-spinner-third text-amber-500 animate-spin': arbitrage.status.status === 'PLACED',
                   'fa-circle-xmark text-rose-400': arbitrage.status.status === 'CANCELED'
                 }"></i>
-                <span>{{ arbitrage.status.status }}</span>
-              </td>
-            }
-            @default {
-              <td [class.hidden]="!cell.isVisible" nzAlign="center">{{ arbitrage[cell.columnKey] }}
-              </td>
-            }
-          }
+            </td>
+            <td [style]="{'font-size': '.8em'}">{{arbitrage.createdAt | fixedDate}}</td>
+            <td [style]="{'font-size': '.8em'}">{{arbitrage.buyPlacedAt | fixedDate}}</td>
+            <td [style]="{'font-size': '.8em'}">{{arbitrage.sellPlacedAt | fixedDate}}</td>
+            <td [style]="{'font-size': '.8em'}">{{arbitrage.buyCanceledAt | fixedDate}}</td>
+            <td [style]="{'font-size': '.8em'}">{{arbitrage.sellCanceledAt | fixedDate}}</td>
+            <td [style]="{'font-size': '.8em'}">{{arbitrage.buyFilledAt | fixedDate}}</td>
+            <td [style]="{'font-size': '.8em'}">{{arbitrage.sellFilledAt | fixedDate}}</td>
+            <td>{{ arbitrage.buyTarget | number: '1.2-8' }}</td>
+            <td>{{ arbitrage.buyVolume | number: '1.2-4' }}</td>
+            <td>{{ arbitrage.sellTarget | number: '1.2-8' }}</td>
+            <td>{{ arbitrage.sellVolume | number: '1.2-4' }}</td>
+          </tr>
         }
-      </tr>
       </tbody>
     </nz-table>
   </nz-space>
@@ -131,6 +123,7 @@
           <span class="me-2">{{arbitrage.status.side}}</span>
           <i class="fa-solid me-2" [ngClass]="{
             'fa-circle-check text-teal-500': arbitrage.status.status === 'FILLED',
+            'fa-spinner-third animate-spin text-amber-500': arbitrage.status.status === 'PLACED',
             'fa-circle-xmark text-rose-400': arbitrage.status.status === 'CANCELED'
           }"></i>
           <span>{{arbitrage.status.status}}</span>
@@ -185,8 +178,3 @@
     </nz-space>
   </ul>
 </nz-dropdown-menu>
-<ng-template #noResult>
-  <div class="flex w-full justify-center">
-    <ng-lottie [options]="{path: 'assets/lottie-animations/loading.json'}" height="150px" width="150px"></ng-lottie>
-  </div>
-</ng-template>
