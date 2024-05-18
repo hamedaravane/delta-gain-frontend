@@ -80,7 +80,7 @@
             }
             @case ('date') {
               <td [class.hidden]="!cell.isVisible"
-                  nzAlign="center">{{ arbitrage[cell.columnKey] | date: selectedDateFormat() }}
+                  nzAlign="center">{{ arbitrage[cell.columnKey] | fixedDate }}
               </td>
             }
             @case ('enum') {
@@ -121,7 +121,7 @@
           <strong class="ms-2">{{arbitrage.currencyBase}}</strong>
         </ng-template>
         <ng-template #cardExtra>
-          <span>{{ arbitrage.createdAt | date: 'YY/M/dd HH:mm:ss' }}</span>
+          <span>{{ arbitrage.createdAt | fixedDate }}</span>
         </ng-template>
         <ng-template #cardDescription>
           <i class="fa-solid me-2" [ngClass]="{

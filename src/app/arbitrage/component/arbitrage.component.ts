@@ -17,6 +17,7 @@ import {DesktopComponent} from '@shared/components/desktop/desktop.component';
 import {MobileComponent} from '@shared/components/mobile/mobile.component';
 import {NzCardModule} from 'ng-zorro-antd/card';
 import {NzGridModule} from 'ng-zorro-antd/grid';
+import {FixedDatePipe} from "@shared/pipe/fixed-date.pipe";
 
 @Component({
   selector: 'app-arbitrage',
@@ -24,7 +25,7 @@ import {NzGridModule} from 'ng-zorro-antd/grid';
   imports: [NzTableModule, AsyncPipe, NzSkeletonModule, DatePipe, DecimalPipe,
     NzButtonModule, NzDropDownModule,
     NzSpaceModule, NzCheckboxModule, FormsModule, NzSkeletonModule,
-    NzSelectModule, NgForOf, LottieComponent, NgClass, DesktopComponent, MobileComponent, NzCardModule, NzGridModule, NgOptimizedImage
+    NzSelectModule, NgForOf, LottieComponent, NgClass, DesktopComponent, MobileComponent, NzCardModule, NzGridModule, NgOptimizedImage, FixedDatePipe
   ],
   templateUrl: './arbitrage.component.html',
   styleUrl: './arbitrage.component.scss'

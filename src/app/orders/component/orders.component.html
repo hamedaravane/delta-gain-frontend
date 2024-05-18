@@ -1,4 +1,33 @@
 <desktop>
+  <div class="mb-4">
+    <nz-space>
+      <button *nzSpaceItem
+              [nzDropdownMenu]="menu"
+              nz-button
+              nz-dropdown
+              nzPlacement="bottomLeft">Selected Columns
+      </button>
+      <nz-space *nzSpaceItem nzAlign="center">
+        <label *nzSpaceItem>Page Size:</label>
+        <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="currentPageSize()"
+                   nzPlaceHolder="Page Size">
+          @for (pageSize of [20, 35, 50, 100]; track $index) {
+            <nz-option [nzLabel]="pageSize" [nzValue]="pageSize" [nzKey]="pageSize"></nz-option>
+          }
+        </nz-select>
+      </nz-space>
+      <nz-space *nzSpaceItem nzAlign="center">
+        <label *nzSpaceItem>Auto Reload Interval:</label>
+        <nz-select (ngModelChange)="changeAutoReloadInterval($event)" *nzSpaceItem
+                   [ngModel]="selectedAutoReloadInterval()"
+                   nzPlaceHolder="Auto Reload Interval">
+          @for (interval of [1000, 2000, 3000, 5000, 10000]; track $index) {
+            <nz-option [nzLabel]="interval" [nzValue]="interval" [nzKey]="interval"></nz-option>
+          }
+        </nz-select>
+      </nz-space>
+    </nz-space>
+  </div>
   <nz-table (nzPageIndexChange)="changePageIndex($event)"
             [nzData]="ordersData"
             [nzLoadingDelay]="1000"
@@ -56,11 +85,11 @@
             }"></i>
             <span>{{ order.status }}</span>
           </td>
-          <td [class.hidden]="!orderTableHeader.get('createdAt')">{{ order.createdAt | date: 'YY/M/dd HH:mm:ss' }}</td>
-          <td [class.hidden]="!orderTableHeader.get('canceledAt')">{{ order.canceledAt | date: 'YY/M/dd HH:mm:ss' }}
+          <td [class.hidden]="!orderTableHeader.get('createdAt')">{{ order.createdAt | fixedDate }}</td>
+          <td [class.hidden]="!orderTableHeader.get('canceledAt')">{{ order.canceledAt | fixedDate }}
           </td>
-          <td [class.hidden]="!orderTableHeader.get('filledAt')">{{ order.filledAt | date: 'YY/M/dd HH:mm:ss' }}</td>
-          <td [class.hidden]="!orderTableHeader.get('placedAt')">{{ order.placedAt | date: 'YY/M/dd HH:mm:ss' }}</td>
+          <td [class.hidden]="!orderTableHeader.get('filledAt')">{{ order.filledAt | fixedDate }}</td>
+          <td [class.hidden]="!orderTableHeader.get('placedAt')">{{ order.placedAt | fixedDate }}</td>
         </tr>
       }
     </tbody>
@@ -74,43 +103,53 @@
           [nzDescription]="cardDescription"
         ></nz-card-meta>
         <ng-template #cardTitle>
-          <img [src]="order.currencyLogo" width="24" height="24"
+          <img [ngSrc]="order.currencyLogo ?? 'not found'" width="24" height="24"
                class="inline-block align-middle w-6 h-6 object-cover overflow-clip rounded-full" alt="currency logo">
           <strong class="ms-2">{{ order.currency }}</strong>
         </ng-template>
         <ng-template #cardExtra>
-          <span>{{ order.createdAt | date: 'YY/M/dd HH:mm:ss' }}</span>
+          <strong
+            [ngClass]="{'text-teal-500': order.spotAction === 'SPOTBUY', 'text-rose-400': order.spotAction === 'SPOTSELL'}">{{ order.spotAction }}</strong>
         </ng-template>
         <ng-template #cardDescription>
-          <i class="fa-solid me-2" [ngClass]="{
-            'fa-circle-check text-teal-500': order.status === 'FILLED',
-            'fa-circle-xmark text-rose-400': order.status === 'CANCELED'
-          }"></i>
-          <span>{{ order.status }}</span>
+          <div [ngClass]="{
+              'text-teal-500': order.status === 'FILLED',
+              'text-rose-400': order.status === 'CANCELED',
+              'text-amber-500': order.status === 'PLACED',
+              'text-orange-500': order.status === 'PENDING_PLACEMENT',
+            }">
+            <i class="fa-solid me-2" [ngClass]="{
+              'fa-circle-check': order.status === 'FILLED',
+              'fa-circle-xmark': order.status === 'CANCELED',
+              'fa-hourglass': order.status === 'PLACED',
+              'fa-spinner animate-spin': order.status === 'PENDING_PLACEMENT',
+            }"></i>
+            <span>{{ order.status }}</span>
+          </div>
         </ng-template>
         <div class="mt-4" nz-row nzJustify="space-around">
           <div nz-col nzSpan="12">
             <div class="mb-1">
-              <i class="me-2 fa-solid fa-bullseye-arrow"></i>
-              <span>{{ order.createdAt | date: 'YY/M/dd HH:mm:ss' }}</span>
+              <i class="me-2 fa-solid fa-square-plus"></i>
+              <span>{{ order.createdAt | fixedDate }}</span>
             </div>
           </div>
           <div nz-col nzSpan="12">
             <div class="mb-1">
-              <i class="me-2 fa-solid fa-bullseye-arrow"></i>
-              <span>{{ order.canceledAt | date: 'YY/M/dd HH:mm:ss' }}</span>
+              <i class="me-2 fa-solid fa-xmark-circle"></i>
+              <span>{{ order.canceledAt | fixedDate }}</span>
             </div>
           </div>
           <div nz-col nzSpan="12">
             <div class="mb-1">
-              <i class="me-2 fa-solid fa-bullseye-arrow"></i>
-              <span>{{ order.filledAt | date: 'YY/M/dd HH:mm:ss' }}</span>
+              <i class="me-2 fa-solid fa-fill"></i>
+              <span>{{ order.filledAt | fixedDate }}</span>
             </div>
           </div>
           <div nz-col nzSpan="12">
             <div class="mb-1">
-              <i class="me-2 fa-solid fa-bullseye-arrow"></i>
-              <span>{{ order.placedAt | date: 'YY/M/dd HH:mm:ss' }}</span>
+              <i class="me-2 fa-solid fa-location-crosshairs"></i>
+              <span>{{ order.placedAt | fixedDate }}</span>
             </div>
           </div>
         </div>
@@ -118,3 +157,15 @@
     }
   </nz-space>
 </mobile>
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <ul nz-menu>
+    <nz-space nzDirection="vertical">
+      @for (column of orderTableHeader.entries(); track $index) {
+        <li *nzSpaceItem>
+          <label nz-checkbox [ngModel]="column[1]"
+                 (ngModelChange)="changeColumnVisibility($event, column[0])">{{ column[0] }}</label>
+        </li>
+      }
+    </nz-space>
+  </ul>
+</nz-dropdown-menu>
