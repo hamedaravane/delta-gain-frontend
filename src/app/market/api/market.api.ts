@@ -1,11 +1,5 @@
-import { inject, Injectable } from '@angular/core';
-import { CoinMarketCapFacade } from '../data-access/coinmarketcap.facade';
+import {Injectable} from '@angular/core';
 
 @Injectable({providedIn: 'root'})
 export class MarketApi {
-  private readonly coinmarketcapFacade = inject(CoinMarketCapFacade);
-
-  get cryptocurrencyLogos() {
-    return this.coinmarketcapFacade.cryptocurrencyLogos;
-  }
 }
