@@ -19,13 +19,13 @@ export const routes: Routes = [
           title: 'Orders'
         }
       },
-      /*{
+      {
         path: 'market',
-        loadComponent: () => import('../market/market.component').then(c => c.MarketComponent),
+        loadComponent: () => import('../market/component/market.component').then(c => c.MarketComponent),
         data: {
           title: 'Market'
         }
-      },*/
+      },
     ]
   }
 ];
