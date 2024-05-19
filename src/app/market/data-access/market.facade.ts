@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {MarketInfra} from '../infrastructure/market.infra';
-import {firstValueFrom, Subject} from 'rxjs';
+import {firstValueFrom, interval, Subject} from 'rxjs';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {ContentItem} from "../entity/market.entity";
 
@@ -12,7 +12,7 @@ export class MarketFacade {
   private readonly marketContentsSubject = new Subject<ContentItem[]>();
   marketContent$ = this.marketContentsSubject.asObservable();
 
-  async getMarket() {
+  async loadMarketContentData() {
     try {
       this.isMarketLoading$.next(true);
       const response = await firstValueFrom(this.marketInfra.getMarketWithPagination());
@@ -22,5 +22,15 @@ export class MarketFacade {
     } finally {
       this.isMarketLoading$.next(false);
     }
+  }
+
+  /**
+   * update market data frequently based on interval
+   * @param {number} _interval
+   */
+  updateMarketsByInterval(_interval: number) {
+    return interval(_interval).subscribe(() => {
+      this.loadMarketContentData().then();
+    });
   }
 }
