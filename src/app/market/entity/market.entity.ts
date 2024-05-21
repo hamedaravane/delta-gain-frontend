@@ -10,7 +10,7 @@ interface PageableDto {
   pageNumber: number;
   pageSize: number;
   offset: number;
-  sort: SortCriteriaDto[];
+  sort: SortCriteriaDto;
   paged: boolean;
   unpaged: boolean;
 }
@@ -40,7 +40,7 @@ export interface PaginationResponseDto {
   size: number;
   content: ContentItemDto[];
   number: number;
-  sort: SortCriteriaDto[];
+  sort: SortCriteriaDto;
   first: boolean;
   last: boolean;
   numberOfElements: number;
@@ -59,7 +59,7 @@ interface Pageable {
   pageNumber: number;
   pageSize: number;
   offset: number;
-  sort: SortCriteria[];
+  sort: SortCriteria;
   paged: boolean;
   unpaged: boolean;
 }
@@ -89,7 +89,7 @@ export interface PaginationResponse {
   size: number;
   content: ContentItem[];
   number: number;
-  sort: SortCriteria[];
+  sort: SortCriteria;
   first: boolean;
   last: boolean;
   numberOfElements: number;
@@ -103,7 +103,7 @@ function convertSortCriteriaDtoToDomain(sortDto: SortCriteriaDto): SortCriteria 
 function convertPageableDtoToDomain(pageableDto: PageableDto): Pageable {
   return {
     ...pageableDto,
-    sort: pageableDto.sort.map(convertSortCriteriaDtoToDomain)
+    sort: convertSortCriteriaDtoToDomain(pageableDto.sort)
   };
 }
 
@@ -119,6 +119,6 @@ export function convertPaginationResponseDtoToDomain(responseDto: PaginationResp
     ...responseDto,
     pageable: convertPageableDtoToDomain(responseDto.pageable),
     content: responseDto.content.map(convertContentItemDtoToDomain),
-    sort: responseDto.sort.map(convertSortCriteriaDtoToDomain)
+    sort: convertSortCriteriaDtoToDomain(responseDto.sort)
   };
 }

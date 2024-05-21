@@ -20,10 +20,10 @@ export const routes: Routes = [
         }
       },
       {
-        path: 'market',
-        loadComponent: () => import('../market/component/market.component').then(c => c.MarketComponent),
+        path: 'chart',
+        loadComponent: () => import('../market/component/price-chart/price-chart.component').then(c => c.PriceChartComponent),
         data: {
-          title: 'Market'
+          title: 'Chart'
         }
       },
     ]

@@ -13,16 +13,16 @@ const menu = [
     title: 'Orders',
     path: 'orders',
     icon: 'fa-list-check'
-  },/*
-  {
-    title: 'Market',
-    path: 'market',
-    icon: 'fa-money-bill'
   },
   {
     title: 'Chart',
     path: 'chart',
     icon: 'fa-chart-line'
+  },/*
+  {
+    title: 'Market',
+    path: 'market',
+    icon: 'fa-money-bill'
   },
   {
     title: 'About',

@@ -6,7 +6,7 @@ import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {NzTooltipDirective} from 'ng-zorro-antd/tooltip';
 
 @Component({
-  selector: 'app-slider-menu',
+  selector: 'app-side-menu',
   standalone: true,
   imports: [
     NzMenuDirective,

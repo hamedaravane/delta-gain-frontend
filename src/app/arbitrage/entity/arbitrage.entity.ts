@@ -1,19 +1,11 @@
 import { addCurrencyLogoUtil } from '../../market/util/add-currency-logo.util';
-
-export interface LinkPropertyDto {
-  href: string;
-  hreflang?: string;
-  title?: string;
-  type?: string;
-  deprecation?: string;
-  profile?: string;
-  name?: string;
-  templated?: boolean;
-}
-
-export interface LinksDto {
-  [key: string]: LinkPropertyDto;
-}
+import {
+  LinkDto,
+  Links,
+  Link,
+  LinksDto,
+  convertLinksDtoToDomain
+} from '@shared/entity/common.entity';
 
 export interface ArbitrageDto {
   buyOrderId: string;
@@ -54,21 +46,6 @@ export interface ArbitrageResponseDto {
   _embedded: EmbeddedArbitragesDto;
   _links: LinksDto;
   page: PageDto;
-}
-
-export interface LinkProperty {
-  href: string;
-  hreflang?: string;
-  title?: string;
-  type?: string;
-  deprecation?: string;
-  profile?: string;
-  name?: string;
-  templated?: boolean;
-}
-
-export interface Links {
-  [key: string]: LinkProperty;
 }
 
 export interface Arbitrage {
@@ -114,7 +91,7 @@ export interface ArbitrageResponse {
   page: Page;
 }
 
-export function convertLinkProperty(dto: LinkPropertyDto): LinkProperty {
+export function convertLinkProperty(dto: LinkDto): Link {
   return {
     href: dto.href,
     hreflang: dto.hreflang,
@@ -125,14 +102,6 @@ export function convertLinkProperty(dto: LinkPropertyDto): LinkProperty {
     name: dto.name,
     templated: dto.templated,
   };
-}
-
-export function convertLinks(dto: LinksDto): Links {
-  const links: Links = {};
-  for (const key in dto) {
-    links[key] = convertLinkProperty(dto[key]);
-  }
-  return links;
 }
 
 export function convertArbitrage(dto: ArbitrageDto): Arbitrage {
@@ -158,7 +127,7 @@ export function convertArbitrage(dto: ArbitrageDto): Arbitrage {
     buyTotalUsdt: dto.buyTotalUsdt,
     sellTarget: dto.sellTarget,
     sellVolume: dto.sellVolume,
-    links: convertLinks(dto._links),
+    links: convertLinksDtoToDomain(dto._links),
   };
 }
 
@@ -193,7 +162,7 @@ export function convertPage(dto: PageDto): Page {
 export function convertArbitrageResponse(dto: ArbitrageResponseDto): ArbitrageResponse {
   return {
     embedded: convertEmbeddedArbitrages(dto._embedded),
-    links: convertLinks(dto._links),
+    links: convertLinksDtoToDomain(dto._links),
     page: convertPage(dto.page),
   };
 }

@@ -1,19 +1,9 @@
 import { addCurrencyLogoUtil } from '../../market/util/add-currency-logo.util';
-
-interface LinkPropertyDto {
-  href: string;
-  hreflang?: string;
-  title?: string;
-  type?: string;
-  deprecation?: string;
-  profile?: string;
-  name?: string;
-  templated: boolean;
-}
-
-interface LinksDto {
-  [key: string]: LinkPropertyDto;
-}
+import {
+  convertLinksDtoToDomain,
+  Links,
+  LinksDto
+} from '@shared/entity/common.entity';
 
 interface OrderDto {
   spotAction: string;
@@ -48,21 +38,6 @@ export interface OrderResponseDto {
   page: PageDto;
 }
 
-interface LinkProperty {
-  href: string;
-  hreflang?: string;
-  title?: string;
-  type?: string;
-  deprecation?: string;
-  profile?: string;
-  name?: string;
-  templated: boolean;
-}
-
-interface Links {
-  [key: string]: LinkProperty;
-}
-
 export interface Order {
   spotAction: string;
   currency: string;
@@ -95,20 +70,6 @@ export interface OrderResponse {
   embedded: EmbeddedOrders;
   links: Links;
   page: Page;
-}
-
-function convertLinkDtoToDomain(linkDto: LinkPropertyDto): LinkProperty {
-  return {
-    ...linkDto
-  };
-}
-
-function convertLinksDtoToDomain(linksDto: LinksDto): Links {
-  const links: Links = {};
-  for (const key in linksDto) {
-    links[key] = convertLinkDtoToDomain(linksDto[key]);
-  }
-  return links;
 }
 
 function convertOrderDtoToDomain(orderDto: OrderDto): Order {

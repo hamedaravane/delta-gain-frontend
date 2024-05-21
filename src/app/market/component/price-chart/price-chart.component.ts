@@ -5,60 +5,74 @@ import {
   ElementRef,
   inject,
   OnDestroy,
-  OnInit,
+  OnInit, signal,
   ViewChild
 } from '@angular/core';
-import { Chart, ChartConfiguration, ChartData } from 'chart.js';
+import Chart, { ChartConfiguration, ChartData } from 'chart.js/auto';
 import { MarketFacade } from '../../data-access/market.facade';
 import { Observable } from 'rxjs';
 import { ContentItem } from '../../entity/market.entity';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { COLORS } from '@shared/constant/tailwind-colors';
+import { COLORS, transparent } from '@shared/constant/tailwind-colors';
+import { CurrencySafeZoneApi } from '../../../currency-safe-zone/api/currency-safe-zone.api';
+import { AsyncPipe } from '@angular/common';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { FormsModule } from '@angular/forms';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 
 @Component({
   selector: 'market-price-chart',
   standalone: true,
-  imports: [],
+  imports: [
+    AsyncPipe,
+    NzSelectModule,
+    FormsModule,
+    NzSpaceModule
+  ],
   templateUrl: './price-chart.component.html',
   styleUrl: './price-chart.component.scss'
 })
 export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
   private readonly marketFacade = inject(MarketFacade);
-  private priceChart!: Chart;
-  @ViewChild('priceChart') private priceChartEl!: ElementRef<HTMLCanvasElement>;
-
+  private readonly currencySafeZoneApi = inject(CurrencySafeZoneApi);
+  selectedCurrency = signal<string>('SHIB');
+  currentPageSize = signal(50);
+  currentPage = signal(0);
+  currencySafeZones$ = this.currencySafeZoneApi.currencySafeZones$;
+  @ViewChild('priceChartEl') priceChartEl!: ElementRef<HTMLCanvasElement>;
+  priceChart!: Chart;
   chartData: ChartData = {
     datasets: [
       {
         label: 'Binance Ask',
         data: [],
-        borderColor: COLORS.orange_5,
+        borderColor: transparent(COLORS.orange_5, 0.5),
         fill: false,
         pointRadius: 0
       },
       {
         label: 'Binance Bid',
         data: [],
-        borderColor: COLORS.amber_5,
+        borderColor: transparent(COLORS.amber_5, 0.5),
         fill: false,
         pointRadius: 0
       },
       {
         label: 'OMP Ask',
         data: [],
-        borderColor: COLORS.teal_6,
+        borderColor: COLORS.rose_5,
         fill: false,
         pointRadius: 0
       },
       {
         label: 'OMP Bid',
         data: [],
-        borderColor: COLORS.emerald_5,
+        borderColor: COLORS.green_5,
         fill: false,
         pointRadius: 0
       },
-      {
+      /*{
         label: 'Buy Points',
         data: [],
         backgroundColor: COLORS.green_5,
@@ -75,34 +89,68 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
         pointBorderColor: COLORS.rose_5,
         showLine: false,
         pointRadius: 6
-      }
+      }*/
     ],
     labels: []
   };
   private chartConfiguration: ChartConfiguration = {
     type: 'line',
-    data: this.chartData
+    data: this.chartData,
+    options: {
+      aspectRatio: 2.1,
+      normalized: true,
+      maintainAspectRatio: true,
+      elements: {
+        line: {
+          tension: 0.3
+        }
+      }
+    }
   };
   marketContent$: Observable<ContentItem[]> = this.marketFacade.marketContent$;
 
   ngOnInit() {
+    this.marketFacade.loadMarketContentData([{key: 'currencyBase', operator: '_eq', value: this.selectedCurrency()}]).then();
+  }
+
+  onCurrencyChange(currency: string) {
+    this.priceChart.clear();
+    this.chartData.labels = [];
+    this.chartData.datasets.map((dataset) => dataset.data = [])
+    this.selectedCurrency.set(currency);
+    this.marketFacade.loadMarketContentData([{key: 'currencyBase', operator: '_eq', value: this.selectedCurrency()}]).then();
+  }
+
+  ngAfterViewInit() {
+    this.priceChart = new Chart(this.priceChartEl.nativeElement, this.chartConfiguration);
+    this.createChart();
+  }
+
+  createChart(){
     this.marketContent$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(content => {
       for (const contentItem of content) {
         this.chartData.datasets[0].data.push(contentItem.bestAskBase);
         this.chartData.datasets[1].data.push(contentItem.bestBidBase);
         this.chartData.datasets[2].data.push(contentItem.bestAskVuln);
         this.chartData.datasets[3].data.push(contentItem.bestBidVuln);
-        this.chartData.labels?.push(contentItem.createdAt);
+        this.chartData.labels?.push(this.generateChartLabels(contentItem.createdAt));
+      }
+      if (this.priceChart) {
+        this.priceChart.update();
       }
     });
   }
 
-  ngAfterViewInit() {
-    this.priceChart = new Chart(this.priceChartEl.nativeElement, this.chartConfiguration);
-    this.priceChart.draw();
+  private generateChartLabels(time: Date): string {
+    const hour = time.getHours();
+    const minute = time.getMinutes();
+    const second = time.getSeconds();
+    return `${hour}:${minute}:${second}`;
   }
 
   ngOnDestroy() {
-    this.priceChart.destroy();
+    if (this.priceChart) {
+      this.priceChart.destroy();
+    }
   }
 }
