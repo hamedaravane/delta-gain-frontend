@@ -36,7 +36,6 @@ export class ArbitrageComponent implements OnInit {
   isArbitragesLoading$ = this.arbitrageFacade.isArbitragesLoading$;
 
   ngOnInit(): void {
-    this.arbitrageFacade.loadArbitrages().then();
     this.arbitrages$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((arbitrages) => {
       this.arbitragesData = arbitrages;
     })
