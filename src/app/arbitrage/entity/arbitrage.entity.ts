@@ -1,23 +1,43 @@
-import { addCurrencyLogoUtil } from '../../market/util/add-currency-logo.util';
-import {
-  LinkDto,
-  Links,
-  Link,
-  LinksDto,
-  convertLinksDtoToDomain
-} from '@shared/entity/common.entity';
+import {addCurrencyLogoUtil} from "../../market/util/add-currency-logo.util";
+
+interface SortDto {
+  direction: string;
+  nullHandling: string;
+  ascending: boolean;
+  property: string;
+  ignoreCase: boolean;
+}
+
+interface PageableDto {
+  pageNumber: number;
+  pageSize: number;
+  offset: number;
+  sort: SortDto[];
+  paged: boolean;
+  unpaged: boolean;
+}
+
+interface OrderDto {
+  id: string;
+  volume: number;
+  spotAction: string;
+  currency: string;
+  amount: number;
+  spotTarget: number;
+  status: string;
+  createdAt: string;
+  placedAt: string | null;
+  canceledAt: string | null;
+  filledAt: string | null;
+}
 
 export interface ArbitrageDto {
-  buyOrderId: string;
-  sellOrderId: string;
+  id: string;
   profit: number;
   profitUsdt: number;
-  leftOverBase: number | null;
-  createdAtCycle: string;
   status: 'BUY_CANCELED' | 'SELL_CANCELED' | 'BUY_FILLED' | 'SELL_FILLED' | 'BUY_PLACED' | 'SELL_PLACED';
   createdAt: string;
-  buyPlacedAt: string;
-  sellPlacedAt: string | null;
+  buyPlacedAt: string | null;
   buyFilledAt: string | null;
   buyCanceledAt: string | null;
   sellFilledAt: string | null;
@@ -27,38 +47,76 @@ export interface ArbitrageDto {
   buyVolume: number;
   buyTotalUsdt: number;
   sellTarget: number;
-  sellVolume: number | null;
-  _links: LinksDto;
-}
-
-export interface EmbeddedArbitragesDto {
-  arbitrages: ArbitrageDto[];
-}
-
-export interface PageDto {
-  size: number;
-  totalElements: number;
-  totalPages: number;
-  number: number;
+  sellVolume: number;
+  buyOrder: OrderDto;
+  sellOrder: OrderDto;
 }
 
 export interface ArbitrageResponseDto {
-  _embedded: EmbeddedArbitragesDto;
-  _links: LinksDto;
-  page: PageDto;
+  totalPages: number;
+  totalElements: number;
+  pageable: PageableDto;
+  size: number;
+  content: ArbitrageDto[];
+  number: number;
+  sort: SortDto[];
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+  empty: boolean;
+}
+
+interface Sort {
+  direction: string;
+  nullHandling: string;
+  ascending: boolean;
+  property: string;
+  ignoreCase: boolean;
+}
+
+interface Pageable {
+  pageNumber: number;
+  pageSize: number;
+  offset: number;
+  sort: Sort[];
+  paged: boolean;
+  unpaged: boolean;
+}
+
+interface Order {
+  id: string;
+  volume: number;
+  spotAction: string;
+  currency: string;
+  amount: number;
+  spotTarget: number;
+  status: string;
+  createdAt?: Date;
+  placedAt?: Date;
+  canceledAt?: Date;
+  filledAt?: Date;
+}
+
+interface Status {
+  status: 'FILLED' | 'CANCELED' | 'PLACED';
+  side: 'BUY' | 'SELL';
+}
+
+function convertArbitrageStatusDtoToStatus(dto: 'BUY_PLACED' | 'BUY_CANCELED' | 'BUY_FILLED' | 'SELL_PLACED' | 'SELL_CANCELED' | 'SELL_FILLED'): Status {
+  const split = dto.split('_');
+  return {
+    status: split[1] as 'FILLED' | 'CANCELED' | 'PLACED',
+    side: split[0] as 'BUY' | 'SELL'
+  }
 }
 
 export interface Arbitrage {
-  buyOrderId: string;
-  sellOrderId: string;
+  id: string;
   profit: number;
   profitUsdt: number;
-  leftOverBase: number | null;
-  createdAtCycle: string;
   status: Status;
-  createdAt: Date;
+  createdAt?: Date;
   buyPlacedAt?: Date;
-  sellPlacedAt?: Date;
   buyFilledAt?: Date;
   buyCanceledAt?: Date;
   sellFilledAt?: Date;
@@ -69,100 +127,58 @@ export interface Arbitrage {
   buyVolume: number;
   buyTotalUsdt: number;
   sellTarget: number;
-  sellVolume: number | null;
-  links: Links;
-  [key: string]: any;
-}
-
-export interface EmbeddedArbitrages {
-  arbitrages: Arbitrage[];
-}
-
-export interface Page {
-  size: number;
-  totalElements: number;
-  totalPages: number;
-  number: number;
+  sellVolume: number;
+  buyOrder: Order;
+  sellOrder: Order;
 }
 
 export interface ArbitrageResponse {
-  embedded: EmbeddedArbitrages;
-  links: Links;
-  page: Page;
+  totalPages: number;
+  totalElements: number;
+  pageable: Pageable;
+  size: number;
+  arbitrages: Arbitrage[];
+  number: number;
+  sort: Sort[];
+  first: boolean;
+  last: boolean;
+  numberOfElements: number;
+  empty: boolean;
 }
 
-export function convertLinkProperty(dto: LinkDto): Link {
+function convertDate(dateString: string | null): Date | undefined {
+  return dateString ? new Date(dateString) : undefined;
+}
+
+function convertOrderDtoToOrder(orderDto: OrderDto): Order {
   return {
-    href: dto.href,
-    hreflang: dto.hreflang,
-    title: dto.title,
-    type: dto.type,
-    deprecation: dto.deprecation,
-    profile: dto.profile,
-    name: dto.name,
-    templated: dto.templated,
+    ...orderDto,
+    createdAt: convertDate(orderDto.createdAt),
+    placedAt: convertDate(orderDto.placedAt),
+    canceledAt: convertDate(orderDto.canceledAt),
+    filledAt: convertDate(orderDto.filledAt)
   };
 }
 
-export function convertArbitrage(dto: ArbitrageDto): Arbitrage {
+function convertArbitrageDtoToArbitrage(arbitrageDto: ArbitrageDto): Arbitrage {
   return {
-    buyOrderId: dto.buyOrderId,
-    sellOrderId: dto.sellOrderId,
-    profit: dto.profit,
-    profitUsdt: dto.profitUsdt,
-    leftOverBase: dto.leftOverBase,
-    createdAtCycle: dto.createdAtCycle,
-    status: convertStatus(dto.status),
-    createdAt: new Date(dto.createdAt),
-    buyPlacedAt: dto.buyPlacedAt ? new Date(dto.buyPlacedAt) : undefined,
-    sellPlacedAt: dto.sellPlacedAt ? new Date(dto.sellPlacedAt) : undefined,
-    buyFilledAt: dto.buyFilledAt ? new Date(dto.buyFilledAt) : undefined,
-    buyCanceledAt: dto.buyCanceledAt ? new Date(dto.buyCanceledAt) : undefined,
-    sellFilledAt: dto.sellFilledAt ? new Date(dto.sellFilledAt) : undefined,
-    sellCanceledAt: dto.sellCanceledAt ? new Date(dto.sellCanceledAt) : undefined,
-    currencyBase: dto.currencyBase,
-    currencyBaseLogo: addCurrencyLogoUtil(dto.currencyBase),
-    buyTarget: dto.buyTarget,
-    buyVolume: dto.buyVolume,
-    buyTotalUsdt: dto.buyTotalUsdt,
-    sellTarget: dto.sellTarget,
-    sellVolume: dto.sellVolume,
-    links: convertLinksDtoToDomain(dto._links),
+    ...arbitrageDto,
+    status: convertArbitrageStatusDtoToStatus(arbitrageDto.status),
+    currencyBaseLogo: addCurrencyLogoUtil(arbitrageDto.currencyBase),
+    buyPlacedAt: convertDate(arbitrageDto.buyPlacedAt),
+    createdAt: convertDate(arbitrageDto.createdAt),
+    buyFilledAt: convertDate(arbitrageDto.buyFilledAt),
+    buyCanceledAt: convertDate(arbitrageDto.buyCanceledAt),
+    sellFilledAt: convertDate(arbitrageDto.sellFilledAt),
+    sellCanceledAt: convertDate(arbitrageDto.sellCanceledAt),
+    buyOrder: convertOrderDtoToOrder(arbitrageDto.buyOrder),
+    sellOrder: convertOrderDtoToOrder(arbitrageDto.sellOrder)
   };
 }
 
-export interface Status {
-  side: 'BUY' | 'SELL';
-  status: 'FILLED' | 'CANCELED' | 'PLACED';
-}
-
-export function convertStatus(status: 'BUY_CANCELED' | 'SELL_CANCELED' | 'BUY_FILLED' | 'SELL_FILLED' | 'BUY_PLACED' | 'SELL_PLACED'): Status {
-  const split = status.split('_');
+export function convertArbitrageResponseDtoToArbitrageResponse(paginationDto: ArbitrageResponseDto): ArbitrageResponse {
   return {
-    side: split[0] as 'BUY' | 'SELL',
-    status: split[1] as 'FILLED' | 'CANCELED' | 'PLACED',
-  };
-}
-
-export function convertEmbeddedArbitrages(dto: EmbeddedArbitragesDto): EmbeddedArbitrages {
-  return {
-    arbitrages: dto.arbitrages.map(convertArbitrage),
-  };
-}
-
-export function convertPage(dto: PageDto): Page {
-  return {
-    size: dto.size,
-    totalElements: dto.totalElements,
-    totalPages: dto.totalPages,
-    number: dto.number,
-  };
-}
-
-export function convertArbitrageResponse(dto: ArbitrageResponseDto): ArbitrageResponse {
-  return {
-    embedded: convertEmbeddedArbitrages(dto._embedded),
-    links: convertLinksDtoToDomain(dto._links),
-    page: convertPage(dto.page),
-  };
+    ...paginationDto,
+    arbitrages: paginationDto.content.map(convertArbitrageDtoToArbitrage)
+  }
 }

@@ -1,14 +1,23 @@
 import {inject, Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {ArbitrageResponse, ArbitrageResponseDto, convertArbitrageResponse} from '../entity/arbitrage.entity';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {map} from 'rxjs';
 import {environment} from "@environment";
+import {
+  ArbitrageResponse,
+  ArbitrageResponseDto,
+  convertArbitrageResponseDtoToArbitrageResponse
+} from "../entity/arbitrage.entity";
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageInfra {
   private readonly httpClient = inject(HttpClient);
 
-  getArbitrages(page: number = 0, size: number = 20) {
-    return this.httpClient.get<ArbitrageResponseDto>(`${environment.baseUrl}/arbitrages?page=${page}&size=${size}&sort=createdAt,desc`).pipe(map<ArbitrageResponseDto, ArbitrageResponse>(response => convertArbitrageResponse(response)));
+  getArbitrage(page: number = 0, size: number = 20) {
+    const params = new HttpParams().append('page', page).append('size', size)
+    return this.httpClient.get<ArbitrageResponseDto>
+    (`${environment.baseUrl}/v1/arbitrages`, {params})
+      .pipe(
+        map<ArbitrageResponseDto, ArbitrageResponse>(response => convertArbitrageResponseDtoToArbitrageResponse(response))
+      );
   }
 }

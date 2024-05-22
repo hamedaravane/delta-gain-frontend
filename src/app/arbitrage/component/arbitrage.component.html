@@ -4,9 +4,9 @@
       <nz-space nzSize="large">
         <nz-space *nzSpaceItem nzAlign="center">
           <label *nzSpaceItem>Page Size:</label>
-          <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="currentPageSize()"
+          <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="currentPageSize"
                      nzPlaceHolder="Page Size">
-            @for (pageSize of pageSizes; track $index) {
+            @for (pageSize of [20, 40, 60, 80, 100]; track $index) {
               <nz-option [nzLabel]="pageSize" [nzValue]="pageSize" [nzKey]="pageSize"></nz-option>
             }
           </nz-select>
@@ -14,7 +14,7 @@
         <nz-space *nzSpaceItem nzAlign="center">
           <label *nzSpaceItem>Auto Reload Interval:</label>
           <nz-select (ngModelChange)="changeAutoReloadInterval($event)" *nzSpaceItem
-                     [ngModel]="selectedAutoReloadInterval()"
+                     [ngModel]="selectedAutoReloadInterval"
                      nzPlaceHolder="Auto Reload Interval">
             @for (interval of [1000, 2000, 3000, 5000, 10000]; track $index) {
               <nz-option [nzLabel]="interval" [nzValue]="interval" [nzKey]="interval"></nz-option>
@@ -28,9 +28,9 @@
               [nzData]="arbitragesData"
               [nzLoadingDelay]="1000"
               [nzLoading]="isArbitragesLoading$ | async"
-              [nzPageIndex]="currentPage()"
-              [nzPageSizeOptions]="pageSizes"
-              [nzPageSize]="currentPageSize()"
+              [nzPageIndex]="currentPage"
+              [nzPageSizeOptions]="[20,40,60,80,100]"
+              [nzPageSize]="currentPageSize"
               nzBordered
               nzOuterBordered
               [nzShowPagination]="true"
@@ -45,7 +45,6 @@
         <th>Status</th>
         <th>Create</th>
         <th>Placed (BUY)</th>
-        <th>Placed (SELL)</th>
         <th>Canceled (BUY)</th>
         <th>Canceled (SELL)</th>
         <th>Filled (BUY)</th>
@@ -57,7 +56,7 @@
       </tr>
       </thead>
       <tbody>
-        @for (arbitrage of arbitragesData; track arbitrage.sellOrderId) {
+        @for (arbitrage of arbitragesData; track arbitrage.id) {
           <tr>
             <td class="whitespace-nowrap">
               <img [ngSrc]="arbitrage.currencyBaseLogo ?? 'not found'" width="24" height="24" alt="currency logo"
@@ -85,7 +84,6 @@
             </td>
             <td [style]="{'font-size': '.8em'}">{{arbitrage.createdAt | fixedDate}}</td>
             <td [style]="{'font-size': '.8em'}">{{arbitrage.buyPlacedAt | fixedDate}}</td>
-            <td [style]="{'font-size': '.8em'}">{{arbitrage.sellPlacedAt | fixedDate}}</td>
             <td [style]="{'font-size': '.8em'}">{{arbitrage.buyCanceledAt | fixedDate}}</td>
             <td [style]="{'font-size': '.8em'}">{{arbitrage.sellCanceledAt | fixedDate}}</td>
             <td [style]="{'font-size': '.8em'}">{{arbitrage.buyFilledAt | fixedDate}}</td>
@@ -166,15 +164,3 @@
     }
   </nz-space>
 </mobile>
-<nz-dropdown-menu #menu="nzDropdownMenu">
-  <ul nz-menu>
-    <nz-space nzDirection="vertical">
-      @for (column of arbitragesTableConstant(); track $index) {
-        <li *nzSpaceItem>
-          <label nz-checkbox [ngModel]="column.isVisible"
-                 (ngModelChange)="changeColumnVisibility($event, column.columnKey)">{{ column.title }}</label>
-        </li>
-      }
-    </nz-space>
-  </ul>
-</nz-dropdown-menu>

@@ -1,25 +1,24 @@
-import { inject, Injectable } from '@angular/core';
-import { ArbitrageInfra } from '../infrastructure/arbitrage.infra';
-import { firstValueFrom, interval, map, Subject, Subscription } from 'rxjs';
-import { Arbitrage, ArbitrageResponse } from '../entity/arbitrage.entity';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { MarketApi } from '../../market/api/market.api';
+import {inject, Injectable} from '@angular/core';
+import {ArbitrageInfra} from '../infrastructure/arbitrage.infra';
+import {firstValueFrom, interval, map, Subject, Subscription} from 'rxjs';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {ArbitrageResponse} from "../entity/arbitrage.entity";
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageFacade {
+  reloadDataSubscription = new Subscription();
   private readonly arbitrageInfra = inject(ArbitrageInfra);
   private readonly arbitragesSubject = new Subject<ArbitrageResponse>();
+  arbitrages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.arbitrages));
+  arbitragesPages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.totalPages));
   private readonly isArbitragesLoadingSubject = new Subject<boolean>();
-  private readonly nzMessageService = inject(NzMessageService);
-  arbitrages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.embedded.arbitrages));
-  arbitragesPages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.page));
   isArbitragesLoading$ = this.isArbitragesLoadingSubject.asObservable();
-  reloadDataSubscription = new Subscription();
+  private readonly nzMessageService = inject(NzMessageService);
 
   async loadArbitrages(page: number = 0, size: number = 20) {
     this.isArbitragesLoadingSubject.next(true);
     try {
-      const response = await firstValueFrom(this.arbitrageInfra.getArbitrages(page, size));
+      const response = await firstValueFrom(this.arbitrageInfra.getArbitrage(page, size));
       this.arbitragesSubject.next(response);
     } catch (e) {
       this.nzMessageService.error('Error while fetching arbitrages');
@@ -30,7 +29,7 @@ export class ArbitrageFacade {
 
   reloadArbitrages(page: number, size: number, _interval: number) {
     this.reloadDataSubscription = interval(_interval).subscribe(() => {
-      firstValueFrom(this.arbitrageInfra.getArbitrages(page, size)).then(response => {
+      firstValueFrom(this.arbitrageInfra.getArbitrage(page, size)).then(response => {
         this.arbitragesSubject.next(response);
       }).catch(() => {
         this.nzMessageService.error('Error while fetching arbitrages');

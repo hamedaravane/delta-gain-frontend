@@ -1,9 +1,8 @@
-import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {ArbitrageFacade} from '../data-access/arbitrage.facade';
 import {NzTableModule} from 'ng-zorro-antd/table';
-import {AsyncPipe, DatePipe, DecimalPipe, NgClass, NgForOf, NgOptimizedImage} from '@angular/common';
+import {AsyncPipe, DecimalPipe, NgClass, NgForOf, NgOptimizedImage} from '@angular/common';
 import {NzSkeletonModule} from 'ng-zorro-antd/skeleton';
-import {arbitragesTableConstant, dateFormats} from '../constant/arbitrages-table.constant';
 import {NzButtonModule} from 'ng-zorro-antd/button';
 import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
 import {NzSpaceModule} from 'ng-zorro-antd/space';
@@ -22,26 +21,19 @@ import {FixedDatePipe} from "@shared/pipe/fixed-date.pipe";
 @Component({
   selector: 'app-arbitrage',
   standalone: true,
-  imports: [NzTableModule, AsyncPipe, NzSkeletonModule, FixedDatePipe, DecimalPipe,
-    NzButtonModule, NzDropDownModule,
-    NzSpaceModule, NzCheckboxModule, FormsModule, NzSkeletonModule,
-    NzSelectModule, NgForOf, LottieComponent, NgClass, DesktopComponent, MobileComponent, NzCardModule, NzGridModule, NgOptimizedImage, FixedDatePipe
-  ],
+  imports: [NzTableModule, AsyncPipe, NzSkeletonModule, FixedDatePipe, DecimalPipe, NzButtonModule, NzDropDownModule, NzSpaceModule, NzCheckboxModule, FormsModule, NzSkeletonModule, NzSelectModule, NgForOf, LottieComponent, NgClass, DesktopComponent, MobileComponent, NzCardModule, NzGridModule, NgOptimizedImage, FixedDatePipe],
   templateUrl: './arbitrage.component.html',
   styleUrl: './arbitrage.component.scss'
 })
 export class ArbitrageComponent implements OnInit {
-  arbitragesTableConstant = signal(arbitragesTableConstant);
-  pageSizes = [20, 50, 100];
-  currentPageSize = signal(100);
-  currentPage = signal(0);
   arbitragesData = new Array<Arbitrage>();
-  selectedAutoReloadInterval = signal(10000);
+  currentPage = 0;
+  currentPageSize = 100;
+  selectedAutoReloadInterval = 10000;
+  private readonly destroyRef = inject(DestroyRef);
   private readonly arbitrageFacade = inject(ArbitrageFacade);
   arbitrages$ = this.arbitrageFacade.arbitrages$;
-  arbitragesPages$ = this.arbitrageFacade.arbitragesPages$;
   isArbitragesLoading$ = this.arbitrageFacade.isArbitragesLoading$;
-  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.arbitrageFacade.loadArbitrages().then();
@@ -50,31 +42,22 @@ export class ArbitrageComponent implements OnInit {
     })
   }
 
-  changePageIndex(pageIndex: number) {
-    this.currentPage.set(pageIndex);
+  changePageIndex(value: number) {
+    this.currentPage = value;
   }
 
   changePageSize(value: number) {
-    this.currentPageSize.set(value);
+    this.currentPageSize = value;
     this.reload();
   }
 
   changeAutoReloadInterval(value: number) {
-    this.selectedAutoReloadInterval.set(value);
+    this.selectedAutoReloadInterval = value;
     this.reload();
   }
 
   reload() {
     this.arbitrageFacade.reloadDataSubscription.unsubscribe();
-    this.arbitrageFacade.reloadArbitrages(this.currentPage(), this.currentPageSize(), this.selectedAutoReloadInterval());
-  }
-
-  changeColumnVisibility(value: boolean, key: string) {
-    const selectedTable = arbitragesTableConstant.find(table => table.columnKey === key)!;
-    this.arbitragesTableConstant.set(arbitragesTableConstant.map(table => {
-      if (table.columnKey === selectedTable.columnKey) {
-        return {...table, isVisible: value};
-      } else return table;
-    }));
+    this.arbitrageFacade.reloadArbitrages(this.currentPage, this.currentPageSize, this.selectedAutoReloadInterval);
   }
 }
