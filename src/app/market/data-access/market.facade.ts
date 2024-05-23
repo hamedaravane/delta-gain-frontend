@@ -4,6 +4,7 @@ import { firstValueFrom, interval, Subject } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { ContentItem, ContentItemDto } from '../entity/market.entity';
 import { Filter, Operator } from '@shared/entity/common.entity';
+import { ArbitrageApi } from '../../arbitrage/api/arbitrage.api';
 
 @Injectable({providedIn: 'root'})
 export class MarketFacade {
@@ -13,10 +14,10 @@ export class MarketFacade {
   private readonly nzMessageService = inject(NzMessageService);
   marketContent$ = this.marketContentsSubject.asObservable();
 
-  async loadMarketContentData(filters: Filter<ContentItemDto, Operator, string>[]) {
+  async loadMarketContentData(filters: Filter<ContentItemDto, Operator, string>[], pageSize: number = 50, pageNumber: number = 0) {
     try {
       this.isMarketLoading$.next(true);
-      const response = await firstValueFrom(this.marketInfra.getMarketWithPagination(filters));
+      const response = await firstValueFrom(this.marketInfra.getMarketWithPagination(filters, pageSize, pageNumber));
       this.marketContentsSubject.next(response.content);
     } catch (e) {
       console.error(e);

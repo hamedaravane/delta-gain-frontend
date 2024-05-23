@@ -64,7 +64,7 @@
               <span>{{ arbitrage.currencyBase }}</span>
             </td>
             <td>{{arbitrage.profit | number: '1.2-5'}}</td>
-            <td>{{arbitrage.profitUsdt | number: '1.2-3'}}</td>
+            <td>{{arbitrage.profitUsdt | number: '1.2-4'}}</td>
             <td class="whitespace-nowrap" [ngClass]="{
                   'text-rose-400': arbitrage.status.side === 'BUY',
                   'text-teal-500': arbitrage.status.side === 'SELL'

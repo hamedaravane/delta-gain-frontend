@@ -2,7 +2,8 @@ import {inject, Injectable} from '@angular/core';
 import {ArbitrageInfra} from '../infrastructure/arbitrage.infra';
 import {firstValueFrom, interval, map, Subject, Subscription} from 'rxjs';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import {ArbitrageResponse} from "../entity/arbitrage.entity";
+import { ArbitrageDto, ArbitrageResponse, ArbitrageResponseDto } from '../entity/arbitrage.entity';
+import { Filter, Operator } from '@shared/entity/common.entity';
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageFacade {
@@ -14,19 +15,13 @@ export class ArbitrageFacade {
   private readonly isArbitragesLoadingSubject = new Subject<boolean>();
   isArbitragesLoading$ = this.isArbitragesLoadingSubject.asObservable();
   private readonly nzMessageService = inject(NzMessageService);
+  arbitrages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.arbitrages));
 
-  get arbitrages$() {
-    if (!this.isLoaded) {
-      this.loadArbitrages().then();
-    }
-    return this.arbitragesSubject.asObservable().pipe(map(value => value.arbitrages));
-  }
-
-  async loadArbitrages(page: number = 0, size: number = 20) {
+  async loadArbitrages(page: number = 0, size: number = 20,  filters?: Filter<ArbitrageDto, Operator, string>[]) {
     this.isArbitragesLoadingSubject.next(true);
     try {
       this.isLoaded = true;
-      const response = await firstValueFrom(this.arbitrageInfra.getArbitrage(page, size));
+      const response = await firstValueFrom(this.arbitrageInfra.getArbitrage(page, size, filters));
       this.arbitragesSubject.next(response);
     } catch (e) {
       this.nzMessageService.error('Error while fetching arbitrages');

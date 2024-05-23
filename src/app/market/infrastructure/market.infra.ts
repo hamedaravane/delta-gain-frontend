@@ -16,7 +16,7 @@ export class MarketInfra {
 
   getMarketWithPagination(filters: Filter<ContentItemDto, Operator, string>[], pageSize: number = 50, pageNumber: number = 0) {
     let params!: HttpParams;
-    filters.map(filter => {
+    filters.forEach(filter => {
       params = new HttpParams().append(`${filter.key}${filter.operator}`,filter.value).append('size', pageSize);
     });
     return this.httpClient.get<PaginationResponseDto>(`${environment.baseUrl}/v1/market`, {params}).pipe(

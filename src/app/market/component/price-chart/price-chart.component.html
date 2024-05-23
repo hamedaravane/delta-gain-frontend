@@ -2,7 +2,7 @@
     @if (currencySafeZones$ | async; as currencySafeZones) {
       <div class="inline-block me-4">
         <label>Currency: </label>
-        <nz-select [ngModel]="selectedCurrency()" (ngModelChange)="onCurrencyChange($event)">
+        <nz-select [ngModel]="selectedCurrency" (ngModelChange)="onCurrencyChange($event)">
           @for(currencySafeZone of currencySafeZones; track $index) {
             <nz-option [nzLabel]="currencySafeZone.currency" [nzValue]="currencySafeZone.currency"></nz-option>
           }
@@ -11,7 +11,7 @@
     }
     <div class="inline-block">
       <label>Page Size: </label>
-      <nz-select [ngModel]="currentPageSize()" (ngModelChange)="currentPageSize.set($event)">
+      <nz-select [ngModel]="currentPageSize" (ngModelChange)="onPageSizeChange($event)">
         @for(size of [30, 50, 100, 200]; track $index) {
           <nz-option [nzLabel]="size" [nzValue]="size"></nz-option>
         }
