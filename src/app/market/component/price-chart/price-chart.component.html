@@ -12,7 +12,7 @@
     <div class="inline-block">
       <label>Page Size: </label>
       <nz-select [ngModel]="currentPageSize" (ngModelChange)="onPageSizeChange($event)">
-        @for(size of [30, 50, 100, 200]; track $index) {
+        @for(size of [20, 30, 50, 100, 200]; track $index) {
           <nz-option [nzLabel]="size" [nzValue]="size"></nz-option>
         }
       </nz-select>

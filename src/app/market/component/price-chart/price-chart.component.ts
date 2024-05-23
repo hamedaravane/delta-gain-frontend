@@ -20,6 +20,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { FormsModule } from '@angular/forms';
 import { NzSpaceModule } from 'ng-zorro-antd/space';
 import { ArbitrageApi } from '../../../arbitrage/api/arbitrage.api';
+import 'chartjs-adapter-date-fns';
 
 @Component({
   selector: 'market-price-chart',
@@ -37,7 +38,7 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
   currencySafeZones$ = this.currencySafeZoneApi.currencySafeZones$;
   priceChart!: Chart;
   currentPage = 0;
-  currentPageSize = 1000;
+  currentPageSize = 20;
   marketContent$: Observable<ContentItem[]> = this.marketFacade.marketContent$;
   selectedCurrency = 'GMX';
   chartData: ChartData = {
@@ -62,9 +63,8 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
     }, {
       label: 'Buy Points',
       data: [],
-      backgroundColor: COLORS.purple_5,
-      pointBackgroundColor: COLORS.purple_5,
-      pointBorderColor: COLORS.purple_5,
+      backgroundColor: COLORS.green_5,
+      pointBackgroundColor: COLORS.green_5,
       showLine: false,
       pointRadius: 6
     }, {
@@ -72,7 +72,6 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
       data: [],
       backgroundColor: COLORS.rose_5,
       pointBackgroundColor: COLORS.rose_5,
-      pointBorderColor: COLORS.purple_5,
       showLine: false,
       pointRadius: 6
     }],
@@ -80,14 +79,38 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
   };
   private chartConfiguration: ChartConfiguration = {
     type: 'line', data: this.chartData, options: {
-      aspectRatio: 2.1, normalized: true, maintainAspectRatio: true, elements: {
+      aspectRatio: 2.1,
+      normalized: true,
+      maintainAspectRatio: true,
+      elements: {
         line: {
           tension: 0.3
+        }
+      },
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'day',
+            displayFormats: {
+              day: 'MMM dd',
+              month: 'MMM yyyy'
+            }
+          },
+          ticks: {
+            source: 'auto',
+            autoSkip: true,
+            maxRotation: 0,
+            minRotation: 0
+          }
+        },
+        y: {
+          beginAtZero: true
         }
       }
     }
   };
-  arbitrages$ = this.arbitrageApi.getArbitrages(this.currentPageSize, this.currentPage, [{
+  arbitrages$ = this.arbitrageApi.getArbitrages(this.currentPage, this.currentPageSize, [{
     key: 'currencyBase',
     operator: '_eq',
     value: this.selectedCurrency
@@ -98,7 +121,7 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
       key: 'currencyBase',
       operator: '_eq',
       value: this.selectedCurrency
-    }], this.currentPageSize, this.currentPage).then();
+    }], this.currentPageSize + 30, this.currentPage).then();
   }
 
   ngAfterViewInit() {
@@ -109,41 +132,13 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
   onCurrencyChange(currency: string) {
     this.clearChart();
     this.selectedCurrency = currency;
-    this.marketFacade.loadMarketContentData([{
-      key: 'currencyBase',
-      operator: '_eq',
-      value: currency
-    }], this.currentPageSize).then();
-    this.arbitrages$ = this.arbitrageApi.getArbitrages(this.currentPageSize, this.currentPage, [{
-      key: 'currencyBase',
-      operator: '_eq',
-      value: currency
-    }]);
+    this.reloadData();
   }
 
   onPageSizeChange(pageSize: number) {
     this.clearChart();
     this.currentPageSize = pageSize;
-    this.marketFacade.loadMarketContentData([{
-      key: 'currencyBase',
-      operator: '_eq',
-      value: this.selectedCurrency
-    }], pageSize).then();
-    this.arbitrages$ = this.arbitrageApi.getArbitrages(pageSize, this.currentPage, [{
-      key: 'currencyBase',
-      operator: '_eq',
-      value: this.selectedCurrency
-    }]);
-  }
-
-  private generateChartLabels(time: Date | undefined): string {
-    if (!time) {
-      return '';
-    }
-    const hour = time.getHours();
-    const minute = time.getMinutes();
-    const second = time.getSeconds();
-    return `${hour}:${minute}:${second}`;
+    this.reloadData();
   }
 
   clearChart() {
@@ -152,24 +147,63 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chartData.datasets.map((dataset) => dataset.data = []);
   }
 
+  reloadData() {
+    this.clearChart();
+    this.marketFacade.loadMarketContentData([{
+      key: 'currencyBase',
+      operator: '_eq',
+      value: this.selectedCurrency
+    }], this.currentPageSize + 30).then();
+    this.arbitrages$ = this.arbitrageApi.getArbitrages(this.currentPage, this.currentPageSize, [{
+      key: 'currencyBase',
+      operator: '_eq',
+      value: this.selectedCurrency
+    }]);
+  }
+
   createChart() {
-    this.marketContent$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((markets) => {
-      for (const market of markets) {
-        this.chartData.datasets[0].data.push(market.bestAskBase);
-        this.chartData.datasets[1].data.push(market.bestAskVuln);
-        this.chartData.datasets[2].data.push(market.bestBidVuln);
-        this.chartData.labels?.push(this.generateChartLabels(market.createdAt));
-      }
-      if (this.priceChart) {
-        this.priceChart.update();
-      }
-    });
-    this.arbitrages$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((arbitrages) => {
-      for (const arbitrage of arbitrages) {
-        this.chartData.datasets[3].data.push(arbitrage.buyTarget);
-        this.chartData.datasets[4].data.push(arbitrage.sellTarget);
-        this.chartData.labels?.push(this.generateChartLabels(arbitrage.createdAt));
-      }
+    this.marketContent$.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      combineLatestWith(this.arbitrages$)
+    ).subscribe(([markets, arbitrages]) => {
+      this.clearChart();
+
+      // Merge and sort the datasets by timestamp
+      const union = [...markets, ...arbitrages].sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
+
+      // Process each item in the sorted union array
+      union.forEach((item) => {
+        if ('bestAskBase' in item) {
+          // Market data
+          this.chartData.datasets[0].data.push({
+            x: item.createdAt.getTime(),
+            y: item.bestAskBase
+          });
+          this.chartData.datasets[1].data.push({
+            x: item.createdAt.getTime(),
+            y: item.bestAskVuln
+          });
+          this.chartData.datasets[2].data.push({
+            x: item.createdAt.getTime(),
+            y: item.bestBidVuln
+          });
+        } else if ('buyTarget' in item) {
+          // Arbitrage data
+          this.chartData.datasets[3].data.push({
+            x: item.createdAt!.getTime(),
+            y: item.buyTarget
+          });
+          this.chartData.datasets[4].data.push({
+            x: item.createdAt!.getTime(),
+            y: item.sellTarget
+          });
+        }
+      });
+
+      // Update labels with timestamps
+      this.chartData.labels = union.map((item) => item.createdAt!.getTime());
+
+      // Update the chart
       if (this.priceChart) {
         this.priceChart.update();
       }

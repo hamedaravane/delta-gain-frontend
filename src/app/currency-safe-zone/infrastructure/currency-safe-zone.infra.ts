@@ -13,7 +13,7 @@ export class CurrencySafeZoneInfra {
   private readonly httpClient = inject(HttpClient);
 
   getCurrencySafeZones() {
-    return this.httpClient.get<CurrencySfzResponseDto>(`${environment.baseUrl}/currencySfzes`)
+    return this.httpClient.get<CurrencySfzResponseDto>(`${environment.baseUrl}/currencySfzes?page=0&size=300`)
       .pipe(
         map<CurrencySfzResponseDto, CurrencySfzResponse>(
           (response) => convertCurrencySfzResponseDtoToDomain(response)
