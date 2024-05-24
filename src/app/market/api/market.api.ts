@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {MarketFacade} from "../data-access/market.facade";
 import {Filter, Operator} from '@shared/entity/common.entity';
-import {ContentItemDto} from '../entity/market.entity';
+import {MarketDto} from '../entity/market.entity';
 
 @Injectable({providedIn: 'root'})
 export class MarketApi {
@@ -11,7 +11,7 @@ export class MarketApi {
     return this.marketFacade.marketContent$;
   }
 
-  loadMarketContent(filters: Filter<ContentItemDto, Operator, string>[]) {
+  loadMarketContent(filters: Filter<MarketDto, Operator, string>[]) {
     this.marketFacade.loadMarketContentData(filters).then();
   }
 }

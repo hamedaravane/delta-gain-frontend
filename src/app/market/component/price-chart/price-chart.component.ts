@@ -2,7 +2,7 @@ import {AfterViewInit, Component, DestroyRef, ElementRef, inject, OnDestroy, OnI
 import Chart, {ChartConfiguration, ChartData} from 'chart.js/auto';
 import {MarketFacade} from '../../data-access/market.facade';
 import {combineLatestWith, Observable} from 'rxjs';
-import {ContentItem} from '../../entity/market.entity';
+import {Market} from '../../entity/market.entity';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {COLORS, transparent} from '@shared/constant/tailwind-colors';
 import {CurrencySafeZoneApi} from '../../../currency-safe-zone/api/currency-safe-zone.api';
@@ -30,7 +30,7 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
   priceChart!: Chart;
   currentPage = 0;
   currentPageSize = 20;
-  marketContent$: Observable<ContentItem[]> = this.marketFacade.marketContent$;
+  marketContent$: Observable<Market[]> = this.marketFacade.marketContent$;
   selectedCurrency = 'GMX';
   chartData: ChartData = {
     datasets: [{

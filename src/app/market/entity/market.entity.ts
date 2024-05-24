@@ -15,7 +15,7 @@ interface PageableDto {
   unpaged: boolean;
 }
 
-export interface ContentItemDto {
+export interface MarketDto {
   id: string;
   currencyBase: string;
   currencyQuote: string;
@@ -38,7 +38,7 @@ export interface PaginationResponseDto {
   totalElements: number;
   pageable: PageableDto;
   size: number;
-  content: ContentItemDto[];
+  content: MarketDto[];
   number: number;
   sort: SortCriteriaDto;
   first: boolean;
@@ -64,7 +64,7 @@ interface Pageable {
   unpaged: boolean;
 }
 
-export interface ContentItem {
+export interface Market {
   id: string;
   currencyBase: string;
   currencyQuote: string;
@@ -87,7 +87,7 @@ export interface PaginationResponse {
   totalElements: number;
   pageable: Pageable;
   size: number;
-  content: ContentItem[];
+  content: Market[];
   number: number;
   sort: SortCriteria;
   first: boolean;
@@ -107,7 +107,7 @@ function convertPageableDtoToDomain(pageableDto: PageableDto): Pageable {
   };
 }
 
-function convertContentItemDtoToDomain(contentItemDto: ContentItemDto): ContentItem {
+function convertContentItemDtoToDomain(contentItemDto: MarketDto): Market {
   return {
     ...contentItemDto,
     createdAt: new Date(contentItemDto.createdAt)

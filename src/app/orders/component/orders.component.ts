@@ -7,7 +7,6 @@ import {Order} from '@orders/entity/order.entity';
 import {NzCardModule} from "ng-zorro-antd/card";
 import {NzGridModule} from "ng-zorro-antd/grid";
 import {NzSpaceModule} from "ng-zorro-antd/space";
-import {ordersTableHeader} from "@orders/constant/orders-table-header";
 import {NzButtonModule} from "ng-zorro-antd/button";
 import {NzDropDownModule} from "ng-zorro-antd/dropdown";
 import {NzSelectModule} from "ng-zorro-antd/select";
@@ -24,7 +23,6 @@ import {DeviceService} from "@shared/data-access/device.service";
   styleUrl: './orders.component.scss'
 })
 export class OrdersComponent implements OnInit, OnDestroy {
-  orderTableHeader = ordersTableHeader;
   ordersData = new Array<Order>();
   isDesktop = DeviceService.isDesktop;
   currentPage = signal(0);
@@ -59,10 +57,6 @@ export class OrdersComponent implements OnInit, OnDestroy {
   reload() {
     this.ordersFacade.reloadDataSubscription.unsubscribe();
     this.ordersFacade.reloadOrders(this.currentPage(), this.currentPageSize(), this.selectedAutoReloadInterval());
-  }
-
-  changeColumnVisibility(isVisible: boolean, columnName: string) {
-    this.orderTableHeader.set(columnName, isVisible);
   }
 
   ngOnDestroy() {

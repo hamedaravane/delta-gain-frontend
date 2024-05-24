@@ -1,8 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {
-  ContentItemDto,
   convertPaginationResponseDtoToDomain,
+  MarketDto,
   PaginationResponse,
   PaginationResponseDto
 } from '../entity/market.entity';
@@ -14,7 +14,7 @@ import {Filter, Operator} from '@shared/entity/common.entity';
 export class MarketInfra {
   private readonly httpClient = inject(HttpClient);
 
-  getMarketWithPagination(filters: Filter<ContentItemDto, Operator, string>[], pageSize: number = 50, pageNumber: number = 0) {
+  getMarketWithPagination(filters: Filter<MarketDto, Operator, string>[], pageSize: number = 50, pageNumber: number = 0) {
     let params!: HttpParams;
     filters.forEach(filter => {
       params = new HttpParams().append(`${filter.key}${filter.operator}`, filter.value).append('size', pageSize);
