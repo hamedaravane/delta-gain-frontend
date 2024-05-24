@@ -63,8 +63,8 @@
                    class="me-2 align-middle overflow-clip rounded-full object-cover inline-block">
               <span>{{ arbitrage.currencyBase }}</span>
             </td>
-            <td>{{arbitrage.profit | number: '1.2-5'}}</td>
-            <td>{{arbitrage.profitUsdt | number: '1.2-4'}}</td>
+            <td>{{ arbitrage.profit | number: '1.2-5' }}</td>
+            <td>{{ arbitrage.profitUsdt | number: '1.2-4' }}</td>
             <td class="whitespace-nowrap" [ngClass]="{
                   'text-rose-400': arbitrage.status.side === 'BUY',
                   'text-teal-500': arbitrage.status.side === 'SELL'
@@ -82,12 +82,12 @@
                   'fa-circle-xmark text-rose-400': arbitrage.status.status === 'CANCELED'
                 }"></i>
             </td>
-            <td [style]="{'font-size': '.8em'}">{{arbitrage.createdAt | fixedDate}}</td>
-            <td [style]="{'font-size': '.8em'}">{{arbitrage.buyPlacedAt | fixedDate}}</td>
-            <td [style]="{'font-size': '.8em'}">{{arbitrage.buyCanceledAt | fixedDate}}</td>
-            <td [style]="{'font-size': '.8em'}">{{arbitrage.sellCanceledAt | fixedDate}}</td>
-            <td [style]="{'font-size': '.8em'}">{{arbitrage.buyFilledAt | fixedDate}}</td>
-            <td [style]="{'font-size': '.8em'}">{{arbitrage.sellFilledAt | fixedDate}}</td>
+            <td [style]="{'font-size': '.8em'}">{{ arbitrage.createdAt | fixedDate }}</td>
+            <td [style]="{'font-size': '.8em'}">{{ arbitrage.buyPlacedAt | fixedDate }}</td>
+            <td [style]="{'font-size': '.8em'}">{{ arbitrage.buyCanceledAt | fixedDate }}</td>
+            <td [style]="{'font-size': '.8em'}">{{ arbitrage.sellCanceledAt | fixedDate }}</td>
+            <td [style]="{'font-size': '.8em'}">{{ arbitrage.buyFilledAt | fixedDate }}</td>
+            <td [style]="{'font-size': '.8em'}">{{ arbitrage.sellFilledAt | fixedDate }}</td>
             <td>{{ arbitrage.buyTarget | number: '1.2-8' }}</td>
             <td>{{ arbitrage.buyVolume | number: '1.2-4' }}</td>
             <td>{{ arbitrage.sellTarget | number: '1.2-8' }}</td>
@@ -107,7 +107,7 @@
         <ng-template #cardTitle>
           <img [src]="arbitrage.currencyBaseLogo" width="24" height="24"
                class="inline-block align-middle w-6 h-6 object-cover overflow-clip rounded-full" alt="currency logo">
-          <strong class="ms-2">{{arbitrage.currencyBase}}</strong>
+          <strong class="ms-2">{{ arbitrage.currencyBase }}</strong>
         </ng-template>
         <ng-template #cardExtra>
           <span>{{ arbitrage.createdAt | fixedDate }}</span>
@@ -117,13 +117,13 @@
             'fa-inbox-out text-rose-400': arbitrage.status.side === 'BUY',
             'fa-inbox-in text-teal-500': arbitrage.status.side === 'SELL'
           }"></i>
-          <span class="me-2">{{arbitrage.status.side}}</span>
+          <span class="me-2">{{ arbitrage.status.side }}</span>
           <i class="fa-solid me-2" [ngClass]="{
             'fa-circle-check text-teal-500': arbitrage.status.status === 'FILLED',
             'fa-spinner-third animate-spin text-amber-500': arbitrage.status.status === 'PLACED',
             'fa-circle-xmark text-rose-400': arbitrage.status.status === 'CANCELED'
           }"></i>
-          <span>{{arbitrage.status.status}}</span>
+          <span>{{ arbitrage.status.status }}</span>
         </ng-template>
         <div class="mt-4" nz-row nzJustify="space-around">
           <div nz-col nzSpan="12">

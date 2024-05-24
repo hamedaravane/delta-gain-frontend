@@ -1,12 +1,12 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '@environment';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '@environment';
 import {
   convertCurrencySfzResponseDtoToDomain,
   CurrencySfzResponse,
   CurrencySfzResponseDto
 } from '../entity/currency-safe-zone.entity';
-import { map } from 'rxjs';
+import {map} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class CurrencySafeZoneInfra {

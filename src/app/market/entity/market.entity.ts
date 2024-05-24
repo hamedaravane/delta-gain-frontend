@@ -97,7 +97,7 @@ export interface PaginationResponse {
 }
 
 function convertSortCriteriaDtoToDomain(sortDto: SortCriteriaDto): SortCriteria {
-  return { ...sortDto };
+  return {...sortDto};
 }
 
 function convertPageableDtoToDomain(pageableDto: PageableDto): Pageable {

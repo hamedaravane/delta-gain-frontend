@@ -1,10 +1,9 @@
-import { inject, Injectable } from '@angular/core';
-import { MarketInfra } from '../infrastructure/market.infra';
-import { firstValueFrom, interval, Subject } from 'rxjs';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { ContentItem, ContentItemDto } from '../entity/market.entity';
-import { Filter, Operator } from '@shared/entity/common.entity';
-import { ArbitrageApi } from '../../arbitrage/api/arbitrage.api';
+import {inject, Injectable} from '@angular/core';
+import {MarketInfra} from '../infrastructure/market.infra';
+import {firstValueFrom, interval, Subject} from 'rxjs';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {ContentItem, ContentItemDto} from '../entity/market.entity';
+import {Filter, Operator} from '@shared/entity/common.entity';
 
 @Injectable({providedIn: 'root'})
 export class MarketFacade {

@@ -1,10 +1,7 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {
-  convertCryptocurrencyResponseDtoToDomain,
-  CryptocurrencyResponseDto
-} from '../entity/coinmarketcap.entity';
-import { map } from 'rxjs';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {convertCryptocurrencyResponseDtoToDomain, CryptocurrencyResponseDto} from '../entity/coinmarketcap.entity';
+import {map} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class CoinmarketcapInfra {

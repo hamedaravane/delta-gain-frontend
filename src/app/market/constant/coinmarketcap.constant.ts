@@ -1,4 +1,4 @@
-import { CryptocurrencyDto } from '../entity/coinmarketcap.entity';
+import {CryptocurrencyDto} from '../entity/coinmarketcap.entity';
 
 export const coinmarketcapMapId: CryptocurrencyDto[] = [
   {

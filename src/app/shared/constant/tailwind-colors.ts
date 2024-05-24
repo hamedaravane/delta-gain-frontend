@@ -269,13 +269,13 @@ export const COLORS = {
 
 export function transparent(hex: string, opacity: number) {
   let splitColor: any;
-  if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+  if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
     splitColor = hex.substring(1).split('');
-    if(splitColor.length== 3){
-      splitColor= [splitColor[0], splitColor[0], splitColor[1], splitColor[1], splitColor[2], splitColor[2]];
+    if (splitColor.length == 3) {
+      splitColor = [splitColor[0], splitColor[0], splitColor[1], splitColor[1], splitColor[2], splitColor[2]];
     }
-    splitColor = '0x'+ splitColor.join('');
-    return `rgba(${[(splitColor>>16)&255, (splitColor>>8)&255, splitColor&255].join(",")},${opacity})`;
+    splitColor = '0x' + splitColor.join('');
+    return `rgba(${[(splitColor >> 16) & 255, (splitColor >> 8) & 255, splitColor & 255].join(",")},${opacity})`;
   }
   throw new Error('Bad Hex');
 }

@@ -2,8 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {OrdersInfra} from '@orders/infrastructure/orders.infra';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {firstValueFrom, interval, map, Subject, Subscription} from 'rxjs';
-import {Order, OrderResponse} from '@orders/entity/order.entity';
-import {MarketApi} from '../../market/api/market.api';
+import {OrderResponse} from '@orders/entity/order.entity';
 
 @Injectable({providedIn: 'root'})
 export class OrdersFacade {

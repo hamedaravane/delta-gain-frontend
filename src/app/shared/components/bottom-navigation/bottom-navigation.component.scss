@@ -1,16 +1,16 @@
 .active-link {
   color: white;
-  animation-name:glow;
-  animation-duration:1s;
-  animation-iteration-count:infinite;
-  animation-direction:alternate;
+  animation-name: glow;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
-@keyframes glow{
-  from{
-    text-shadow:0 0 5px #fff,0 0 5px #614ad3;
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #fff, 0 0 5px #614ad3;
   }
-  to{
-    text-shadow:0 0 15px #fff,0 0 15px #614ad3;
+  to {
+    text-shadow: 0 0 15px #fff, 0 0 15px #614ad3;
   }
 }

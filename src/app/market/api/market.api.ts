@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {MarketFacade} from "../data-access/market.facade";
-import { Filter, Operator } from '@shared/entity/common.entity';
-import { ContentItem, ContentItemDto } from '../entity/market.entity';
+import {Filter, Operator} from '@shared/entity/common.entity';
+import {ContentItemDto} from '../entity/market.entity';
 
 @Injectable({providedIn: 'root'})
 export class MarketApi {

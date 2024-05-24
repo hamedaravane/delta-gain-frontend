@@ -8,7 +8,7 @@ import {
   ArbitrageResponseDto,
   convertArbitrageResponseDtoToArbitrageResponse
 } from '../entity/arbitrage.entity';
-import { Filter, Operator } from '@shared/entity/common.entity';
+import {Filter, Operator} from '@shared/entity/common.entity';
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageInfra {
@@ -17,7 +17,7 @@ export class ArbitrageInfra {
   getArbitrage(page: number = 0, size: number = 20, filters?: Filter<ArbitrageDto, Operator, string>[]) {
     let params!: HttpParams;
     filters?.forEach(filter => {
-      params = new HttpParams().append(`${filter.key}${filter.operator}`,filter.value)
+      params = new HttpParams().append(`${filter.key}${filter.operator}`, filter.value)
         .append('page', page)
         .append('size', size);
     });

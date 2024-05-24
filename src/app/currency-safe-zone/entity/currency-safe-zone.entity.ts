@@ -1,8 +1,4 @@
-import {
-  Links,
-  LinksDto,
-  convertLinksDtoToDomain
-} from '@shared/entity/common.entity';
+import {convertLinksDtoToDomain, Links, LinksDto} from '@shared/entity/common.entity';
 
 interface CurrencySfzDto {
   currency: string;

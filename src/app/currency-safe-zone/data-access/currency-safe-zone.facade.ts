@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
-import { CurrencySafeZoneInfra } from '../infrastructure/currency-safe-zone.infra';
-import { firstValueFrom, Observable, Subject } from 'rxjs';
-import { CurrencySfz } from '../entity/currency-safe-zone.entity';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import {inject, Injectable} from '@angular/core';
+import {CurrencySafeZoneInfra} from '../infrastructure/currency-safe-zone.infra';
+import {firstValueFrom, Observable, Subject} from 'rxjs';
+import {CurrencySfz} from '../entity/currency-safe-zone.entity';
+import {NzMessageService} from 'ng-zorro-antd/message';
 
 @Injectable({providedIn: 'root'})
 export class CurrencySafeZoneFacade {

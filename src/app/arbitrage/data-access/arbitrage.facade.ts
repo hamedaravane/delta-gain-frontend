@@ -2,8 +2,8 @@ import {inject, Injectable} from '@angular/core';
 import {ArbitrageInfra} from '../infrastructure/arbitrage.infra';
 import {firstValueFrom, interval, map, Subject, Subscription} from 'rxjs';
 import {NzMessageService} from 'ng-zorro-antd/message';
-import { ArbitrageDto, ArbitrageResponse, ArbitrageResponseDto } from '../entity/arbitrage.entity';
-import { Filter, Operator } from '@shared/entity/common.entity';
+import {ArbitrageDto, ArbitrageResponse} from '../entity/arbitrage.entity';
+import {Filter, Operator} from '@shared/entity/common.entity';
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageFacade {
@@ -17,7 +17,7 @@ export class ArbitrageFacade {
   private readonly nzMessageService = inject(NzMessageService);
   arbitrages$ = this.arbitragesSubject.asObservable().pipe(map(value => value.arbitrages));
 
-  async loadArbitrages(page: number = 0, size: number = 20,  filters?: Filter<ArbitrageDto, Operator, string>[]) {
+  async loadArbitrages(page: number = 0, size: number = 20, filters?: Filter<ArbitrageDto, Operator, string>[]) {
     this.isArbitragesLoadingSubject.next(true);
     try {
       this.isLoaded = true;

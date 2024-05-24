@@ -1,25 +1,16 @@
-import {
-  AfterViewInit,
-  Component,
-  DestroyRef,
-  ElementRef,
-  inject,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from '@angular/core';
-import Chart, { ChartConfiguration, ChartData } from 'chart.js/auto';
-import { MarketFacade } from '../../data-access/market.facade';
-import { combineLatestWith, Observable } from 'rxjs';
-import { ContentItem } from '../../entity/market.entity';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { COLORS, transparent } from '@shared/constant/tailwind-colors';
-import { CurrencySafeZoneApi } from '../../../currency-safe-zone/api/currency-safe-zone.api';
-import { AsyncPipe } from '@angular/common';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { FormsModule } from '@angular/forms';
-import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { ArbitrageApi } from '../../../arbitrage/api/arbitrage.api';
+import {AfterViewInit, Component, DestroyRef, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import Chart, {ChartConfiguration, ChartData} from 'chart.js/auto';
+import {MarketFacade} from '../../data-access/market.facade';
+import {combineLatestWith, Observable} from 'rxjs';
+import {ContentItem} from '../../entity/market.entity';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {COLORS, transparent} from '@shared/constant/tailwind-colors';
+import {CurrencySafeZoneApi} from '../../../currency-safe-zone/api/currency-safe-zone.api';
+import {AsyncPipe} from '@angular/common';
+import {NzSelectModule} from 'ng-zorro-antd/select';
+import {FormsModule} from '@angular/forms';
+import {NzSpaceModule} from 'ng-zorro-antd/space';
+import {ArbitrageApi} from '../../../arbitrage/api/arbitrage.api';
 import 'chartjs-adapter-date-fns';
 
 @Component({

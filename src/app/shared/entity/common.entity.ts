@@ -5,7 +5,7 @@ export interface Pair<T> {
 
 export type Operator = '_eq' | '_neq' | '_gt' | '_gte' | '_lt' | '_lte';
 
-export interface Filter<K,O,V> {
+export interface Filter<K, O, V> {
   key: keyof K;
   operator: O;
   value: V;
@@ -42,7 +42,7 @@ export interface Links {
 }
 
 export function convertLinkDtoToDomain(linkDto: LinkDto): Link {
-  return { ...linkDto };
+  return {...linkDto};
 }
 
 export function convertLinksDtoToDomain(linksDto: LinksDto): Links {

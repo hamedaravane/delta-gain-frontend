@@ -1,9 +1,5 @@
-import { addCurrencyLogoUtil } from '../../market/util/add-currency-logo.util';
-import {
-  convertLinksDtoToDomain,
-  Links,
-  LinksDto
-} from '@shared/entity/common.entity';
+import {addCurrencyLogoUtil} from '../../market/util/add-currency-logo.util';
+import {convertLinksDtoToDomain, Links, LinksDto} from '@shared/entity/common.entity';
 
 interface OrderDto {
   spotAction: string;

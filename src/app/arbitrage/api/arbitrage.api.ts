@@ -1,7 +1,7 @@
 import {inject, Injectable} from "@angular/core";
 import {ArbitrageFacade} from "../data-access/arbitrage.facade";
-import { Filter, Operator } from '@shared/entity/common.entity';
-import { ArbitrageDto, ArbitrageResponseDto } from '../entity/arbitrage.entity';
+import {Filter, Operator} from '@shared/entity/common.entity';
+import {ArbitrageDto} from '../entity/arbitrage.entity';
 
 @Injectable({providedIn: 'root'})
 export class ArbitrageApi {

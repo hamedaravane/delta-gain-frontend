@@ -1,4 +1,4 @@
-import { coinmarketcapMapId } from '../constant/coinmarketcap.constant';
+import {coinmarketcapMapId} from '../constant/coinmarketcap.constant';
 
 export function addCurrencyLogoUtil(currencyId: string): string {
   const currency = coinmarketcapMapId.find((item) => item.symbol === currencyId);
