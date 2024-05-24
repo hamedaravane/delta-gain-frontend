@@ -82,10 +82,14 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
         x: {
           type: 'time',
           time: {
-            unit: 'day',
+            unit: 'minute',
             displayFormats: {
-              day: 'MMM dd',
-              month: 'MMM yyyy'
+              second: 'HH:mm:ss',
+              minute: 'HH:mm:ss',
+              hour: 'HH:mm',
+              day: 'MM dd',
+              month: 'MM yyyy',
+              year: 'yyyy'
             }
           },
           ticks: {
