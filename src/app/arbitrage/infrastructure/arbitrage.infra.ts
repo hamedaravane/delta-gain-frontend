@@ -14,12 +14,12 @@ import {Filter, Operator} from '@shared/entity/common.entity';
 export class ArbitrageInfra {
   private readonly httpClient = inject(HttpClient);
 
-  getArbitrage(page: number = 0, size: number = 20, filters?: Filter<ArbitrageDto, Operator, string>[]) {
-    let params!: HttpParams;
+  getArbitrage(pageIndex: number = 0, pageSize: number = 20, filters?: Filter<ArbitrageDto, Operator, string>[]) {
+    let params = new HttpParams().append('page', pageIndex).append('size', pageSize);
     filters?.forEach(filter => {
-      params = new HttpParams().append(`${filter.key}${filter.operator}`, filter.value)
-        .append('page', page)
-        .append('size', size);
+      params = params.append(`${filter.key}${filter.operator}`, filter.value)
+        .append('page', pageIndex)
+        .append('size', pageSize);
     });
     return this.httpClient.get<ArbitrageResponseDto>
     (`${environment.baseUrl}/v1/arbitrages`, {params})
