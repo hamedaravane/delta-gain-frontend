@@ -12,16 +12,15 @@ import {NzSelectModule} from "ng-zorro-antd/select";
 import {Arbitrage} from "../entity/arbitrage.entity";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {LottieComponent} from "ngx-lottie";
-import {DesktopComponent} from '@shared/components/desktop/desktop.component';
-import {MobileComponent} from '@shared/components/mobile/mobile.component';
 import {NzCardModule} from 'ng-zorro-antd/card';
 import {NzGridModule} from 'ng-zorro-antd/grid';
 import {FixedDatePipe} from "@shared/pipe/fixed-date.pipe";
+import {DeviceService} from "@shared/data-access/device.service";
 
 @Component({
   selector: 'app-arbitrage',
   standalone: true,
-  imports: [NzTableModule, AsyncPipe, NzSkeletonModule, FixedDatePipe, DecimalPipe, NzButtonModule, NzDropDownModule, NzSpaceModule, NzCheckboxModule, FormsModule, NzSkeletonModule, NzSelectModule, NgForOf, LottieComponent, NgClass, DesktopComponent, MobileComponent, NzCardModule, NzGridModule, NgOptimizedImage, FixedDatePipe],
+  imports: [NzTableModule, AsyncPipe, NzSkeletonModule, FixedDatePipe, DecimalPipe, NzButtonModule, NzDropDownModule, NzSpaceModule, NzCheckboxModule, FormsModule, NzSkeletonModule, NzSelectModule, NgForOf, LottieComponent, NgClass, NzCardModule, NzGridModule, NgOptimizedImage, FixedDatePipe],
   templateUrl: './arbitrage.component.html',
   styleUrl: './arbitrage.component.scss'
 })
@@ -30,6 +29,7 @@ export class ArbitrageComponent implements OnInit {
   currentPage = 0;
   currentPageSize = 100;
   selectedAutoReloadInterval = 10000;
+  isDesktop = DeviceService.isDesktop;
   private readonly destroyRef = inject(DestroyRef);
   private readonly arbitrageFacade = inject(ArbitrageFacade);
   arbitrages$ = this.arbitrageFacade.arbitrages$;

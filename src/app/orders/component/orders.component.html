@@ -1,4 +1,4 @@
-<desktop>
+@if (isDesktop) {
   <div class="mb-4">
     <nz-space nzSize="large">
       <nz-space *nzSpaceItem nzAlign="center">
@@ -86,8 +86,7 @@
       }
     </tbody>
   </nz-table>
-</desktop>
-<mobile>
+} @else {
   <nz-space nzDirection="vertical" nzSize="middle" style="display: block">
     @for (order of ordersData; track $index) {
       <nz-card *nzSpaceItem [nzTitle]="cardTitle" [nzExtra]="cardExtra">
@@ -148,4 +147,4 @@
       </nz-card>
     }
   </nz-space>
-</mobile>
+}

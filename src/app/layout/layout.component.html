@@ -1,4 +1,4 @@
-<desktop>
+@if (isDesktop) {
   <nz-layout>
     <nz-sider (nzCollapsedChange)="isSideMenuCollapsed.set($event)"
               [nzCollapsedWidth]="62"
@@ -17,8 +17,7 @@
       </nz-content>
     </nz-layout>
   </nz-layout>
-</desktop>
-<mobile>
+} @else {
   <nz-layout>
     <nz-header>
       <nz-page-header [nzBackIcon]="backIcon" [nzGhost]="true" [nzTitle]="pageTitle()">
@@ -31,8 +30,7 @@
       <app-bottom-navigation></app-bottom-navigation>
     </nz-footer>
   </nz-layout>
-</mobile>
-
+}
 <ng-template #backIcon>
   <i class="fa-solid fa-chevron-left text-gray-100"></i>
 </ng-template>

@@ -1,4 +1,4 @@
-<desktop>
+@if (isDesktop) {
   <nz-space nzSize="large" nzDirection="vertical">
     <div *nzSpaceItem>
       <nz-space nzSize="large">
@@ -97,13 +97,12 @@
       </tbody>
     </nz-table>
   </nz-space>
-</desktop>
-<mobile>
+} @else {
   <nz-space style="display: block" nzSize="middle" nzDirection="vertical">
     @for (arbitrage of arbitragesData; track $index) {
       <nz-card *nzSpaceItem [nzTitle]="cardTitle" [nzExtra]="cardExtra">
         <nz-card-meta
-            [nzDescription]="cardDescription"
+          [nzDescription]="cardDescription"
         ></nz-card-meta>
         <ng-template #cardTitle>
           <img [src]="arbitrage.currencyBaseLogo" width="24" height="24"
@@ -163,4 +162,4 @@
       </nz-card>
     }
   </nz-space>
-</mobile>
+}

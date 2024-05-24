@@ -1,16 +1,18 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Subject} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class AuthFacade {
   private readonly authTokenSubmitLoadingSubject = new Subject<boolean>();
   private readonly isAuthTokenAvailableSubject = new Subject<boolean>();
-  isAuthTokenAvailable$ = this.isAuthTokenAvailableSubject.asObservable();
-  authTokenSubmitLoading$ = this.authTokenSubmitLoadingSubject.asObservable();
 
-  constructor() {
-    this.readTokenFromLocalStorage();
-  }
+  get isAuthTokenAvailable$() {
+    return this.isAuthTokenAvailableSubject.asObservable()
+  };
+
+  get authTokenSubmitLoading$() {
+    return this.authTokenSubmitLoadingSubject.asObservable()
+  };
 
   setToken(token: string) {
     this.authTokenSubmitLoadingSubject.next(true);
