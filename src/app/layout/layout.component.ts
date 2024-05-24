@@ -1,4 +1,4 @@
-import {Component, DestroyRef, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {AfterViewInit, Component, DestroyRef, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {NzLayoutModule} from 'ng-zorro-antd/layout';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {AsyncPipe, NgClass} from '@angular/common';
@@ -26,7 +26,7 @@ import {DeviceService} from "@shared/data-access/device.service";
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
-export class LayoutComponent implements OnInit, OnDestroy {
+export class LayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   isDesktop = DeviceService.isDesktop;
   isSideMenuCollapsed = signal(true);
   pageTitle = signal('Dashboard');
@@ -44,6 +44,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.pageTitle.set(this.activatedRoute.firstChild?.snapshot.data['title']);
     });
+  }
+
+  ngAfterViewInit() {
     this.authFacade.readTokenFromLocalStorage();
   }
 
