@@ -1,5 +1,11 @@
 import {AfterViewInit, Component, DestroyRef, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import Chart, {ChartConfiguration, ChartData} from 'chart.js/auto';
+import Chart, {
+  ChartConfiguration,
+  ChartData,
+  ChartDataset,
+  ChartType,
+  Point
+} from 'chart.js/auto';
 import {MarketFacade} from '../../data-access/market.facade';
 import {combineLatestWith, Observable} from 'rxjs';
 import {Market} from '../../entity/market.entity';
@@ -12,26 +18,28 @@ import {FormsModule} from '@angular/forms';
 import {NzSpaceModule} from 'ng-zorro-antd/space';
 import {ArbitrageApi} from '../../../arbitrage/api/arbitrage.api';
 import 'chartjs-adapter-date-fns';
+import zoomPlugin from 'chartjs-plugin-zoom';
+import { Arbitrage } from '../../../arbitrage/entity/arbitrage.entity';
+import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
+
+Chart.register(zoomPlugin);
 
 @Component({
   selector: 'market-price-chart',
   standalone: true,
-  imports: [AsyncPipe, NzSelectModule, FormsModule, NzSpaceModule],
+  imports: [AsyncPipe, NzSelectModule, FormsModule, NzSpaceModule, NzTimePickerModule],
   templateUrl: './price-chart.component.html',
   styleUrl: './price-chart.component.scss'
 })
-export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PriceChartComponent implements AfterViewInit, OnDestroy {
   @ViewChild('priceChartEl') priceChartEl!: ElementRef<HTMLCanvasElement>;
-  private readonly arbitrageApi = inject(ArbitrageApi);
   private readonly currencySafeZoneApi = inject(CurrencySafeZoneApi);
   private readonly destroyRef = inject(DestroyRef);
   private readonly marketFacade = inject(MarketFacade);
   currencySafeZones$ = this.currencySafeZoneApi.currencySafeZones$;
   priceChart!: Chart;
-  currentPage = 0;
-  currentPageSize = 20;
-  marketContent$: Observable<Market[]> = this.marketFacade.marketContent$;
   selectedCurrency = 'GMX';
+  startTimeChart: Date = new Date(new Date().getTime() - 1000 * 60 * 3);
   chartData: ChartData = {
     datasets: [{
       label: 'Binance',
@@ -84,12 +92,12 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
           time: {
             unit: 'minute',
             displayFormats: {
-              second: 'HH:mm:ss',
-              minute: 'HH:mm:ss',
+              second: 'ss',
+              minute: 'H:mm:ss',
               hour: 'HH:mm',
               day: 'MM dd',
-              month: 'MM yyyy',
-              year: 'yyyy'
+              month: 'MM yy',
+              year: 'yy'
             }
           },
           ticks: {
@@ -100,40 +108,60 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         },
         y: {
-          beginAtZero: true
+          beginAtZero: false
+        }
+      },
+      plugins: {
+        zoom: {
+          pan: {
+            enabled: true,
+            mode: 'xy',
+            threshold: 10
+          },
+          zoom: {
+            wheel: {
+              enabled: true
+            },
+            pinch: {
+              enabled: true
+            },
+            mode: 'xy',
+            onZoom: ({chart}) => {
+              const yScale = chart.scales['y'];
+              const xScale = chart.scales['x'];
+
+              const visibleData = chart.data.datasets.flatMap((dataset: ChartDataset<ChartType, any>) =>
+                dataset.data.filter((point: { x: number; y: number }) =>
+                  point.x >= xScale.min && point.x <= xScale.max
+                )
+              );
+
+              if (visibleData.length) {
+                yScale.options.min = Math.min(...visibleData.map((point: { x: number; y: number }) => point.y));
+                yScale.options.max = Math.max(...visibleData.map((point: { x: number; y: number }) => point.y));
+                chart.update('none');
+              }
+            }
+          }
         }
       }
     }
   };
-  arbitrages$ = this.arbitrageApi.getArbitrages(this.currentPage, this.currentPageSize, [{
-    key: 'currencyBase',
-    operator: '_eq',
-    value: this.selectedCurrency
-  }]);
 
-  ngOnInit() {
-    this.marketFacade.loadMarketContentData([{
-      key: 'currencyBase',
-      operator: '_eq',
-      value: this.selectedCurrency
-    }], this.currentPageSize + 30, this.currentPage).then();
+  onStartTimeChange(time: Date) {
+    this.updateChart(this.selectedCurrency, time);
+    this.startTimeChart = time;
+    this.priceChart.update();
   }
 
   ngAfterViewInit() {
-    this.priceChart = new Chart(this.priceChartEl.nativeElement, this.chartConfiguration);
     this.createChart();
   }
 
   onCurrencyChange(currency: string) {
-    this.clearChart();
+    this.updateChart(currency, this.startTimeChart);
     this.selectedCurrency = currency;
-    this.reloadData();
-  }
-
-  onPageSizeChange(pageSize: number) {
-    this.clearChart();
-    this.currentPageSize = pageSize;
-    this.reloadData();
+    this.priceChart.update();
   }
 
   clearChart() {
@@ -142,32 +170,15 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chartData.datasets.map((dataset) => dataset.data = []);
   }
 
-  reloadData() {
-    this.clearChart();
-    this.marketFacade.loadMarketContentData([{
-      key: 'currencyBase',
-      operator: '_eq',
-      value: this.selectedCurrency
-    }], this.currentPageSize + 30).then();
-    this.arbitrages$ = this.arbitrageApi.getArbitrages(this.currentPage, this.currentPageSize, [{
-      key: 'currencyBase',
-      operator: '_eq',
-      value: this.selectedCurrency
-    }]);
+  createChart() {
+    this.updateChart(this.selectedCurrency, this.startTimeChart);
+    this.priceChart = new Chart(this.priceChartEl.nativeElement, this.chartConfiguration);
   }
 
-  createChart() {
-    this.marketContent$.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      combineLatestWith(this.arbitrages$)
-    ).subscribe(([markets, arbitrages]) => {
+  updateChart(currency: string, time: Date) {
+    this.marketFacade.getMarketChartData$(currency, time).subscribe((data) => {
       this.clearChart();
-
-      // Merge and sort the datasets by timestamp
-      const union = [...markets, ...arbitrages].sort((a, b) => a.createdAt!.getTime() - b.createdAt!.getTime());
-
-      // Process each item in the sorted union array
-      union.forEach((item) => {
+      data.forEach((item) => {
         if ('bestAskBase' in item) {
           // Market data
           this.chartData.datasets[0].data.push({
@@ -196,7 +207,7 @@ export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       // Update labels with timestamps
-      this.chartData.labels = union.map((item) => item.createdAt!.getTime());
+      this.chartData.labels = data.map((item) => item.createdAt!.getTime());
 
       // Update the chart
       if (this.priceChart) {

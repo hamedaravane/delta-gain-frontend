@@ -14,10 +14,12 @@ import {Filter, Operator} from '@shared/entity/common.entity';
 export class MarketInfra {
   private readonly httpClient = inject(HttpClient);
 
-  getMarketWithPagination(filters: Filter<MarketDto, Operator, string>[], pageSize: number = 50, pageNumber: number = 0) {
-    let params!: HttpParams;
+  getMarketWithPagination(page = 0, size = 200, filters: Filter<MarketDto, Operator, string>[] = []) {
+    let params = new HttpParams()
+      .append('page', page)
+      .append('size', size);
     filters.forEach(filter => {
-      params = new HttpParams().append(`${filter.key}${filter.operator}`, filter.value).append('size', pageSize);
+      params = params.append(`${filter.key}${filter.operator}`, filter.value);
     });
     return this.httpClient.get<PaginationResponseDto>(`${environment.baseUrl}/v1/market`, {params}).pipe(
       map<PaginationResponseDto, PaginationResponse>((res) => convertPaginationResponseDtoToDomain(res))

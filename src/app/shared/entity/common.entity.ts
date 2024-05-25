@@ -3,7 +3,7 @@ export interface Pair<T> {
   value: T;
 }
 
-export type Operator = '_eq' | '_neq' | '_gt' | '_gte' | '_lt' | '_lte';
+export type Operator = '_eq' | '_neq' | '_lg' | '_lt' | '_lte';
 
 export interface Filter<K, O, V> {
   key: keyof K;
