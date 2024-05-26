@@ -1,26 +1,27 @@
-import {AfterViewInit, Component, DestroyRef, ElementRef, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import Chart, {
-  ChartConfiguration,
-  ChartData,
-  ChartDataset,
-  ChartType,
-  Point
-} from 'chart.js/auto';
-import {MarketFacade} from '../../data-access/market.facade';
-import {combineLatestWith, Observable} from 'rxjs';
-import {Market} from '../../entity/market.entity';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {COLORS, transparent} from '@shared/constant/tailwind-colors';
-import {CurrencySafeZoneApi} from '../../../currency-safe-zone/api/currency-safe-zone.api';
-import {AsyncPipe} from '@angular/common';
-import {NzSelectModule} from 'ng-zorro-antd/select';
-import {FormsModule} from '@angular/forms';
-import {NzSpaceModule} from 'ng-zorro-antd/space';
-import {ArbitrageApi} from '../../../arbitrage/api/arbitrage.api';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
+import Chart, { ChartConfiguration, ChartData, ChartDataset, ChartType } from 'chart.js/auto';
+import { MarketFacade } from '../../data-access/market.facade';
+import { COLORS, transparent } from '@shared/constant/tailwind-colors';
+import { CurrencySafeZoneApi } from '../../../currency-safe-zone/api/currency-safe-zone.api';
+import { AsyncPipe } from '@angular/common';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { FormsModule } from '@angular/forms';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
 import 'chartjs-adapter-date-fns';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { Arbitrage } from '../../../arbitrage/entity/arbitrage.entity';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 Chart.register(zoomPlugin);
 
@@ -31,15 +32,13 @@ Chart.register(zoomPlugin);
   templateUrl: './price-chart.component.html',
   styleUrl: './price-chart.component.scss'
 })
-export class PriceChartComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('priceChartEl') priceChartEl!: ElementRef<HTMLCanvasElement>;
+export class PriceChartComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly currencySafeZoneApi = inject(CurrencySafeZoneApi);
   private readonly destroyRef = inject(DestroyRef);
   private readonly marketFacade = inject(MarketFacade);
-  currencySafeZones$ = this.currencySafeZoneApi.currencySafeZones$;
-  priceChart!: Chart;
-  selectedCurrency = 'GMX';
-  startTimeChart: Date = new Date(new Date().getTime() - 1000 * 60 * 3);
+  private readonly nzMessageService = inject(NzMessageService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   chartData: ChartData = {
     datasets: [{
       label: 'Binance',
@@ -137,8 +136,14 @@ export class PriceChartComponent implements AfterViewInit, OnDestroy {
               );
 
               if (visibleData.length) {
-                yScale.options.min = Math.min(...visibleData.map((point: { x: number; y: number }) => point.y));
-                yScale.options.max = Math.max(...visibleData.map((point: { x: number; y: number }) => point.y));
+                yScale.options.min = Math.min(...visibleData.map((point: {
+                  x: number;
+                  y: number
+                }) => point.y));
+                yScale.options.max = Math.max(...visibleData.map((point: {
+                  x: number;
+                  y: number
+                }) => point.y));
                 chart.update('none');
               }
             }
@@ -147,21 +152,21 @@ export class PriceChartComponent implements AfterViewInit, OnDestroy {
       }
     }
   };
+  currencySafeZones$ = this.currencySafeZoneApi.currencySafeZones$;
+  priceChart!: Chart;
+  @ViewChild('priceChartEl') priceChartEl!: ElementRef<HTMLCanvasElement>;
+  selectedCurrency = 'GMX';
+  startTimeChart: Date = new Date(new Date().getTime() - 1000 * 60 * 3);
 
-  onStartTimeChange(time: Date) {
-    this.updateChart(this.selectedCurrency, time);
-    this.startTimeChart = time;
-    this.priceChart.update();
+  ngOnInit() {
+    const currencyId = this.route.snapshot.paramMap.get('currencyId');
+    if (currencyId) {
+      this.selectedCurrency = currencyId;
+    }
   }
 
   ngAfterViewInit() {
     this.createChart();
-  }
-
-  onCurrencyChange(currency: string) {
-    this.updateChart(currency, this.startTimeChart);
-    this.selectedCurrency = currency;
-    this.priceChart.update();
   }
 
   clearChart() {
@@ -175,8 +180,29 @@ export class PriceChartComponent implements AfterViewInit, OnDestroy {
     this.priceChart = new Chart(this.priceChartEl.nativeElement, this.chartConfiguration);
   }
 
+  ngOnDestroy() {
+    if (this.priceChart) {
+      this.priceChart.destroy();
+    }
+  }
+
+  onCurrencyChange(currency: string) {
+    this.updateChart(currency, this.startTimeChart);
+    this.selectedCurrency = currency;
+    this.router.navigateByUrl(currency).catch(() => {
+      this.nzMessageService.error('Invalid route');
+    });
+    this.priceChart.update();
+  }
+
+  onStartTimeChange(time: Date) {
+    this.updateChart(this.selectedCurrency, time);
+    this.startTimeChart = time;
+    this.priceChart.update();
+  }
+
   updateChart(currency: string, time: Date) {
-    this.marketFacade.getMarketChartData$(currency, time).subscribe((data) => {
+    this.marketFacade.getMarketChartData$(currency, time).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => {
       this.clearChart();
       data.forEach((item) => {
         if ('bestAskBase' in item) {
@@ -214,11 +240,5 @@ export class PriceChartComponent implements AfterViewInit, OnDestroy {
         this.priceChart.update();
       }
     });
-  }
-
-  ngOnDestroy() {
-    if (this.priceChart) {
-      this.priceChart.destroy();
-    }
   }
 }

@@ -16,7 +16,7 @@ const menu = [
   },
   {
     title: 'Chart',
-    path: 'chart',
+    path: 'chart/GMX',
     icon: 'fa-chart-line'
   },/*
   {

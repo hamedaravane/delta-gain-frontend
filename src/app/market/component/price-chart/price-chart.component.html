@@ -11,7 +11,8 @@
   }
   <div class="inline-block">
     <label>Load market data from: </label>
-    <nz-time-picker [ngModel]="startTimeChart" (ngModelChange)="onStartTimeChange($event)" nzPlaceHolder="Select start time"></nz-time-picker>
+    <nz-time-picker (ngModelChange)="onStartTimeChange($event)" [ngModel]="startTimeChart"
+                    nzPlaceHolder="Select start time"></nz-time-picker>
   </div>
 </div>
 <div class="max-h-full mx-auto pb-8">

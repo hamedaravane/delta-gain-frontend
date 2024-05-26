@@ -20,7 +20,7 @@ export const routes: Routes = [
         }
       },
       {
-        path: 'chart',
+        path: 'chart/:currencyId',
         loadComponent: () => import('../market/component/price-chart/price-chart.component').then(c => c.PriceChartComponent),
         data: {
           title: 'Chart'
