@@ -3,7 +3,7 @@ name: Deploy Angular App
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '22.2.0'
 
       - name: Install dependencies
         run: npm install
@@ -27,10 +27,11 @@ jobs:
       - name: Deploy to server
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
-          ssh $SERVER_USERNAME@$SERVER_IP 'rm -rf /path/to/your/app/*'
-          scp -r dist/your-app/* $SERVER_USERNAME@$SERVER_IP:/path/to/your/app/
+          ssh $SERVER_USERNAME@$SERVER_IP -p $SERVER_PORT 'rm -rf /delta-gain-front-end'
+          scp -r /delta-gain-front-end $SERVER_USERNAME@$SERVER_IP:/delta-gain-front-end
