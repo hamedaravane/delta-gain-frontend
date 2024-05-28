@@ -35,4 +35,4 @@ jobs:
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
           ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$SERVER_IP -p $SERVER_PORT 'rm -rf ~/delta-gain-frontend'
-          scp -r dist/your-app/* $SERVER_USERNAME@$SERVER_IP: ~/delta-gain-frontend
+          scp -r dist/* $SERVER_USERNAME@$SERVER_IP:~/delta-gain-frontend/
