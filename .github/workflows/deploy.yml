@@ -31,7 +31,8 @@ jobs:
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          eval $(ssh-agent -s)
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-          ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
-          ssh $SERVER_USERNAME@$SERVER_IP -p $SERVER_PORT 'rm -rf /delta-gain-front-end'
-          scp -r /delta-gain-front-end $SERVER_USERNAME@$SERVER_IP:/delta-gain-front-end
+          ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
+          ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$SERVER_IP -p $SERVER_PORT 'rm -rf /path/to/your/app/*'
+          scp -r dist/your-app/* $SERVER_USERNAME@$SERVER_IP:/path/to/your/app/
