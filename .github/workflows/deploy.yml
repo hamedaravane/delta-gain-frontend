@@ -31,7 +31,7 @@ jobs:
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          set -e
+          set -x
           eval $(ssh-agent -s)
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           mkdir -p ~/.ssh
@@ -40,6 +40,15 @@ jobs:
           echo "Known hosts file:"
           cat ~/.ssh/known_hosts
           echo "Removing existing frontend directory on server"
-          ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$SERVER_IP -p $SERVER_PORT 'rm -rf ~/delta-gain-frontend/*' || (echo "Failed to remove existing frontend directory" && exit 1)
+          ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$SERVER_IP -p $SERVER_PORT 'rm -rf ~/delta-gain-frontend/*'
+          if [ $? -ne 0 ]; then
+            echo "Failed to remove existing frontend directory"
+            exit 1
+          fi
           echo "Copying new build to server"
-          scp -r dist/* $SERVER_USERNAME@$SERVER_IP:~/delta-gain-frontend/ || (echo "Failed to copy new build to server" && exit 1)
+          scp -r dist/* $SERVER_USERNAME@$SERVER_IP:~/delta-gain-frontend/
+          if [ $? -ne 0 ]; then
+            echo "Failed to copy new build to server"
+            exit 1
+          fi
+          set +x
