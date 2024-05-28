@@ -25,6 +25,12 @@ jobs:
         run: npm run build
 
       - name: Deploy to server
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          ssh username@your-server-ip 'rm -rf /path/to/your/app/*'
-          scp -r dist/your-app/* username@your-server-ip:/path/to/your/app/
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+          ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
+          ssh $SERVER_USERNAME@$SERVER_IP 'rm -rf /path/to/your/app/*'
+          scp -r dist/your-app/* $SERVER_USERNAME@$SERVER_IP:/path/to/your/app/
