@@ -34,6 +34,7 @@
               "src/styles/theme.less"
             ],
             "allowedCommonJsDependencies": [
+              "hammerjs",
               "lottie-web"
             ],
             "scripts": []
@@ -52,6 +53,7 @@
                   "maximumError": "4kb"
                 }
               ],
+              "optimization": true,
               "outputHashing": "all"
             },
             "development": {
