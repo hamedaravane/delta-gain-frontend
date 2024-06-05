@@ -1,5 +1,5 @@
 import {Component, DestroyRef, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {NzTableModule} from 'ng-zorro-antd/table';
+import { NzTableModule, NzTableQueryParams } from 'ng-zorro-antd/table';
 import {OrdersFacade} from '@orders/data-access/orders.facade';
 import {AsyncPipe, DecimalPipe, NgClass, NgOptimizedImage} from '@angular/common';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
@@ -25,38 +25,50 @@ import {DeviceService} from "@shared/data-access/device.service";
 export class OrdersComponent implements OnInit, OnDestroy {
   ordersData = new Array<Order>();
   isDesktop = DeviceService.isDesktop;
-  currentPage = signal(0);
-  currentPageSize = signal(100);
-  selectedAutoReloadInterval = signal(10000);
+  currentPage = 0;
+  currentPageSize = 100;
+  totalPages = 0;
+  selectedAutoReloadInterval = 10000;
   private readonly destroyRef = inject(DestroyRef);
   private readonly ordersFacade = inject(OrdersFacade);
   orders$ = this.ordersFacade.orders$;
   isOrdersLoading$ = this.ordersFacade.isOrdersLoading$;
 
   ngOnInit(): void {
-    this.ordersFacade.loadOrders(this.currentPage(), this.currentPageSize()).then(() => this.reload());
+    this.ordersFacade.loadOrders(this.currentPage, this.currentPageSize).then();
     this.orders$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((orders) => {
       this.ordersData = orders;
     })
+    this.ordersFacade.ordersPages$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((pages) => {
+      this.totalPages = pages.totalPages;
+    })
+  }
+
+  onQueryParamsChange(params: NzTableQueryParams) {
+    const {pageSize, pageIndex, sort, filter} = params;
+    const currentSort = sort.find(item => item.value !== null);
+    const sortField = (currentSort && currentSort.key) || null;
+    const sortOrder = (currentSort && currentSort.value) || null;
+    this.ordersFacade.loadOrders(pageIndex, pageSize).then();
   }
 
   changePageIndex(pageIndex: number) {
-    this.currentPage.set(pageIndex);
+    this.currentPage = pageIndex;
   }
 
   changePageSize(value: number) {
-    this.currentPageSize.set(value);
+    this.currentPageSize = value;
     this.reload();
   }
 
   changeAutoReloadInterval(value: number) {
-    this.selectedAutoReloadInterval.set(value);
+    this.selectedAutoReloadInterval = value;
     this.reload();
   }
 
   reload() {
     this.ordersFacade.reloadDataSubscription.unsubscribe();
-    this.ordersFacade.reloadOrders(this.currentPage(), this.currentPageSize(), this.selectedAutoReloadInterval());
+    this.ordersFacade.reloadOrders(this.currentPage, this.currentPageSize, this.selectedAutoReloadInterval);
   }
 
   ngOnDestroy() {

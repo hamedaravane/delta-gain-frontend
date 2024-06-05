@@ -3,7 +3,7 @@
     <nz-space nzSize="large">
       <nz-space *nzSpaceItem nzAlign="center">
         <label *nzSpaceItem>Page Size:</label>
-        <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="currentPageSize()"
+        <nz-select (ngModelChange)="changePageSize($event)" *nzSpaceItem [ngModel]="currentPageSize"
                    nzPlaceHolder="Page Size">
           @for (pageSize of [20, 35, 50, 100]; track $index) {
             <nz-option [nzLabel]="pageSize" [nzValue]="pageSize" [nzKey]="pageSize"></nz-option>
@@ -13,7 +13,7 @@
       <nz-space *nzSpaceItem nzAlign="center">
         <label *nzSpaceItem>Auto Reload Interval:</label>
         <nz-select (ngModelChange)="changeAutoReloadInterval($event)" *nzSpaceItem
-                   [ngModel]="selectedAutoReloadInterval()"
+                   [ngModel]="selectedAutoReloadInterval"
                    nzPlaceHolder="Auto Reload Interval">
           @for (interval of [1000, 2000, 3000, 5000, 10000]; track $index) {
             <nz-option [nzLabel]="interval" [nzValue]="interval" [nzKey]="interval"></nz-option>
@@ -22,16 +22,21 @@
       </nz-space>
     </nz-space>
   </div>
-  <nz-table (nzPageIndexChange)="changePageIndex($event)"
-            [nzLoadingDelay]="1000"
+  <nz-table *nzSpaceItem
+            [nzData]="ordersData"
             [nzLoading]="isOrdersLoading$ | async"
-            [nzPageIndex]="currentPage()"
-            [nzPageSizeOptions]="[20,50,100]"
-            [nzPageSize]="currentPageSize()"
+            [nzLoadingDelay]="1000"
+            [nzPageSize]="currentPageSize"
+            [nzPageIndex]="currentPage"
+            [nzTotal]="totalPages"
+            [nzPageSizeOptions]="[20,40,60,80,100]"
+            (nzQueryParams)="onQueryParamsChange($event)"
+            (nzPageIndexChange)="changePageIndex($event)"
             [nzShowPagination]="true"
             [nzShowQuickJumper]="true"
-            nzBordered
+            [nzFrontPagination]="false"
             nzOuterBordered
+            nzBordered
             nzShowSizeChanger>
     <thead>
     <tr>
