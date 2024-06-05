@@ -1,4 +1,4 @@
-name: Deploy Angular App
+name: Build and Deploy
 
 on:
   push:
@@ -10,23 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
 
-      - name: Execute commands on remote server
-        uses: appleboy/ssh-action@v0.1.5
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          port: 8173
-          password: ${{ secrets.SERVER_PASSWORD }}
-          script: |
-            cd ~/delta-gain-frontend
-            git pull
-            npm i -f
-            npm run build
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build the Angular project
+      run: npm run build
+
+    - name: Deploy to server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        source: "dist/delta-gain-frontend/browser"
+        target: "/var/www/html/delta-gain-frontend/browser"
